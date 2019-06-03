@@ -11,10 +11,10 @@ const index = require("./routes/index");
 const users = require("./routes/users");
 const wechat = require("./routes/wechat");
 
-const getAccessToken = require("./routes/wechats").getAccessToken;
+// const getAccessToken = require("./routes/wechats").getAccessToken;
+// getAccessToken();
 // const setMenu = require("./routes/wechats").setMenu;
 // setMenu()
-getAccessToken();
 // error handler
 onerror(app);
 
