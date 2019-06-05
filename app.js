@@ -10,8 +10,9 @@ const logger = require("koa-logger");
 const index = require("./routes/index");
 const users = require("./routes/users");
 const wechat = require("./routes/wechat");
+const session = require('koa-session');
 
-// const getAccessToken = require("./routes/wechats").getAccessToken;
+
 // getAccessToken();
 // const setMenu = require("./routes/wechats").setMenu;
 // setMenu()
@@ -33,7 +34,17 @@ app.use(
         extension: "ejs"
     })
 );
-
+app.keys = ['yangguang'];
+const CONFIG = {
+   key: 'yg', // cookie key (default is koa:sess)
+   maxAge: 86400000, //  cookie的过期时间 maxAge in ms (default is 1 days)
+   overwrite: true, // 是否可以overwrite    (默认default true)
+   httpOnly: true, // cookie是否只有服务器端可以访问 httpOnly or not (default true)
+   signed: true, // 签名默认true
+   rolling: false, // 在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
+   renew: false // (boolean) renew session when session is nearly expired,
+};
+app.use(session(CONFIG, app))// const getAccessToken = require("./routes/wechats").getAccessToken;
 // logger
 app.use(async (ctx, next) => {
     const start = new Date();
