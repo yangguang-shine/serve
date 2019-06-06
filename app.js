@@ -13,7 +13,6 @@ const wechat = require("./routes/wechat");
 const session = require('koa-session');
 const findOne = require('./model/mongodb').findOne;
 const saveOne = require('./model/mongodb').saveOne;
-const auth = require("./model/wechats/auth");
 require('./model/mongodb').connect();
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
@@ -57,16 +56,15 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
-app.use(async (ctx, next) => {
-    console.log('openid:' + ctx.session.openid)
-    if (!ctx.session.openid) {
-        console.log('去授权')
-        await auth(ctx)
-    } else {
-        await next();
-    }
-
-});
+// app.use(async (ctx, next) => {
+//     console.log('openid:' + ctx.session.openid)
+//     if (!ctx.session.openid) {
+//         console.log('去授权')
+//         await auth(ctx)
+//     } else {
+//         await next();
+//     }
+// });
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());

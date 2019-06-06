@@ -1,6 +1,7 @@
 const router = require("koa-router")();
 // const auth = require("../model/wechats/auth");
 const UserInfo = require('../model/mongodb/index').UserInfo
+const auth = require("../model/wechats/auth");
 
 router.get("/index", async (ctx, next) => {
     // await ctx.render('index', {
@@ -8,6 +9,17 @@ router.get("/index", async (ctx, next) => {
     // })
 // const authResult = await auth(ctx);
     // if (authResult === "false") return;
+    console.log('openid:' + ctx.session.openid)
+    let authStatus = false
+    if (ctx.session.openid) {
+        authStatus = true
+    } else {
+        console.log('去授权')
+        authStatus = await auth(ctx)
+    }
+    if (!authStatus) {
+        return
+    }
     console.log('去首页')
     console.log(ctx.session.openid)
     const user = await ctx.findOne(UserInfo, { openid: ctx.session.openid })
