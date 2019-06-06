@@ -1,0 +1,1 @@
+module.exports = 'inh7bs.natappfree.cc'

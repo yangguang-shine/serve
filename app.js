@@ -11,14 +11,19 @@ const index = require("./routes/index");
 const users = require("./routes/users");
 const wechat = require("./routes/wechat");
 const session = require('koa-session');
+const findOne = require('./model/mongodb').findOne;
+const saveOne = require('./model/mongodb').saveOne;
+const auth = require("./model/wechats/auth");
+require('./model/mongodb').connect();
 
-
+// const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
-// const setMenu = require("./routes/wechats").setMenu;
+// const setMenu = require("./model/wechats").setMenu;
 // setMenu()
 // error handler
 onerror(app);
-
+app.context.findOne = findOne
+app.context.saveOne = saveOne
 app.use(xmlParser());
 app.use(
     bodyparser({
@@ -44,7 +49,7 @@ const CONFIG = {
    rolling: false, // 在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
    renew: false // (boolean) renew session when session is nearly expired,
 };
-app.use(session(CONFIG, app))// const getAccessToken = require("./routes/wechats").getAccessToken;
+app.use(session(CONFIG, app))//
 // logger
 app.use(async (ctx, next) => {
     const start = new Date();
@@ -52,7 +57,16 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
+app.use(async (ctx, next) => {
+    console.log('openid:' + ctx.session.openid)
+    if (!ctx.session.openid) {
+        console.log('去授权')
+        await auth(ctx)
+    } else {
+        await next();
+    }
 
+});
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(users.routes(), users.allowedMethods());

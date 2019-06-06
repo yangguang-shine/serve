@@ -1,1 +1,0 @@
-module.exports = '66gqpk.natappfree.cc'

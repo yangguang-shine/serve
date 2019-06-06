@@ -1,6 +1,6 @@
 const router = require('koa-router')()
-const identification = require('./wechats/identification')
-const messageDelivery = require('./wechats/messageDelivery')
+const identification = require('../model/wechats/identification')
+const messageDelivery = require('../model/wechats/messageDelivery')
 
 router.prefix('/wechat')
 
