@@ -14,6 +14,7 @@ module.exports = {
   },
   'rules': {
     'no-path-concat': 0,
+    'comma-dangle': 0,
     'semi': 0,
     'quotes': 0,
     'camelcase': 0,

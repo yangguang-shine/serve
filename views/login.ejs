@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>hhh</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div>
+        账号：<input id="account" type="number" name="quantity" min="1" max="100" style='width: 200px'>
+    </div>
+    <div>
+        密码：<input id="password" type="password" min="1" max="50" style='width: 200px'>
+    </div>
+    <div id="login">登录</div>
+    <div id="register"><a href="http://ggzd2c.natappfree.cc/user/register">去注册</a></div>
+    <div id='msg'></div>
+    <div id="info"></div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+
+    document.querySelector('#login').onclick = async () => {
+        const res = await axios.post('/user/login', {
+                account: document.querySelector('#account').value,
+                password: document.querySelector('#password').value
+            })
+            document.querySelector('#msg').innerHTML = `code: ${res.data.code}  \n
+            msg: ${res.data.msg}`
+            document.querySelector('#info').innerHTML = `账号: ${res.data.data.account}  \n
+            密码: ${res.data.data.encodePassword}`
+    }
+</script>
+
+</html>

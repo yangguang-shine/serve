@@ -1,19 +1,21 @@
 const mongoose = require('mongoose');
 const host = require('./host')
-const Schema = mongoose.Schema;
-const model = mongoose.model;
-const UserInfoSchema = new Schema({
-    openid: String,
-    nickname: String,
-    sex: Number,
-    language: String,
-    city: String,
-    province: String,
-    headimgurl: String,
-    privilege: [String]
-})
-const UserInfo = model('userInfo', UserInfoSchema)
+// const Schema = mongoose.Schema;
+// const model = mongoose.model;
+// const wechatUser = require('./wechatUser')
+// const userInfo = require('./userInfo')
+// const foodInfo = require('./foodInfo')
+
+// const WechatUserSchema = new Schema(wechatUser)
+// const FoodInfoSchema = new Schema(foodInfo)
+// const UserInfoSchema = new Schema(userInfo)
+
+// const WechatUser = model('wechatUser', WechatUserSchema)
+// const FoodInfo = model('foodInfo', FoodInfoSchema)
+// const UserInfo = model('userInfo', UserInfoSchema)
+
 const db = mongoose.connection;
+
 db.on('error', () => {
     console.log('连接失败')
 })
@@ -38,6 +40,7 @@ function findOne (model, options) {
                 console.log(err)
                 reject(err)
             } else {
+                console.log(options)
                 console.log('查找成功')
                 resolve(result)
             }
@@ -59,8 +62,10 @@ function saveOne (model, instance) {
     })
 }
 module.exports = {
-    UserInfo,
     connect,
     findOne,
-    saveOne
+    saveOne,
+    // WechatUser,
+    // FoodInfo,
+    // UserInfo,
 }

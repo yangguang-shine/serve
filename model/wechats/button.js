@@ -7,8 +7,8 @@ module.exports = {
             "url": `http://${host}/index`
         }, {    
             "type": "view",
-            "name": "每日一笑",
-            "url": `http://${host}/index`
+            "name": "food",
+            "url": `http://${host}/food/info`
         }, {    
             "type": "view",
             "name": "新闻热点",

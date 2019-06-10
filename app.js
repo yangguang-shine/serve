@@ -8,8 +8,9 @@ const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
 
 const index = require("./routes/index");
-const users = require("./routes/users");
+const user = require("./routes/user");
 const wechat = require("./routes/wechat");
+const food = require("./routes/food");
 const session = require('koa-session');
 const findOne = require('./model/mongodb').findOne;
 const saveOne = require('./model/mongodb').saveOne;
@@ -67,8 +68,9 @@ app.use(async (ctx, next) => {
 // });
 // routes
 app.use(index.routes(), index.allowedMethods());
-app.use(users.routes(), users.allowedMethods());
+app.use(user.routes(), user.allowedMethods());
 app.use(wechat.routes(), wechat.allowedMethods());
+app.use(food.routes(), food.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

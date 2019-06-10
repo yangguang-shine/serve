@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>hhh</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div>
+        名称：<input id="name" type="text">
+    </div>
+    <div>
+        价格：<input id="price" type="text">
+    </div>
+    <div id="submit">提交</div>
+    <div id='msg'></div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    document.querySelector('#submit').onclick = async () => {
+        const res = await axios.post('/food/submit', {
+                name: document.querySelector('#name').value,
+                price: document.querySelector('#price').value
+            })
+            document.querySelector('#msg').innerHTML = `code: ${res.data.code}
+            msg: ${res.data.msg} `
+        console.log(res)
+    }
+</script>
+
+</html>

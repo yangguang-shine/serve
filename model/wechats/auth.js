@@ -1,7 +1,7 @@
 const httpsGet = require('../../tool/httpsGet')
 // const connect = require('../mongodb/index').connect
 // const findOne = require('../mongodb/index').findOne
-const UserInfo = require('../mongodb/index').UserInfo
+const WechatUser = require('../mongodb/WechatUser')
 const dataFormat = require('../../tool/dataFormat')
 module.exports = async (ctx) => {
     if (!ctx.query.code) {
@@ -15,22 +15,26 @@ module.exports = async (ctx) => {
     const data = await dataFormat(res)
     const { access_token, openid } = JSON.parse(data);
     let user = null
-    const result = await ctx.findOne(UserInfo, { openid })
-    user = result
-    console.log('设置session:' + ctx.session.openid)
-    ctx.session.openid = openid
+    user = await ctx.findOne(WechatUser, { openid })
     if (user) {
         console.log('找到')
-        return true;
+        console.log('设置session:' + openid)
+        ctx.session.openid = openid
+        return user;
     }
     console.log('未找到')
     // 获取详细信息个人
     const userRes = await httpsGet(`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`)
     const userData = await dataFormat(userRes)
     user = JSON.parse(userData)
-    const userInfo = new UserInfo(user)
-    await ctx.saveOne(UserInfo, userInfo)
-    return true
+    if (user) {
+        console.log('找到')
+        console.log('设置session:' + openid)
+        ctx.session.openid = openid
+    }
+    const userInfo = new WechatUser(user)
+    await ctx.saveOne(WechatUser, userInfo)
+    return user
             // 验证凭证是否有用
     //         https.get(`https://api.weixin.qq.com/sns/auth?access_token=${access_token}&openid=${openid}`, async (res) => {
     //             const data = await dataFormat(res)

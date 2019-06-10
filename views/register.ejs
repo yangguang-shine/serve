@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>hhh</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <div>
+        账号：<input id="account" type="number" name="quantity" min="1" max="50" style='width: 200px'>
+    </div>
+    <div>
+        密码：<input id="password" type="password" min="1" max="50" style='width: 200px'>
+    </div>
+    <div>
+        确认：<input id="confirm-password" type="password" min="1" max="50" style='width: 200px'>
+    </div>
+    <div id="login"><a href="http://ggzd2c.natappfree.cc/user/login">去登录</a></div>
+    <div id="register">注册</div>
+    <div id='msg'></div>
+    <div id='info'></div>
+</body>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    document.querySelector('#register').onclick = async () => {
+        if (document.querySelector('#password').value !== document.querySelector('#confirm-password').value) {
+            alert('两次密码不一样')
+        }
+        const res = await axios.post('/user/register', {
+                account: document.querySelector('#account').value,
+                password: document.querySelector('#password').value,
+            })
+            document.querySelector('#msg').innerHTML = `code: ${res.data.code}          
+            msg: ${res.data.msg}`
+            document.querySelector('#info').innerHTML = `账号: ${res.data.data.account}          
+            密码: ${res.data.data.encodePassword}`
+            console.log(res)
+    }
+</script>
+
+</html>

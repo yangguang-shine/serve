@@ -1,1 +1,1 @@
-module.exports = 'inh7bs.natappfree.cc'
+module.exports = 'ggzd2c.natappfree.cc'
