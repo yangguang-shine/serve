@@ -12,9 +12,10 @@ const user = require("./routes/user");
 const wechat = require("./routes/wechat");
 const food = require("./routes/food");
 const session = require('koa-session');
-const findOne = require('./model/mongodb').findOne;
-const saveOne = require('./model/mongodb').saveOne;
-require('./model/mongodb').connect();
+const querySQL = require('./model/mysql')
+// const findOne = require('./model/mongodb').findOne;
+// const saveOne = require('./model/mongodb').saveOne;
+// require('./model/mongodb').connect();
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -22,8 +23,9 @@ require('./model/mongodb').connect();
 // setMenu()
 // error handler
 onerror(app);
-app.context.findOne = findOne
-app.context.saveOne = saveOne
+// app.context.findOne = findOne
+// app.context.saveOne = saveOne
+app.context.querySQL = querySQL
 app.use(xmlParser());
 app.use(
     bodyparser({
@@ -51,6 +53,7 @@ const CONFIG = {
 };
 app.use(session(CONFIG, app))//
 // logger
+
 app.use(async (ctx, next) => {
     const start = new Date();
     await next();
