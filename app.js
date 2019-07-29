@@ -11,6 +11,7 @@ const index = require("./routes/index");
 const user = require("./routes/user");
 const wechat = require("./routes/wechat");
 const food = require("./routes/food");
+const img = require("./routes/img");
 const session = require('koa-session');
 const querySQL = require('./model/mysql')
 // const findOne = require('./model/mongodb').findOne;
@@ -74,6 +75,7 @@ app.use(index.routes(), index.allowedMethods());
 app.use(user.routes(), user.allowedMethods());
 app.use(wechat.routes(), wechat.allowedMethods());
 app.use(food.routes(), food.allowedMethods());
+app.use(img.routes(), food.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {
