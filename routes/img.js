@@ -1,5 +1,6 @@
 const router = require('koa-router')()
 const multer = require('koa-multer');
+const host = require('./host');
 
 // const upload = multer({ dest: './public/images' });
 var storage = multer.diskStorage({
@@ -27,9 +28,9 @@ router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
     const file = ctx.req.file
     ctx.body = {
         code: '000',
-        msg: '哈哈哈',
+        msg: '上传成功',
         data: {
-            imgUrl: `http://localhost:8090/images/${file.filename}`
+            imgUrl: `${host}/images/${file.filename}`
         }
     }
 })

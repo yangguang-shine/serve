@@ -8,7 +8,6 @@ const querySQL = (sql = '', params = []) => {
                 reject(err)
                 return
             }
-            console.log(params)
             con.query(sql, params, (e, res, fields) => {
                 if (e) {
                     reject(e)
