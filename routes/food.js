@@ -1,23 +1,34 @@
 const router = require('koa-router')()
 
-router.prefix('/api/foodInfo')
+router.prefix('/api/food')
 // 添加菜品
+router.get('/list', async (ctx, next) => {
+    console.log('菜品列表')
+    console.log(ctx.request.body)
+    try {
+        const sql = 'select * from food_info';
+        const res = await ctx.querySQL(sql, [])
+        ctx.body = {
+            code: '000',
+            msg: '查询成功',
+            data: res
+        }
+    } catch (e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '查询失败',
+            data: null
+        }
+    }
+})
 router.post('/add', async (ctx, next) => {
     console.log('添加菜品')
     console.log(ctx.request.body)
     const query = ctx.request.body
     try {
-        let sql = 'select foodID from food_info limit 1;'
-        const find = await ctx.querySQL(sql)
-        if (!find.length) {
-            const foodID = 10000;
-            const categoryID = 1000;
-            sql = 'insert into food_info values (?, ?, ?, ?, ?, ?, ?, ?, ?)';
-            await ctx.querySQL(sql, [foodID, query.foodName, categoryID, query.categoryName, query.price, query.unit, query.orderCount, query.imgUrl, query.description])
-        } else {
-            sql = 'insert into food_info (foodName, categoryID, categoryName, price, unit, orderCount, imgUrl, description) values (?, ?, ?, ?, ?, ?, ?, ?)';
-            await ctx.querySQL(sql, [query.foodName, query.categoryID, query.categoryName, query.price, query.unit, query.orderCount, query.imgUrl, query.description])
-        }
+        const sql = 'insert into food_info (foodName, categoryID, categoryName, price, unit, orderCount, imgUrl, description) values (?, ?, ?, ?, ?, ?, ?, ?)';
+        await ctx.querySQL(sql, [query.foodName, query.categoryID, query.categoryName, query.price, query.unit, query.orderCount, query.imgUrl, query.description])
         ctx.body = {
             code: '000',
             msg: '添加成功',
@@ -25,6 +36,11 @@ router.post('/add', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '添加失败',
+            data: null
+        }
     }
 })
 
@@ -43,6 +59,11 @@ router.post('/delete', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '删除失败',
+            data: null
+        }
     }
 })
 
@@ -61,6 +82,11 @@ router.post('/update', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '更新失败',
+            data: null
+        }
     }
 })
 
@@ -76,6 +102,11 @@ router.get('/find', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '查找失败',
+            data: null
+        }
     }
 })
 
