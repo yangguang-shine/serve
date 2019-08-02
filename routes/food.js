@@ -27,8 +27,8 @@ router.post('/add', async (ctx, next) => {
     console.log(ctx.request.body)
     const query = ctx.request.body
     try {
-        const sql = 'insert into food_info (foodName, categoryID, categoryName, price, unit, orderCount, imgUrl, description) values (?, ?, ?, ?, ?, ?, ?, ?)';
-        await ctx.querySQL(sql, [query.foodName, query.categoryID, query.categoryName, query.price, query.unit, query.orderCount, query.imgUrl, query.description])
+        const sql = 'insert into food_info (foodName, categoryID, categoryName, price, unit, , imgUrl, description) values (?, ?, ?, ?, ?, ?, ?)';
+        await ctx.querySQL(sql, [query.foodName, query.categoryID, query.categoryName, query.price, query.unit, query.imgUrl, query.description])
         ctx.body = {
             code: '000',
             msg: '添加成功',
@@ -94,7 +94,8 @@ router.post('/update', async (ctx, next) => {
 router.get('/find', async (ctx, next) => {
     console.log('查找菜品')
     try {
-        const res = await ctx.querySQL('select * from food_info;')
+        const query = ctx.request.body
+        const res = await ctx.querySQL('select * from food_info where foodID = ?;', [query.foodID])
         ctx.body = {
             code: '000',
             msg: '查找成功',
