@@ -67,6 +67,7 @@ router.post('/edit', async (ctx, next) => {
     console.log('修改分类')
     console.log(ctx.request.body)
     const query = ctx.request.body
+    console.log(typeof query.categoryID)
     try {
         let sql = 'update category_info set categoryName = ? where categoryID = ?'
         await ctx.querySQL(sql, [query.categoryName, query.categoryID])

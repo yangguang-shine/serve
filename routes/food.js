@@ -27,8 +27,9 @@ router.post('/add', async (ctx, next) => {
     console.log(ctx.request.body)
     const query = ctx.request.body
     try {
-        const sql = 'insert into food_info (foodName, categoryID, categoryName, price, unit, , imgUrl, description) values (?, ?, ?, ?, ?, ?, ?)';
-        await ctx.querySQL(sql, [query.foodName, query.categoryID, query.categoryName, query.price, query.unit, query.imgUrl, query.description])
+        console.log((+query.price).toFixed(2))
+        const sql = 'insert into food_info (foodName, categoryID, price, unit, imgUrl, description) values (?, ?, ?, ?, ?, ?)';
+        await ctx.querySQL(sql, [query.foodName, +query.categoryID, (+query.price).toFixed(2), query.unit, query.imgUrl, query.description])
         ctx.body = {
             code: '000',
             msg: '添加成功',
@@ -51,7 +52,7 @@ router.post('/delete', async (ctx, next) => {
         const sql = 'delete from food_info where foodID = ?;';
         const query = ctx.request.body
         console.log(query)
-        const res = await ctx.querySQL(sql, [query.foodID])
+        const res = await ctx.querySQL(sql, [+query.foodID])
         ctx.body = {
             code: '000',
             msg: '删除成功',
@@ -68,7 +69,7 @@ router.post('/delete', async (ctx, next) => {
 })
 
 // 更新菜品
-router.post('/update', async (ctx, next) => {
+router.post('/edit', async (ctx, next) => {
     console.log(ctx.request.body)
     console.log('更新菜品')
     try {
