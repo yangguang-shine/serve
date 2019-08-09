@@ -1,17 +1,19 @@
 const router = require('koa-router')()
 const multer = require('koa-multer');
 const host = require('./host');
+// const host = require('./host');
 
 // const upload = multer({ dest: './public/images' });
 var storage = multer.diskStorage({
     // 文件保存路径
     destination: function (req, file, cb) {
-        cb(null, 'public/images/') // 注意路径必须存在
+        cb(null, 'public/images/upload') // 注意路径必须存在
     },
     // 修改文件名称
     filename: function (req, file, cb) {
         var fileFormat = (file.originalname).split(".");
         cb(null, Date.now() + "." + fileFormat[fileFormat.length - 1]);
+
     }
 })
 
@@ -30,7 +32,7 @@ router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
         code: '000',
         msg: '上传成功',
         data: {
-            imgUrl: `${host}/images/${file.filename}`
+            imgUrl: `${host}/images/upload/${file.filename}`
         }
     }
 })
