@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const randomNum = require('./tool/randomNum')
+const randomNum = require('../tool/randomNum')
 // const creatOrderTable = require('./utils/creatOrderTable')
 
 router.prefix('/api/order')
