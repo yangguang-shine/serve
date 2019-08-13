@@ -12,9 +12,8 @@ const querySQL = (sql = '', params = []) => {
                 if (e) {
                     reject(e)
                 } else {
+                    console.log("SQL成功")
                     resolve(JSON.parse(JSON.stringify(res)))
-                    console.log('结果:')
-                    console.log(JSON.parse(JSON.stringify(res)))
                 }
                 con.release()
             })

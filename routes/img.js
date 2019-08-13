@@ -3,6 +3,7 @@ const multer = require('koa-multer');
 const fs = require('fs');
 const host = require('./host');
 const querySQL = require('../model/mysql/index');
+const randomNum = require('../tool/randomNum');
 // const host = require('./host');
 
 // const upload = multer({ dest: './public/images' });
@@ -14,19 +15,20 @@ var storage = multer.diskStorage({
     // 修改文件名称
     filename: async function (req, file, cb) {
         try {
-            console.log(req)
             var fileFormat = (file.originalname).split(".");
-            const data = +Date.now();
-            const sql = 'update food_info set imgUrl = ? where = ?';
-            await querySQL(sql, [`${data}.${fileFormat[fileFormat.length - 1]}`, req.query.foodID])
-            fs.unlink(`./public/images/upload/${file.originalname}`, function(error) {
-                if(error) {
-                    console.log(error);
-                    return false;
-                }
-                console.log('删除文件成功');
-            })
-            cb(null, data + "." + fileFormat[fileFormat.length - 1]);
+            const num = randomNum(2)
+            const sql = 'update food_info set imgUrl = ? where foodID= ?';
+            await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
+            if (req.body.imgUrl) {
+                fs.unlink(`./public/images/upload/${req.body.imgUrl}`, function(error) {
+                    if(error) {
+                        console.log(error);
+                        return false;
+                    }
+                    console.log('删除文件成功');
+                })
+            }
+            cb(null, `${num}.${fileFormat[fileFormat.length - 1]}`);
         } catch (e) {
             console.log(e)
         }
@@ -41,8 +43,6 @@ router.prefix('/api/img')
 //     console.log('上传图片')
 // })
 router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
-    console.log(ctx.req.file)
-    console.log(ctx.request.file)
     const file = ctx.req.file
     ctx.body = {
         code: '000',
