@@ -4,15 +4,14 @@ const randomNum = require('../tool/randomNum')
 
 router.prefix('/api/order')
 // 添加菜品
-router.get('/foodList', async (ctx, next) => {
+router.get('/menuList', async (ctx, next) => {
     console.log(ctx.request.body)
-
     const shopID = ctx.query.shopID
     console.log(shopID)
     try {
         const sql = 'select * from food_info group by categoryID, foodID;';
         const res = await ctx.querySQL(sql, [])
-        const AllfoodList = res.reduce((list, item) => {
+        const AllfoodList = (res || []).reduce((list, item) => {
             if (!list.length) {
                 list.push({
                     categoryID: item.categoryID,
@@ -22,7 +21,7 @@ router.get('/foodList', async (ctx, next) => {
             } else {
                 const lastIndex = list.length - 1;
                 if (list[lastIndex].categoryID === item.categoryID) {
-                    list[lastIndex].list.push(item)
+                    list[lastIndex].foodList.push(item)
                 } else {
                     list.push({
                         categoryID: item.categoryID,
@@ -53,13 +52,12 @@ router.post('/submit', async (ctx, next) => {
     const query = ctx.request.body
     const orderKey = randomNum()
     try {
-        let sql = 'insert into order_key_list (orderkey) values (?);'
+        let sql = 'insert into order_key_list (orderKey) values (?);'
         const insertOrderKeyPromise = ctx.querySQL(sql, [orderKey])
-        const insertOrderPromise = insertOrder(ctx.querySQL, query.orderList, orderKey)
+        const insertOrderPromise = insertOrder(ctx.querySQL, query.foodList, orderKey)
         await insertOrderKeyPromise
         await insertOrderPromise
         sql = 'insert into food_info (foodName, categoryID, price, unit, imgUrl, description) values (?, ?, ?, ?, ?, ?)';
-        await ctx.querySQL(sql, [query.foodName, +query.categoryID, (+query.price).toFixed(2), query.unit, query.imgUrl, query.description])
         ctx.body = {
             code: '000',
             msg: '提交成功',
@@ -74,10 +72,10 @@ router.post('/submit', async (ctx, next) => {
         }
     }
 })
-async function insertOrder(querySql, orderList, orderKey) {
+async function insertOrder(querySql, foodList, orderKey) {
     const sql = 'insert into order_list (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?'
     const values = []
-    orderList.forEach((item) => {
+    foodList.forEach((item) => {
         const foodID = item.foodID
         const orderCount = item.orderCount
         const imgUrl = item.imgUrl
@@ -87,7 +85,6 @@ async function insertOrder(querySql, orderList, orderKey) {
         const price = item.price
         const unit = item.unit
         const description = item.description
-        const orderKey = item.orderKey
         values.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey])
     })
     await querySql(sql, [values])

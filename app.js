@@ -12,6 +12,7 @@ const user = require("./routes/user");
 const wechat = require("./routes/wechat");
 const food = require("./routes/food");
 const img = require("./routes/img");
+const order = require("./routes/order");
 const category = require("./routes/category");
 const session = require('koa-session');
 const querySQL = require('./model/mysql')
@@ -78,6 +79,7 @@ app.use(wechat.routes(), wechat.allowedMethods());
 app.use(food.routes(), food.allowedMethods());
 app.use(img.routes(), img.allowedMethods());
 app.use(category.routes(), category.allowedMethods());
+app.use(order.routes(), order.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

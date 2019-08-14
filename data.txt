@@ -1,0 +1,16 @@
+
+insert into food_info (categoryID, foodName) values (1000, '菜1'), (1000, '菜2'), (1000, '菜3'), (1000, '菜4'), (1000, '菜5')
+insert into food_info (categoryID, foodName) values (1001, '菜6'), (1001, '菜7'), (1001, '菜8'), (1001, '菜9'), (1001, '菜10')
+
+
+
+
+insert into food_info (categoryID, foodName) values (1002, '菜11'), (1002, '菜12'), (1002, '菜13'), (1002, '菜14'), (1002, '菜15')
+insert into food_info (categoryID, foodName) values (1003, '菜16'), (1003, '菜17'), (1003, '菜18'), (1003, '菜19'), (1003, '菜20')
+
+
+
+insert into food_info (categoryID, foodName) values (1004, '菜21'), (1004, '菜22'), (1004, '菜23'), (1004, '菜24'), (1004, '菜25')
+insert into food_info (categoryID, foodName) values (1005, '菜26'), (1005, '菜27'), (1005, '菜28'), (1005, '菜29'), (1005, '菜30')
+
+
