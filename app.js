@@ -14,6 +14,7 @@ const food = require("./routes/food");
 const img = require("./routes/img");
 const order = require("./routes/order");
 const category = require("./routes/category");
+const shop = require("./routes/shop");
 const session = require('koa-session');
 const querySQL = require('./model/mysql')
 // const findOne = require('./model/mongodb').findOne;
@@ -80,6 +81,7 @@ app.use(food.routes(), food.allowedMethods());
 app.use(img.routes(), img.allowedMethods());
 app.use(category.routes(), category.allowedMethods());
 app.use(order.routes(), order.allowedMethods());
+app.use(shop.routes(), shop.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

@@ -1,14 +1,13 @@
 const router = require('koa-router')()
-const createFoodInfoTable = require('./table/createFoodInfoTable')
 
-router.prefix('/api/food')
+router.prefix('/api/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
-    console.log('菜品列表')
-    const { shopID, categoryID } = ctx.query
+    console.log('店铺列表')
+    // const query = ctx.query
     try {
-        const sql = `select * from food_info${shopID} where categoryID = ?;`
-        const res = await ctx.querySQL(sql, [categoryID])
+        const sql = 'select * from shop_list'
+        const res = await ctx.querySQL(sql, [])
         ctx.body = {
             code: '000',
             msg: '查询成功',
@@ -16,24 +15,6 @@ router.get('/list', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
-        if (e.code === 'ER_NO_SUCH_TABLE') {
-            try {
-                await createFoodInfoTable(ctx.querySQL, shopID)
-                ctx.body = {
-                    code: '000',
-                    msg: '添加成功',
-                    data: []
-                }
-            } catch (e) {
-                console.log(e)
-                ctx.body = {
-                    code: '111',
-                    msg: '查询失败',
-                    data: null
-                }
-            }
-            return
-        }
         ctx.body = {
             code: '111',
             msg: '查询失败',
@@ -42,12 +23,12 @@ router.get('/list', async (ctx, next) => {
     }
 })
 router.post('/add', async (ctx, next) => {
-    console.log('添加菜品')
+    console.log('添加店铺')
     console.log(ctx.request.body)
-    const { foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID } = ctx.request.body
+    const query = ctx.request.body
     try {
-        const sql = `insert into food_info_${shopID} (foodName, categoryID, price, unit, imgUrl, description, categoryName) values (?, ?, ?, ?, ?, ?, ?)`;
-        await ctx.querySQL(sql, [foodName, categoryID, price, unit, imgUrl, description, categoryName])
+        const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address) values (?, ?, ?, ?, ?)';
+        await ctx.querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address])
         ctx.body = {
             code: '000',
             msg: '添加成功',
@@ -65,11 +46,12 @@ router.post('/add', async (ctx, next) => {
 
 // 删除菜品
 router.post('/delete', async (ctx, next) => {
-    console.log('删除菜品')
-    const { shopID, foodID } = ctx.request.body
+    console.log('删除店铺')
     try {
-        const sql = `delete from food_info_${shopID} where foodID = ?;`;
-        const res = await ctx.querySQL(sql, [foodID])
+        const sql = 'delete from shop_list where shopID = ?;';
+        const query = ctx.request.body
+        console.log(query)
+        const res = await ctx.querySQL(sql, [+query.shopID])
         ctx.body = {
             code: '000',
             msg: '删除成功',
@@ -88,11 +70,11 @@ router.post('/delete', async (ctx, next) => {
 // 更新菜品
 router.post('/edit', async (ctx, next) => {
     console.log(ctx.request.body)
-    console.log('更新菜品')
-    const { shopID, foodName, price, unit, imgUrl, description } = ctx.request.body
+    console.log('更新店铺')
     try {
-        const sql = `update food_info_${shopID} set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ?;`
-        const res = await ctx.querySQL(sql, [foodName, price, unit, imgUrl, description])
+        const query = ctx.request.body
+        const sql = 'update shop_list set shopName = ?, imgUrl = ?, startTime = ?, endTime = ?, address = ? where shopID = ?;'
+        const res = await ctx.querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address, query.shopID])
         ctx.body = {
             code: '000',
             msg: '更新成功',
@@ -113,8 +95,8 @@ router.get('/find', async (ctx, next) => {
     console.log('查找菜品')
     try {
         const query = ctx.query
-        console.log(typeof query.foodID)
-        const res = await ctx.querySQL('select * from food_info where foodID = ?;', [Number(query.foodID)])
+        console.log(typeof query.shopID)
+        const res = await ctx.querySQL('select * from shop_list where shopID = ?;', [Number(query.shopID)])
         let data = {}
         if (res.length) {
             data = res[0]

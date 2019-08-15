@@ -17,8 +17,14 @@ var storage = multer.diskStorage({
         try {
             var fileFormat = (file.originalname).split(".");
             const num = randomNum(2)
-            const sql = 'update food_info set imgUrl = ? where foodID= ?';
-            await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
+            let sql = ''
+            if (req.body.foodID) {
+                sql = 'update food_info set imgUrl = ? where foodID= ?';
+                await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
+            } else if (req.body.shopID) {
+                sql = 'update food_info set imgUrl = ? where shopID= ?';
+                await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.shopID])
+            }
             if (req.body.imgUrl) {
                 fs.unlink(`./public/images/upload/${req.body.imgUrl}`, function(error) {
                     if(error) {
@@ -50,6 +56,26 @@ router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
         data: {
             imgUrl: `${host}/images/upload/${file.filename}`
         }
+    }
+})
+router.post('/delete', async (ctx, next) => {
+    const query = ctx.request.body
+    console.log(query)
+    if (query.imgUrl) {
+        const reg = /.+\/(\d+\.)/
+        const imgUrl = query.imgUrl.replace(reg, '$1')
+        fs.unlink(`./public/images/upload/${imgUrl}`, function(error) {
+            if(error) {
+                console.log(error);
+                return false;
+            }
+            console.log('删除文件成功');
+        })
+    }
+    ctx.body = {
+        code: '000',
+        msg: '删除成功',
+        data: {}
     }
 })
 
