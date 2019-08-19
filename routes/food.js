@@ -7,7 +7,7 @@ router.get('/list', async (ctx, next) => {
     console.log('菜品列表')
     const { shopID, categoryID } = ctx.query
     try {
-        const sql = `select * from food_info${shopID} where categoryID = ?;`
+        const sql = `select * from food_info_${shopID} where categoryID = ?;`
         const res = await ctx.querySQL(sql, [categoryID])
         ctx.body = {
             code: '000',

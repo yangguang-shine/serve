@@ -18,11 +18,12 @@ var storage = multer.diskStorage({
             var fileFormat = (file.originalname).split(".");
             const num = randomNum(2)
             let sql = ''
-            if (req.body.foodID) {
-                sql = 'update food_info set imgUrl = ? where foodID= ?';
+            console.log(req.body)
+            if (req.body.shopID && req.body.foodID) {
+                sql = `update food_info_${req.body.shopID} set imgUrl = ? where foodID = ?`;
                 await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
-            } else if (req.body.shopID) {
-                sql = 'update food_info set imgUrl = ? where shopID= ?';
+            } else if (req.body.shopID && !req.body.foodID) {
+                sql = `update shop_list set imgUrl = ? where shopID= ?`;
                 await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.shopID])
             }
             if (req.body.imgUrl) {
