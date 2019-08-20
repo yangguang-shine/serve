@@ -6,10 +6,9 @@ router.prefix('/api/order')
 // 添加菜品
 router.get('/menuList', async (ctx, next) => {
     console.log(ctx.request.body)
-    const shopID = ctx.query.shopID
-    console.log(shopID)
+    const { shopID } = ctx.query
     try {
-        const sql = 'select * from food_info group by categoryID, foodID;';
+        const sql = `select * from food_info_${shopID} group by categoryID, foodID;`;
         const res = await ctx.querySQL(sql, [])
         const AllfoodList = (res || []).reduce((list, item) => {
             if (!list.length) {
@@ -19,9 +18,9 @@ router.get('/menuList', async (ctx, next) => {
                     foodList: [item]
                 })
             } else {
-                const lastIndex = list.length - 1;
-                if (list[lastIndex].categoryID === item.categoryID) {
-                    list[lastIndex].foodList.push(item)
+                const find = list.find(Listitem => Listitem.categoryID === item.categoryID)
+                if (find) {
+                    find.foodList.push(item)
                 } else {
                     list.push({
                         categoryID: item.categoryID,
@@ -39,6 +38,14 @@ router.get('/menuList', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
+        if (e.code === 'ER_NO_SUCH_TABLE') {
+            ctx.body = {
+                code: '111',
+                msg: '商家未配置菜品',
+                data: null
+            }
+            return
+        }
         ctx.body = {
             code: '111',
             msg: '查询失败',
