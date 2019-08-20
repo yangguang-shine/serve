@@ -27,6 +27,9 @@ var storage = multer.diskStorage({
                 await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.shopID])
             }
             if (req.body.imgUrl) {
+                if (req.body.imgUrl === 'default-img.svg') {
+                    return
+                }
                 fs.unlink(`./public/images/upload/${req.body.imgUrl}`, function(error) {
                     if(error) {
                         console.log(error);

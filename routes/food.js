@@ -89,10 +89,10 @@ router.post('/delete', async (ctx, next) => {
 router.post('/edit', async (ctx, next) => {
     console.log(ctx.request.body)
     console.log('更新菜品')
-    const { shopID, foodName, price, unit, imgUrl, description } = ctx.request.body
+    const { shopID, foodName, price, unit, imgUrl, description, foodID } = ctx.request.body
     try {
         const sql = `update food_info_${shopID} set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ?;`
-        const res = await ctx.querySQL(sql, [foodName, price, unit, imgUrl, description])
+        const res = await ctx.querySQL(sql, [foodName, price, unit, imgUrl, description, foodID])
         ctx.body = {
             code: '000',
             msg: '更新成功',
@@ -114,7 +114,7 @@ router.get('/find', async (ctx, next) => {
     try {
         const query = ctx.query
         console.log(typeof query.foodID)
-        const res = await ctx.querySQL('select * from food_info where foodID = ?;', [Number(query.foodID)])
+        const res = await ctx.querySQL(`select * from food_info_${query.shopID} where foodID = ?;`, [Number(query.foodID)])
         let data = {}
         if (res.length) {
             data = res[0]
