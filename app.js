@@ -16,7 +16,7 @@ const order = require("./routes/order");
 const category = require("./routes/category");
 const shop = require("./routes/shop");
 const session = require('koa-session');
-const querySQL = require('./model/mysql')
+const SQL = require('./model/mysql')
 // const findOne = require('./model/mongodb').findOne;
 // const saveOne = require('./model/mongodb').saveOne;
 // require('./model/mongodb').connect();
@@ -29,7 +29,8 @@ const querySQL = require('./model/mysql')
 onerror(app);
 // app.context.findOne = findOne
 // app.context.saveOne = saveOne
-app.context.querySQL = querySQL
+app.context.querySQL = SQL.querySQL
+app.context.SQLtransaction = SQL.SQLtransaction
 app.use(xmlParser());
 app.use(
     bodyparser({

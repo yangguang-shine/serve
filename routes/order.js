@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 const randomNum = require('../tool/randomNum');
-const moment = require('moment');
+// const moment = require('moment');
 const createOrderKeyList = require('./table/createOrderKeyList')
 const createOrderList = require('./table/createOrderList')
 
@@ -55,30 +55,52 @@ router.get('/menuList', async (ctx, next) => {
     }
 })
 
-router.post('/submit', async (ctx, next) => {
-    console.log('提交订单')
-    const orderKey = randomNum()
-    const orderTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
-    console.log('orderTime')
-    console.log(orderTime)
-    console.log(orderKey)
+router.get('/deleteOrderKey', async (ctx, next) => {
+    console.log('删除订单')
     try {
-        const { shopID, orderAmount, foodList } = ctx.request.body
-        const sql = 'begin;insert into order_key_list (orderKey, shopID, orderAmount, orderTime) values (?);'
-        const values = [orderKey, shopID, orderAmount, orderTime]
-        const insertOrderKeyPromise = ctx.querySQL(sql, [values])
-        const insertOrderPromise = insertOrder(ctx.querySQL, foodList, orderKey)
-        await insertOrderKeyPromise
-        await insertOrderPromise
-        await ctx.querySQL('commit;')
+        let sql = `select orderKey from order_key_list;`
+        const res = await ctx.querySQL(sql)
+        console.log(res)
+        const orderListString = (res.map(item => `order_list_${item.orderKey}`)).join(', ')
+        sql = `drop table ${orderListString}`
+        await ctx.querySQL(sql)
+        await ctx.querySQL('truncate table order_key_list')
         ctx.body = {
             code: '000',
-            msg: '提交成功',
+            msg: '删除成功',
             data: null
         }
     } catch (e) {
         console.log(e)
-        await ctx.querySQL('rollback;')
+        ctx.body = {
+            code: '111',
+            msg: '删除失败',
+            data: null
+        }
+    }
+})
+
+router.post('/submit', async (ctx, next) => {
+    console.log('提交订单')
+    const orderKey = randomNum()
+    const orderTime = new Date()
+    try {
+        const { shopID, orderAmount, foodList } = ctx.request.body
+        await ctx.SQLtransaction(async (con) => {
+            const sql = 'insert into order_key_list (orderKey, shopID, orderAmount, orderTime) values (?);'
+            const values = [orderKey, shopID, orderAmount, orderTime]
+            const insertOrderKeyPromise = ctx.querySQL(sql, [values])
+            const insertOrderPromise = insertOrder(ctx.querySQL, foodList, orderKey)
+            await insertOrderKeyPromise
+            await insertOrderPromise
+        })
+        ctx.body = {
+            code: '000',
+            msg: '提交成功',
+            data: orderKey
+        }
+    } catch (e) {
+        console.log(e)
         ctx.body = {
             code: '111',
             msg: '提交失败',
@@ -89,7 +111,7 @@ router.post('/submit', async (ctx, next) => {
 
 router.get('/orderList', async (ctx, next) => {
     try {
-        const sql = `select * from order_Key_list group by orderTime`
+        const sql = `select a.order from order_key_list a inner join shop_list b on a.orderKey = b.orderKey`
         const orderList = await ctx.querySQL(sql)
         console.log('orderList')
         console.log(orderList)
