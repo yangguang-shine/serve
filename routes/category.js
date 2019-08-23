@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const createCategoryTable = require('./table/createCategoryTable')
+const createCategory = require('./table/createCategory')
 
 router.prefix('/api/category')
 // 添加菜品
@@ -18,7 +18,7 @@ router.get('/list', async (ctx, next) => {
         console.log(e)
         if (e.code === 'ER_NO_SUCH_TABLE') {
             try {
-                await createCategoryTable(ctx.querySQL, shopID)
+                await createCategory(ctx.querySQL, shopID)
                 ctx.body = {
                     code: '000',
                     msg: '添加成功',

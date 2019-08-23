@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const createFoodInfoTable = require('./table/createFoodInfoTable')
+const createFoodInfo = require('./table/createFoodInfo')
 
 router.prefix('/api/food')
 // 添加菜品
@@ -18,7 +18,7 @@ router.get('/list', async (ctx, next) => {
         console.log(e)
         if (e.code === 'ER_NO_SUCH_TABLE') {
             try {
-                await createFoodInfoTable(ctx.querySQL, shopID)
+                await createFoodInfo(ctx.querySQL, shopID)
                 ctx.body = {
                     code: '000',
                     msg: '添加成功',

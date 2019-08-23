@@ -1,11 +1,12 @@
 const router = require('koa-router')()
-const randomNum = require('../tool/randomNum')
-// const creatOrderTable = require('./utils/creatOrderTable')
+const randomNum = require('../tool/randomNum');
+const moment = require('moment');
+const createOrderKeyList = require('./table/createOrderKeyList')
+const createOrderList = require('./table/createOrderList')
 
 router.prefix('/api/order')
 // 添加菜品
 router.get('/menuList', async (ctx, next) => {
-    console.log(ctx.request.body)
     const { shopID } = ctx.query
     try {
         const sql = `select * from food_info_${shopID} group by categoryID, foodID;`;
@@ -53,18 +54,23 @@ router.get('/menuList', async (ctx, next) => {
         }
     }
 })
+
 router.post('/submit', async (ctx, next) => {
     console.log('提交订单')
-    console.log(ctx.request.body)
-    const query = ctx.request.body
     const orderKey = randomNum()
+    const orderTime = moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
+    console.log('orderTime')
+    console.log(orderTime)
+    console.log(orderKey)
     try {
-        let sql = 'insert into order_key_list (orderKey) values (?);'
-        const insertOrderKeyPromise = ctx.querySQL(sql, [orderKey])
-        const insertOrderPromise = insertOrder(ctx.querySQL, query.foodList, orderKey)
+        const { shopID, orderAmount, foodList } = ctx.request.body
+        const sql = 'begin;insert into order_key_list (orderKey, shopID, orderAmount, orderTime) values (?);'
+        const values = [orderKey, shopID, orderAmount, orderTime]
+        const insertOrderKeyPromise = ctx.querySQL(sql, [values])
+        const insertOrderPromise = insertOrder(ctx.querySQL, foodList, orderKey)
         await insertOrderKeyPromise
         await insertOrderPromise
-        sql = 'insert into food_info (foodName, categoryID, price, unit, imgUrl, description) values (?, ?, ?, ?, ?, ?)';
+        await ctx.querySQL('commit;')
         ctx.body = {
             code: '000',
             msg: '提交成功',
@@ -72,6 +78,7 @@ router.post('/submit', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
+        await ctx.querySQL('rollback;')
         ctx.body = {
             code: '111',
             msg: '提交失败',
@@ -79,8 +86,38 @@ router.post('/submit', async (ctx, next) => {
         }
     }
 })
-async function insertOrder(querySql, foodList, orderKey) {
-    const sql = 'insert into order_list (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?'
+
+router.get('/orderList', async (ctx, next) => {
+    try {
+        const sql = `select * from order_Key_list group by orderTime`
+        const orderList = await ctx.querySQL(sql)
+        console.log('orderList')
+        console.log(orderList)
+        ctx.body = {
+            code: '000',
+            msg: '查询成功',
+            data: orderList
+        }
+    } catch (e) {
+        console.log(e)
+        if (e.code === 'ER_NO_SUCH_TABLE') {
+            await createOrderKeyList(ctx.querySQL)
+            ctx.body = {
+                code: '000',
+                msg: '查询成功',
+                data: []
+            }
+        } else {
+            ctx.body = {
+                code: '111',
+                msg: '查询失败',
+                data: []
+            }
+        }
+    }
+})
+async function insertOrder(querySQL, foodList, orderKey) {
+    const sql = `insert into order_list_${orderKey} (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description) values ?`
     const values = []
     foodList.forEach((item) => {
         const foodID = item.foodID
@@ -92,8 +129,9 @@ async function insertOrder(querySql, foodList, orderKey) {
         const price = item.price
         const unit = item.unit
         const description = item.description
-        values.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey])
+        values.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description])
     })
-    await querySql(sql, [values])
+    await createOrderList(querySQL, orderKey)
+    await querySQL(sql, [values])
 }
 module.exports = router

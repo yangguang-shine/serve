@@ -1,4 +1,4 @@
-const createFoodInfoTable = async (querySQL, shopID) => {
+const createFoodInfo = async (querySQL, shopID) => {
     const sql = `CREATE TABLE food_info_${shopID}  (
                 foodID int(11) NOT NULL AUTO_INCREMENT,
                 foodName varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -14,4 +14,4 @@ const createFoodInfoTable = async (querySQL, shopID) => {
             ) ENGINE = InnoDB AUTO_INCREMENT = 10000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;`
     await querySQL(sql)
 }
-module.exports = createFoodInfoTable
+module.exports = createFoodInfo
