@@ -111,10 +111,8 @@ router.post('/submit', async (ctx, next) => {
 
 router.get('/orderList', async (ctx, next) => {
     try {
-        const sql = `select a.order from order_key_list a inner join shop_list b on a.orderKey = b.orderKey`
+        const sql = `select * from order_key_list a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`
         const orderList = await ctx.querySQL(sql)
-        console.log('orderList')
-        console.log(orderList)
         ctx.body = {
             code: '000',
             msg: '查询成功',
