@@ -111,6 +111,12 @@ router.post('/submit', async (ctx, next) => {
 
 router.get('/orderList', async (ctx, next) => {
     try {
+        console.log(ctx)
+        console.log(ctx.cookies.get('user'))
+        console.log('开始获取user')
+        console.log(ctx.session.user)
+        // console.log(await ctx.session.user)
+        console.log(11111)
         const sql = `select * from order_key_list a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`
         const orderList = await ctx.querySQL(sql)
         ctx.body = {

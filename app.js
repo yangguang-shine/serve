@@ -17,6 +17,7 @@ const category = require("./routes/category");
 const shop = require("./routes/shop");
 const session = require('koa-session');
 const SQL = require('./model/mysql')
+const sessionConfig = require('./config/session-config')
 // const findOne = require('./model/mongodb').findOne;
 // const saveOne = require('./model/mongodb').saveOne;
 // require('./model/mongodb').connect();
@@ -47,18 +48,18 @@ app.use(
     })
 );
 app.keys = ['yangguang'];
-const CONFIG = {
-   key: 'yg', // cookie key (default is koa:sess)
-   maxAge: 86400000, //  cookie的过期时间 maxAge in ms (default is 1 days)
-   overwrite: true, // 是否可以overwrite    (默认default true)
-   httpOnly: true, // cookie是否只有服务器端可以访问 httpOnly or not (default true)
-   signed: true, // 签名默认true
-   rolling: false, // 在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
-   renew: false // (boolean) renew session when session is nearly expired,
-};
-app.use(session(CONFIG, app))//
+// const CONFIG = {
+//    key: 'yg', // cookie key (default is koa:sess)
+//    maxAge: 86400000, //  cookie的过期时间 maxAge in ms (default is 1 days)
+//    overwrite: true, // 是否可以overwrite    (默认default true)
+//    httpOnly: true, // cookie是否只有服务器端可以访问 httpOnly or not (default true)
+//    signed: true, // 签名默认true
+//    rolling: false, // 在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
+//    renew: false // (boolean) renew session when session is nearly expired,
+// };
+app.use(session(sessionConfig, app))//
 // logger
-
+console.log(2222)
 app.use(async (ctx, next) => {
     const start = new Date();
     await next();
@@ -85,7 +86,9 @@ app.use(order.routes(), order.allowedMethods());
 app.use(shop.routes(), shop.allowedMethods());
 
 // error-handling
+console.log(3333)
 app.on("error", (err, ctx) => {
+    console.log(4444)
     console.error("server error", err, ctx);
 });
 
