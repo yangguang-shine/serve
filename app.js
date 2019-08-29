@@ -15,9 +15,11 @@ const img = require("./routes/img");
 const order = require("./routes/order");
 const category = require("./routes/category");
 const shop = require("./routes/shop");
-const session = require('koa-session');
+// const session = require('koa-session');
 const SQL = require('./model/mysql')
-const sessionConfig = require('./config/session-config')
+const checkLogin = require('./tool/checkLogin')
+const getUserID = require('./tool/getUserID')
+// const sessionConfig = require('./config/session-config')
 // const findOne = require('./model/mongodb').findOne;
 // const saveOne = require('./model/mongodb').saveOne;
 // require('./model/mongodb').connect();
@@ -31,7 +33,9 @@ onerror(app);
 // app.context.findOne = findOne
 // app.context.saveOne = saveOne
 app.context.querySQL = SQL.querySQL
+app.context.getUserID = getUserID
 app.context.SQLtransaction = SQL.SQLtransaction
+app.context.checkLogin = checkLogin
 app.use(xmlParser());
 app.use(
     bodyparser({
@@ -57,14 +61,42 @@ app.keys = ['yangguang'];
 //    rolling: false, // 在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
 //    renew: false // (boolean) renew session when session is nearly expired,
 // };
-app.use(session(sessionConfig, app))//
+// app.use(session(sessionConfig, app))//
 // logger
-console.log(2222)
 app.use(async (ctx, next) => {
     const start = new Date();
     await next();
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+});
+// 判断是否需要登录
+app.use(async (ctx, next) => {
+    console.log(ctx.path)
+    console.log()
+    if (ctx.path === '/wechat/wx/login') {
+        await next()
+    } else {
+        const token = ctx.cookies.get('token')
+        if (token) {
+            const loginStatus = await checkLogin(ctx.querySQL, token)
+            if (loginStatus) {
+                await next();
+            } else {
+                ctx.body = {
+                    code: '555',
+                    msg: '凭证过期请登录',
+                    data: null
+                }
+            }
+        } else {
+            ctx.body = {
+                code: '555',
+                msg: '请登录',
+                data: null
+            }
+        }
+    }
+
 });
 // app.use(async (ctx, next) => {
 //     console.log('openid:' + ctx.session.openid)
@@ -86,10 +118,13 @@ app.use(order.routes(), order.allowedMethods());
 app.use(shop.routes(), shop.allowedMethods());
 
 // error-handling
-console.log(3333)
 app.on("error", (err, ctx) => {
-    console.log(4444)
     console.error("server error", err, ctx);
+    ctx.body = {
+        code: '111',
+        msg: '服务错误',
+        data: null
+    }
 });
 
 module.exports = app;

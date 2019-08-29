@@ -3,8 +3,10 @@ const httpsGet = require('../tool/httpsGet')
 const dataFormat = require('../tool/dataFormat')
 const identification = require('../model/wechats/identification')
 const messageDelivery = require('../model/wechats/messageDelivery')
-const mysqlConfig = require('../config/session-config')
-const MysqlStore = require('koa2-session-mysql')
+// const mysqlConfig = require('../config/session-config')
+// const MysqlStore = require('koa2-session-mysql')
+const createUserIDOrderFoodList = require('./table/createUserIDOrderFoodList')
+const createUserIDOrderKeyList = require('./table/createUserIDOrderKeyList')
 const crypto = require('crypto');
 
 router.prefix('/wechat')
@@ -19,26 +21,54 @@ router.post('/', function (ctx, next) {
 router.get('/wx/login', async (ctx, next) => {
     try {
         const { code } = ctx.query
-        console.log(ctx.session.user)
         const res = await httpsGet(`https://api.weixin.qq.com/sns/jscode2session?appid=wx5e8fc6bbef84c4c3&secret=776934fd2bf6193cf8fd5e5af684d30c&js_code=${code}&grant_type=authorization_code`)
         const data = await dataFormat(res)
         const { session_key, openid } = JSON.parse(data)
-        let sql = `select * from user_openid where openid = ?`
-        const queryUser = await ctx.querySQL(sql, [openid])
-        if (queryUser.length) {
+        let sql = `select userID from user_openid where openid = ?`
+        let queryUserIDList = await ctx.querySQL(sql, [openid])
+        let userID = null
+        // 增加更新用户
+        if (queryUserIDList.length === 1) {
             sql = `update user_openid set session_key = ? where openid = ?`
             await ctx.querySQL(sql, [session_key, openid])
-        } else {
+        } else if (!queryUserIDList.length) {
             sql = `insert into user_openid (session_key, openid) values (?, ?)`
-            await ctx.querySQL(sql, [session_key, openid])
+            const resInsert = await ctx.querySQL(sql, [session_key, openid])
+            console.log('insert res')
+            console.log(resInsert)
+            sql = `select userID from user_openid where openid = ?`
+            queryUserIDList = await ctx.querySQL(sql, openid)
+            createUserIDOrderFoodList()
+            createUserIDOrderKeyList()
+        } else {
+            throw new Error('userID查找多个+')
+        }
+        if (queryUserIDList.length === 1) {
+            userID = queryUserIDList[0].userID
+            await createUserIDOrderFoodList(ctx.querySQL, userID)
+            await createUserIDOrderKeyList(ctx.querySQL, userID)
+        } else {
+            throw new Error('userID查找出错')
         }
         const md5 = crypto.createHash('md5');
-        const session_id = await md5.update(session_key).digest('hex');
-        ctx.session.user = session_id
+        const secret = `${session_key}${+new Date()}${openid}`
+        const token = await md5.update(secret).digest('hex');
+        sql = `select token from my_token_store where userID = ?`
+        const findToken = await ctx.querySQL(sql, [userID])
+        // 增加更新用户token
+        if (findToken.length === 1) {
+            sql = `update my_token_store set token = ?, secret = ?  where userID = ?`
+            await ctx.querySQL(sql, [token, secret, userID])
+        } else if (!findToken.length) {
+            sql = `insert into my_token_store (userID, token, secret) values (?, ?, ?)`
+            await ctx.querySQL(sql, [userID, token, secret])
+        } else {
+            throw new Error('userID查找多个++')
+        }
         ctx.body = {
             code: '000',
             msg: 'code获取成功',
-            data: session_id
+            data: token
         }
     } catch (e) {
         console.log(e)

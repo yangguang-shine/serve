@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const multer = require('koa-multer');
 const fs = require('fs');
-const host = require('./host');
+// const host = require('./host');
 const querySQL = require('../model/mysql/index');
 const randomNum = require('../tool/randomNum');
 // const host = require('./host');
@@ -15,16 +15,17 @@ var storage = multer.diskStorage({
     // 修改文件名称
     filename: async function (req, file, cb) {
         try {
+            console.log(req.body)
             var fileFormat = (file.originalname).split(".");
             const num = randomNum(2)
             let sql = ''
             console.log(req.body)
             if (req.body.shopID && req.body.foodID) {
                 sql = `update food_info_${req.body.shopID} set imgUrl = ? where foodID = ?`;
-                await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
+                await querySQL(sql, [`/images/upload/${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
             } else if (req.body.shopID && !req.body.foodID) {
                 sql = `update shop_list set imgUrl = ? where shopID= ?`;
-                await querySQL(sql, [`${num}.${fileFormat[fileFormat.length - 1]}`, req.body.shopID])
+                await querySQL(sql, [`/images/upload/${num}.${fileFormat[fileFormat.length - 1]}`, req.body.shopID])
             }
             if (req.body.imgUrl) {
                 if (req.body.imgUrl === 'default-img.svg') {
@@ -54,11 +55,12 @@ router.prefix('/api/img')
 // })
 router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
     const file = ctx.req.file
+    console.log(ctx.req)
     ctx.body = {
         code: '000',
         msg: '上传成功',
         data: {
-            imgUrl: `${host}/images/upload/${file.filename}`
+            imgUrl: `/images/upload/${file.filename}`
         }
     }
 })
