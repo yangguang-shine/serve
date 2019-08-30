@@ -1,8 +1,6 @@
 const router = require('koa-router')()
 const randomNum = require('../tool/randomNum');
 // const moment = require('moment');
-const createUserIDOrderFoodList = require('./table/createUserIDOrderFoodList')
-const createUserIDOrderKeyList = require('./table/createUserIDOrderKeyList')
 
 router.prefix('/api/order')
 // 添加菜品
@@ -87,7 +85,7 @@ router.post('/submit', async (ctx, next) => {
     const { shopID, orderAmount, foodList } = ctx.request.body
     const userID = await ctx.getUserID(ctx)
     try {
-        await ctx.SQLtransaction(async (con) => {
+        await ctx.SQLtransaction(async () => {
             const values = [orderKey, shopID, orderAmount, orderTime]
             const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime) values (?);`
             const insertOrderKeyPromise = await ctx.querySQL(sql, [values])
@@ -113,8 +111,6 @@ router.post('/submit', async (ctx, next) => {
 router.get('/orderList', async (ctx, next) => {
     const userID = await ctx.getUserID(ctx)
     try {
-        console.log(ctx.cookies.get('token'))
-        console.log(userID)
         const sql = `select * from order_key_list_${userID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`
         const orderList = await ctx.querySQL(sql)
         ctx.body = {

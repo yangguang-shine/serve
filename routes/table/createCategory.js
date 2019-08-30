@@ -1,5 +1,5 @@
 const createCategoryTablsql = async (querySQL, shopID) => {
-    const sql = `CREATE TABLE category_list_${shopID} (
+    const sql = `CREATE TABLE IF NOT EXISTS category_list_${shopID} (
                 categoryID int(11) NOT NULL AUTO_INCREMENT,
                 categoryName varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
                 shopID int(11) NULL DEFAULT NULL,

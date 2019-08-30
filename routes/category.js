@@ -1,5 +1,4 @@
 const router = require('koa-router')()
-const createCategory = require('./table/createCategory')
 
 router.prefix('/api/category')
 // 添加菜品
@@ -16,24 +15,6 @@ router.get('/list', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
-        if (e.code === 'ER_NO_SUCH_TABLE') {
-            try {
-                await createCategory(ctx.querySQL, shopID)
-                ctx.body = {
-                    code: '000',
-                    msg: '添加成功',
-                    data: []
-                }
-            } catch (e) {
-                console.log(e)
-                ctx.body = {
-                    code: '111',
-                    msg: '查询失败',
-                    data: null
-                }
-            }
-            return
-        }
         ctx.body = {
             code: '111',
             msg: '查询失败',
@@ -67,8 +48,11 @@ router.post('/delete', async (ctx, next) => {
     console.log(ctx.request.body)
     const { categoryID, shopID } = ctx.request.body
     try {
-        let sql = `delete from category_list_${shopID} where categoryID = ?`
-        await ctx.querySQL(sql, [categoryID])
+        await ctx.SQLtransaction(async (querySQL) => {
+            let sql = `delete from category_list_${shopID} where categoryID = ?; delete from food_info_${shopID} where categoryID = ?`
+            await querySQL(sql, [categoryID, categoryID])
+        })
+
         ctx.body = {
             code: '000',
             msg: '删除成功',

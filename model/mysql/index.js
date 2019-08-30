@@ -31,12 +31,24 @@ const SQLtransaction = (func) => {
             }
             con.beginTransaction(async (e) => {
                 if (err) {
-                    reject(e)
+                    reject(err)
                     con.release()
                     return
                 }
                 try {
-                    const funcPromise = func(con)
+                    const conQuerySQL = (sql, params) => {
+                        return new Promise((resolve, reject) => {
+                            con.query(sql, params, (e, res, fields) => {
+                                if (e) {
+                                    reject(e)
+                                } else {
+                                    console.log("SQL成功")
+                                    resolve(JSON.parse(JSON.stringify(res)))
+                                }
+                            })
+                        })
+                    }
+                    const funcPromise = func(conQuerySQL)
                     const result = await funcPromise
                     con.commit(err => { // 事务处理函数resolve则提交事务
                         if(err) {
@@ -46,6 +58,7 @@ const SQLtransaction = (func) => {
                         }
                     })
                 } catch (err) {
+                    console.log(1111111111)
                     con.rollback(() => { // 事务处理函数reject则回滚事务
                         reject(err)
                     })
@@ -55,6 +68,7 @@ const SQLtransaction = (func) => {
             })
         })
     })
+
 }
 // conn.beginTransaction((err) => { //开始事务处理
 //     if(err) {

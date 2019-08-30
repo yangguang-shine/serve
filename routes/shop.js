@@ -1,4 +1,6 @@
 const router = require('koa-router')()
+const createCategory = require('./table/createCategory')
+const createFoodInfo = require('./table/createFoodInfo')
 
 router.prefix('/api/shop')
 // 添加菜品
@@ -24,11 +26,19 @@ router.get('/list', async (ctx, next) => {
 })
 router.post('/add', async (ctx, next) => {
     console.log('添加店铺')
-    console.log(ctx.request.body)
     const query = ctx.request.body
     try {
-        const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address) values (?, ?, ?, ?, ?)';
-        await ctx.querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address])
+        await ctx.SQLtransaction(async (querySQL) => {
+            const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address) values (?, ?, ?, ?, ?)';
+            const res = await querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address])
+            console.log(res.insertId)
+            const shopID = res.insertId
+            // throw Error(111)
+            const createCategoryPromise = createCategory(querySQL, shopID)
+            const createFoodInfoPromise = createFoodInfo(querySQL, shopID)
+            await createCategoryPromise
+            await createFoodInfoPromise
+        })
         ctx.body = {
             code: '000',
             msg: '添加成功',
@@ -47,15 +57,24 @@ router.post('/add', async (ctx, next) => {
 // 删除菜品
 router.post('/delete', async (ctx, next) => {
     console.log('删除店铺')
+    const { shopID } = ctx.request.body
     try {
-        const sql = 'delete from shop_list where shopID = ?;';
-        const query = ctx.request.body
-        console.log(query)
-        const res = await ctx.querySQL(sql, [+query.shopID])
+        console.log(shopID)
+        await ctx.SQLtransaction(async (querySQL) => {
+            const sql1 = `delete from shop_list where shopID = ?`;
+            const sql2 = `drop table if exists category_list_${shopID};`;
+            const sql3 = `drop table if exists food_info_${shopID};`;
+            const promise1 = querySQL(sql1, [shopID])
+            const promise2 = querySQL(sql2, [shopID])
+            const promise3 = querySQL(sql3, [shopID])
+            await promise1
+            await promise2
+            await promise3
+        })
         ctx.body = {
             code: '000',
             msg: '删除成功',
-            data: res
+            data: {}
         }
     } catch (e) {
         console.log(e)

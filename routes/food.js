@@ -16,24 +16,6 @@ router.get('/list', async (ctx, next) => {
         }
     } catch (e) {
         console.log(e)
-        if (e.code === 'ER_NO_SUCH_TABLE') {
-            try {
-                await createFoodInfo(ctx.querySQL, shopID)
-                ctx.body = {
-                    code: '000',
-                    msg: '添加成功',
-                    data: []
-                }
-            } catch (e) {
-                console.log(e)
-                ctx.body = {
-                    code: '111',
-                    msg: '查询失败',
-                    data: null
-                }
-            }
-            return
-        }
         ctx.body = {
             code: '111',
             msg: '查询失败',
