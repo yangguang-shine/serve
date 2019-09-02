@@ -89,9 +89,14 @@ router.post('/submit', async (ctx, next) => {
             const values = [orderKey, shopID, orderAmount, orderTime]
             const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime) values (?);`
             const insertOrderKeyPromise = await ctx.querySQL(sql, [values])
-            const insertOrderPromise = await insertOrderFoodList(ctx.querySQL, foodList, orderKey, userID)
+            const insertOrderPromise = await insertOrderFoodList({ querySQL: ctx.querySQL, foodList, orderKey, userID })
+            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime) values (?);`
+            const insertShopIDOrderKeyPromise = await ctx.querySQL(shopSQL, [values])
+            const insertShopIDOrderPromise = await insertOrderFoodList({ querySQL: ctx.querySQL, foodList, orderKey, shopID })
             await insertOrderKeyPromise
             await insertOrderPromise
+            await insertShopIDOrderKeyPromise
+            await insertShopIDOrderPromise
         })
         ctx.body = {
             code: '000',
@@ -127,8 +132,13 @@ router.get('/orderList', async (ctx, next) => {
     }
 })
 
-async function insertOrderFoodList(querySQL, foodList, orderKey, userID) {
-    const sql = `insert into order_food_list_${userID} (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?`
+async function insertOrderFoodList({ querySQL, foodList, orderKey, userID = '', shopID = '' } = {}) {
+    let sql = ''
+    if(userID) {
+        sql = `insert into order_food_list_${userID} (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?`
+    } else if (shopID) {
+        sql = `insert into order_food_list_${shopID} (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?`
+    }
     const values = []
     foodList.forEach((item) => {
         const foodID = item.foodID
