@@ -76,6 +76,18 @@ app.use(async (ctx, next) => {
     if (ctx.path === '/wechat/wx/login') {
         await next()
     } else {
+        if (ctx.method === 'POST') {
+            const { shopID } = ctx.request.body;
+            const userID = await ctx.getUserID(ctx);
+            if (!(`${userID}` === '100000007' && `${shopID}` === '100055')) {
+                ctx.body = {
+                    code: '999',
+                    msg: '该店铺只有开发者可修改',
+                    data: null
+                }
+                return;
+            } 
+        }
         const token = ctx.cookies.get('token')
         if (token) {
             const loginStatus = await checkLogin(ctx.querySQL, token)

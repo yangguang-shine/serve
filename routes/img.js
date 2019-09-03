@@ -54,6 +54,8 @@ router.prefix('/api/img')
 //     console.log('上传图片')
 // })
 router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
+    console.log(ctx)
+    console.log(ctx.body)
     const file = ctx.req.file
     console.log(ctx.req)
     ctx.body = {

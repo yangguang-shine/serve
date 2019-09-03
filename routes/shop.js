@@ -31,16 +31,13 @@ router.post('/add', async (ctx, next) => {
     const { shopName, imgUrl, startTime, endTime, address, minus } = ctx.request.body
     try {
         await ctx.SQLtransaction(async (querySQL) => {
-            const userID = await ctx.getUserID(ctx)
             const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address, minus) values (?, ?, ?, ?, ?, ?)';
             const res = await querySQL(sql, [shopName, imgUrl, startTime, endTime, address, minus])
             console.log(res.insertId)
             const shopID = res.insertId
             // throw Error(111)
-            createUserIDOrShopIDOrderFoodList(querySQL, userID)
-            createUserIDOrShopIDOrderKeyList(querySQL, userID)
-            const createUserIDOrShopIDOrderFoodListPromise = createCategory(querySQL, userID)
-            const createUserIDOrShopIDOrderKeyListPromise = createCategory(querySQL, userID)
+            const createUserIDOrShopIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, shopID })
+            const createUserIDOrShopIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, shopID })
             const createCategoryPromise = createCategory(querySQL, shopID)
             const createFoodInfoPromise = createFoodInfo(querySQL, shopID)
             await createUserIDOrShopIDOrderFoodListPromise
@@ -103,7 +100,6 @@ router.post('/delete', async (ctx, next) => {
 
 // 更新菜品
 router.post('/edit', async (ctx, next) => {
-    console.log(ctx.request.body)
     console.log('更新店铺')
     try {
         const query = ctx.request.body
