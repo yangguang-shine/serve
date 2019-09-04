@@ -1,90 +1,104 @@
 const router = require('koa-router')()
-const multer = require('koa-multer');
+// const multer = require('koa-multer');
 const fs = require('fs');
 // const host = require('./host');
-const querySQL = require('../model/mysql/index');
 const randomNum = require('../tool/randomNum');
-// const host = require('./host');
-
-// const upload = multer({ dest: './public/images' });
-var storage = multer.diskStorage({
-    // 文件保存路径
-    destination: function (req, file, cb) {
-        cb(null, 'public/images/upload') // 注意路径必须存在
-    },
-    // 修改文件名称
-    filename: async function (req, file, cb) {
-        try {
-            console.log(req.body)
-            var fileFormat = (file.originalname).split(".");
-            const num = randomNum(2)
-            let sql = ''
-            console.log(req.body)
-            if (req.body.shopID && req.body.foodID) {
-                sql = `update food_info_${req.body.shopID} set imgUrl = ? where foodID = ?`;
-                await querySQL(sql, [`/images/upload/${num}.${fileFormat[fileFormat.length - 1]}`, req.body.foodID])
-            } else if (req.body.shopID && !req.body.foodID) {
-                sql = `update shop_list set imgUrl = ? where shopID= ?`;
-                await querySQL(sql, [`/images/upload/${num}.${fileFormat[fileFormat.length - 1]}`, req.body.shopID])
+const { writeFile, unlink, access } = require('../tool/fsPromise');
+router.prefix('/api/img')
+// 上传图片
+router.post('/shop/uploadImg', async (ctx, next) => {
+    try {
+        const { imgData, ext, imgUrl, shopID } = ctx.request.body
+        const num = randomNum(2)
+        const path = `public/images/upload/shop/${num}.${ext}`;// 从app.js级开始找--在我的项目工程里是这样的
+        const base64 = imgData.replace(/^data:image\/\w+;base64,/, "");// 去掉图片base64码前面部分data:image/png;base64
+        const dataBuffer = Buffer.from(base64, 'base64'); // 把base64码转成buffer对象，
+        const writePromise = writeFile(path, dataBuffer)
+        let unlinkPromise = null
+        let sqlPromise = null
+        if (shopID) {
+            sqlPromise = ctx.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [`/images/upload/shop/${num}.${ext}`, shopID])
+        }
+        if (imgUrl) {
+            unlinkPromise = unlink(`./public/images/upload/shop/${imgUrl}`)
+        }
+        await writePromise
+        await sqlPromise
+        await unlinkPromise
+        ctx.body = {
+            code: '000',
+            msg: '上传成功',
+            data: {
+                imgUrl: `/images/upload/shop/${num}.${ext}`
             }
-            if (req.body.imgUrl) {
-                if (req.body.imgUrl === 'default-img.svg') {
-                    return
-                }
-                fs.unlink(`./public/images/upload/${req.body.imgUrl}`, function(error) {
-                    if(error) {
-                        console.log(error);
-                        return false;
-                    }
-                    console.log('删除文件成功');
-                })
-            }
-            cb(null, `${num}.${fileFormat[fileFormat.length - 1]}`);
-        } catch (e) {
-            console.log(e)
+        }
+    } catch(e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '上传失败',
+            data: null
         }
     }
 })
-
-// 加载配置
-var upload = multer({ storage: storage })
-router.prefix('/api/img')
-// 上传图片
-// router.post('/foodImgUpload', async (ctx, next) => {
-//     console.log('上传图片')
-// })
-router.post('/uploadImg', upload.single('img'), async (ctx, next) => {
-    console.log(ctx)
-    console.log(ctx.body)
-    const file = ctx.req.file
-    console.log(ctx.req)
-    ctx.body = {
-        code: '000',
-        msg: '上传成功',
-        data: {
-            imgUrl: `/images/upload/${file.filename}`
+router.post('/food/uploadImg', async (ctx, next) => {
+    try {
+        const { imgData, ext, imgUrl, shopID, foodID } = ctx.request.body
+        const num = randomNum(2)
+        const path = `public/images/upload/food/${num}.${ext}`;// 从app.js级开始找--在我的项目工程里是这样的
+        const base64 = imgData.replace(/^data:image\/\w+;base64,/, "");// 去掉图片base64码前面部分data:image/png;base64
+        const dataBuffer = Buffer.from(base64, 'base64'); // 把base64码转成buffer对象，
+        const writePromise = writeFile(path, dataBuffer)
+        let unlinkPromise = null
+        let sqlPromise = null
+        if (foodID) {
+            sqlPromise = ctx.querySQL(`update food_info_${shopID} set imgUrl = ? where foodID = ?`, [`/images/upload/food/${num}.${ext}`, foodID])
+        }
+        if (imgUrl) {
+            unlinkPromise = unlink(`./public/images/upload/food/${imgUrl}`)
+        }
+        await writePromise
+        await sqlPromise
+        await unlinkPromise
+        ctx.body = {
+            code: '000',
+            msg: '上传成功',
+            data: {
+                imgUrl: `/images/upload/food/${num}.${ext}`
+            }
+        }
+    } catch(e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '上传失败',
+            data: null
         }
     }
 })
 router.post('/delete', async (ctx, next) => {
-    const query = ctx.request.body
-    console.log(query)
-    if (query.imgUrl) {
+    try {
+        const { deleteShop = false, deleteFood = false, imgUrl } = ctx.request.body
         const reg = /.+\/(\d+\.)/
-        const imgUrl = query.imgUrl.replace(reg, '$1')
-        fs.unlink(`./public/images/upload/${imgUrl}`, function(error) {
-            if(error) {
-                console.log(error);
-                return false;
-            }
-            console.log('删除文件成功');
-        })
-    }
-    ctx.body = {
-        code: '000',
-        msg: '删除成功',
-        data: {}
+        const deleteImgUrl = imgUrl.replace(reg, '$1')
+        if (deleteShop) {
+            await unlink(`./public/images/upload/shop/${deleteImgUrl}`)
+        }
+        if (deleteFood) {
+            await unlink(`./public/images/upload/food/${deleteImgUrl}`)
+        }
+        ctx.body = {
+            code: '000',
+            msg: '删除成功',
+            data: {}
+        }
+    } catch(e) {
+        console.log(e)
+        ctx.body = {
+            code: '000',
+            msg: '删除失败',
+            data: {}
+        }
     }
 })
-
 module.exports = router

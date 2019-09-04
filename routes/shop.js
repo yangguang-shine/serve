@@ -3,6 +3,7 @@ const createCategory = require('./table/createCategory')
 const createFoodInfo = require('./table/createFoodInfo')
 const createUserIDOrShopIDOrderFoodList = require('./table/createUserIDOrShopIDOrderFoodList')
 const createUserIDOrShopIDOrderKeyList = require('./table/createUserIDOrShopIDOrderKeyList')
+const { access } = require('../tool/fsPromise');
 
 router.prefix('/api/shop')
 // 添加菜品
@@ -66,6 +67,7 @@ router.post('/delete', async (ctx, next) => {
     const { shopID } = ctx.request.body
     try {
         console.log(shopID)
+        const imgUrlList = ctx.querySQL(`select imgUrl from shop_list where shop = ?`, [shopID])
         await ctx.SQLtransaction(async (querySQL) => {
             const sql1 = `delete from shop_list where shopID = ?`;
             const sql2 = `drop table if exists category_list_${shopID};`;
@@ -83,6 +85,12 @@ router.post('/delete', async (ctx, next) => {
             await promise4
             await promise5
         })
+        // access
+        // const promiseList = []
+        // imgUrlList.forEach((item) => {
+        //     this.judge
+        //     const promiseItem = access()
+        // })
         ctx.body = {
             code: '000',
             msg: '删除成功',
