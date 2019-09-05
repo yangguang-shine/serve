@@ -1,5 +1,5 @@
-const router = require('koa-router')()
-
+const router = require('koa-router')();
+const { deleteFoodImg } = require('./deleteImg')
 router.prefix('/api/category')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
@@ -48,11 +48,22 @@ router.post('/delete', async (ctx, next) => {
     console.log(ctx.request.body)
     const { categoryID, shopID } = ctx.request.body
     try {
+        const foodImgUrlList = await ctx.querySQL(`select imgUrl from food_info_${shopID} where categoryID = ?`, [categoryID])
         await ctx.SQLtransaction(async (querySQL) => {
             let sql = `delete from category_list_${shopID} where categoryID = ?; delete from food_info_${shopID} where categoryID = ?`
             await querySQL(sql, [categoryID, categoryID])
         })
-
+        try {
+            const promiseList = []
+            foodImgUrlList.forEach((foodImgItem) => {
+                promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))
+            })
+            for (let i = 0; i < promiseList.length; i += 1) {
+                await promiseList[i]
+            }
+        } catch (e) {
+            console.log(e)
+        }
         ctx.body = {
             code: '000',
             msg: '删除成功',
@@ -73,8 +84,14 @@ router.post('/edit', async (ctx, next) => {
     const { categoryName, categoryID, shopID } = ctx.request.body
     console.log(typeof categoryID)
     try {
-        let sql = `update category_list_${shopID} set categoryName = ? where categoryID = ?`
-        await ctx.querySQL(sql, [categoryName, categoryID])
+        await ctx.SQLtransaction(async (querySQL) => {
+            let sql1 = `update category_list_${shopID} set categoryName = ? where categoryID = ?`
+            let sql2 = `update food_info_${shopID} set categoryName = ? where categoryID = ?`
+            const promise1 = querySQL(sql1, [categoryName, categoryID])
+            const promise2 = querySQL(sql2, [categoryName, categoryID])
+            await promise1
+            await promise2
+        })
         ctx.body = {
             code: '000',
             msg: '修改成功',

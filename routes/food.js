@@ -1,5 +1,5 @@
 const router = require('koa-router')()
-const createFoodInfo = require('./table/createFoodInfo')
+const { deleteFoodImg } = require('./deleteImg')
 
 router.prefix('/api/food')
 // 添加菜品
@@ -50,8 +50,22 @@ router.post('/delete', async (ctx, next) => {
     console.log('删除菜品')
     const { shopID, foodID } = ctx.request.body
     try {
+        const foodImgUrlList = await ctx.querySQL(`select imgUrl from food_info_${shopID} where foodID = ?`, [foodID])
+        console.log(11111)
+        console.log(foodImgUrlList)
         const sql = `delete from food_info_${shopID} where foodID = ?;`;
         const res = await ctx.querySQL(sql, [foodID])
+        try {
+            const promiseList = []
+            foodImgUrlList.forEach((foodImgItem) => {
+                promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))
+            })
+            for (let i = 0; i < promiseList.length; i += 1) {
+                await promiseList[i]
+            }
+        } catch (e) {
+            console.log(e)
+        }
         ctx.body = {
             code: '000',
             msg: '删除成功',
