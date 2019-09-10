@@ -15,6 +15,7 @@ const img = require("./routes/img");
 const order = require("./routes/order");
 const category = require("./routes/category");
 const shop = require("./routes/shop");
+const address = require("./routes/address");
 // const session = require('koa-session');
 const SQL = require('./model/mysql')
 const checkLogin = require('./tool/checkLogin')
@@ -131,6 +132,7 @@ app.use(img.routes(), img.allowedMethods());
 app.use(category.routes(), category.allowedMethods());
 app.use(order.routes(), order.allowedMethods());
 app.use(shop.routes(), shop.allowedMethods());
+app.use(address.routes(), address.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

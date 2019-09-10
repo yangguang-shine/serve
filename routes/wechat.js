@@ -7,6 +7,7 @@ const messageDelivery = require('../model/wechats/messageDelivery')
 // const MysqlStore = require('koa2-session-mysql')
 const createUserIDOrShopIDOrderFoodList = require('./table/createUserIDOrShopIDOrderFoodList')
 const createUserIDOrShopIDOrderKeyList = require('./table/createUserIDOrShopIDOrderKeyList')
+const createUserIDAddress = require('./table/createUserIDAddress')
 const crypto = require('crypto');
 
 router.prefix('/wechat')
@@ -40,8 +41,10 @@ router.get('/wx/login', async (ctx, next) => {
                 userID = resInsert.insertId
                 const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
                 const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })
+                const createUserIDAddressPromise = createUserIDAddress({ querySQL, userID })
                 await createUserIDOrderFoodListPromise
                 await createUserIDOrderKeyListPromise
+                await createUserIDAddressPromise
             } else {
                 throw new Error('userID查找多个+')
             }
