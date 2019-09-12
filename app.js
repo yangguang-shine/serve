@@ -16,6 +16,7 @@ const order = require("./routes/order");
 const category = require("./routes/category");
 const shop = require("./routes/shop");
 const address = require("./routes/address");
+const h5 = require("./routes/h5");
 // const session = require('koa-session');
 const SQL = require('./model/mysql')
 const checkLogin = require('./tool/checkLogin')
@@ -74,7 +75,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     console.log(ctx.path)
     console.log()
-    if (ctx.path === '/wechat/wx/login') {
+    if (ctx.path === '/wechat/wx/login' || ctx.path === '/h5/user/check') {
         await next()
     } else {
         if (ctx.method === 'POST') {
@@ -133,6 +134,7 @@ app.use(category.routes(), category.allowedMethods());
 app.use(order.routes(), order.allowedMethods());
 app.use(shop.routes(), shop.allowedMethods());
 app.use(address.routes(), address.allowedMethods());
+app.use(h5.routes(), h5.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {
