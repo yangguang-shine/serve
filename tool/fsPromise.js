@@ -32,6 +32,17 @@ exports.writeFile = (path, dataBuffer) => {
         })
     })
 }
+exports.readFile = (path) => {
+    return new Promise((resolve, reject) => {
+        fs.readFile(path, function(err, data) {
+            if(err) {
+                reject(err);
+            }else {
+                resolve(data.toString());
+            }
+        })
+    })
+}
 exports.access = (path) => {
     return new Promise((resolve, reject) => {
         fs.access(path, function(err) {

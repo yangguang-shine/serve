@@ -16,15 +16,14 @@ const order = require("./routes/order");
 const category = require("./routes/category");
 const shop = require("./routes/shop");
 const address = require("./routes/address");
+const message = require("./routes/message");
 const h5 = require("./routes/h5");
+const page = require("./routes/page");
 // const session = require('koa-session');
 const SQL = require('./model/mysql')
 const checkLogin = require('./tool/checkLogin')
 const getUserID = require('./tool/getUserID')
 // const sessionConfig = require('./config/session-config')
-// const findOne = require('./model/mongodb').findOne;
-// const saveOne = require('./model/mongodb').saveOne;
-// require('./model/mongodb').connect();
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -32,8 +31,6 @@ const getUserID = require('./tool/getUserID')
 // setMenu()
 // error handler
 onerror(app);
-// app.context.findOne = findOne
-// app.context.saveOne = saveOne
 app.context.querySQL = SQL.querySQL
 app.context.getUserID = getUserID
 app.context.SQLtransaction = SQL.SQLtransaction
@@ -54,16 +51,7 @@ app.use(
     })
 );
 app.keys = ['yangguang'];
-// const CONFIG = {
-//    key: 'yg', // cookie key (default is koa:sess)
-//    maxAge: 86400000, //  cookie的过期时间 maxAge in ms (default is 1 days)
-//    overwrite: true, // 是否可以overwrite    (默认default true)
-//    httpOnly: true, // cookie是否只有服务器端可以访问 httpOnly or not (default true)
-//    signed: true, // 签名默认true
-//    rolling: false, // 在每次请求时强行设置cookie，这将重置cookie过期时间（默认：false）
-//    renew: false // (boolean) renew session when session is nearly expired,
-// };
-// app.use(session(sessionConfig, app))//
+
 // logger
 app.use(async (ctx, next) => {
     const start = new Date();
@@ -71,34 +59,17 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
+// 判断公众号是否授权
 // 判断是否需要登录
 app.use(async (ctx, next) => {
     console.log(ctx.path)
-    console.log()
-    if (ctx.path === '/wechat/wx/login' || ctx.path === '/h5/user/check') {
+    if (ctx.path === '/wechat/wx/login' || ctx.path === '/h5/user/check' || ctx.path === '/user/platform' || ctx.path.startsWith('/h5')) {
         await next()
     } else {
-        if (ctx.method === 'POST') {
-            const { shopID } = ctx.request.body;
-            if (`${shopID}` === '100055') {
-                const userID = await ctx.getUserID(ctx);
-                console.log(userID)
-                if (`${userID}` !== '100000007') {
-                    ctx.body = {
-                        code: '999',
-                        msg: '该店铺只有开发者可修改',
-                        data: null
-                    }
-                    return;
-                }
-            }
-        }
         const token = ctx.cookies.get('token')
         if (token) {
             const loginStatus = await checkLogin(ctx.querySQL, token)
-            if (loginStatus) {
-                await next();
-            } else {
+            if (!loginStatus) {
                 ctx.body = {
                     code: '555',
                     msg: '凭证过期请登录',
@@ -112,8 +83,21 @@ app.use(async (ctx, next) => {
                 data: null
             }
         }
+        if (ctx.method === 'POST') {
+            const { shopID } = ctx.request.body;
+            if (`${shopID}` === '100055') {
+                const userID = await ctx.getUserID(ctx);
+                console.log(userID)
+                if (`${userID}` !== '100000007') {
+                    ctx.body = {
+                        code: '999',
+                        msg: '该店铺只有开发者可修改',
+                        data: null
+                    }
+                }
+            }
+        }
     }
-
 });
 // app.use(async (ctx, next) => {
 //     console.log('openid:' + ctx.session.openid)
@@ -135,6 +119,8 @@ app.use(order.routes(), order.allowedMethods());
 app.use(shop.routes(), shop.allowedMethods());
 app.use(address.routes(), address.allowedMethods());
 app.use(h5.routes(), h5.allowedMethods());
+app.use(page.routes(), page.allowedMethods());
+app.use(message.routes(), message.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

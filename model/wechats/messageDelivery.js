@@ -21,13 +21,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //                 <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //                 <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //                 <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //                 <MsgType><![CDATA[text]]></MsgType>
-                //                 <Content><![CDATA[收到文本消息]]></Content>
-                //             </xml>`;
                 break;
             case 'image':
                 json = {
@@ -41,13 +34,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //                 <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //                 <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //                 <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //                 <MsgType><![CDATA[text]]></MsgType>
-                //                 <Content><![CDATA[收到图片消息]]></Content>
-                //             </xml>`;
                 break;
             case 'voice':
                 json = {
@@ -61,13 +47,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //                 <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //                 <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //                 <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //                 <MsgType><![CDATA[text]]></MsgType>
-                //                 <Content><![CDATA[收到语音消息]]></Content>
-                //             </xml>`;
                 break;
             case 'video':
                 json = {
@@ -81,13 +60,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //             <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //             <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //             <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //             <MsgType><![CDATA[text]]></MsgType>
-                //             <Content><![CDATA[收到视频消息]]></Content>
-                //         </xml>`;
                 break;
             case 'shortvideo':
                 json = {
@@ -101,13 +73,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //                 <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //                 <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //                 <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //                 <MsgType><![CDATA[text]]></MsgType>
-                //                 <Content><![CDATA[收到小视频消息]]></Content>
-                //             </xml>`;
                 break;
             case 'location':
                 json = {
@@ -121,13 +86,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //             <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //             <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //             <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //             <MsgType><![CDATA[text]]></MsgType>
-                //             <Content><![CDATA[收到地理位置消息]]></Content>
-                //         </xml>`;
                 break;
             case 'link':
                 json = {
@@ -141,13 +99,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //             <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //             <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //             <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //             <MsgType><![CDATA[text]]></MsgType>
-                //             <Content><![CDATA[收到链接消息]]></Content>
-                //         </xml>`;
                 break;
             case 'event':
                 judgeEvent(result.xml, ctx)
@@ -164,13 +115,6 @@ module.exports = async (ctx) => {
                 }
                 xml = builder.buildObject(json)
                 ctx.body = xml;
-                // ctx.body = `<xml>
-                //         <ToUserName><![CDATA[${result.xml.FromUserName[0]}]]></ToUserName>
-                //         <FromUserName><![CDATA[${result.xml.ToUserName[0]}]]></FromUserName>
-                //         <CreateTime>${Number(new Date)/1000}</CreateTime>
-                //         <MsgType><![CDATA[text]]></MsgType>
-                //         <Content><![CDATA[不确定什么消息]]></Content>
-                //     </xml>`
                 break;
         }
 }

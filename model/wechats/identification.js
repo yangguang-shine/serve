@@ -6,6 +6,8 @@ module.exports = (ctx) => {
     arr.sort()
     const arrStr = arr.join('')
     const signature = crypto.createHash('sha1').update(arrStr).digest('hex')
+    console.log(query.signature)
+    console.log(signature)
     if (query.signature === signature) {
         ctx.body = query.echostr
     } else {

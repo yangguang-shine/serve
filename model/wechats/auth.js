@@ -16,12 +16,6 @@ module.exports = async (ctx) => {
     const { access_token, openid } = JSON.parse(data);
     let user = null
     user = await ctx.findOne(WechatUser, { openid })
-    if (user) {
-        console.log('找到')
-        console.log('设置session:' + openid)
-        ctx.session.openid = openid
-        return user;
-    }
     console.log('未找到')
     // 获取详细信息个人
     const userRes = await httpsGet(`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`)

@@ -44,6 +44,8 @@ exports.setMenu = () => {
                     'Content-Length': Buffer.byteLength(JSON.stringify(buttonData))
                 }
             };
+            console.log(Buffer.byteLength(JSON.stringify(buttonData)))
+            console.log(JSON.stringify(buttonData).length)
         const request = https.request(options, async (res) => {
             console.log(res.statusCode)
             console.log('设置成功')
