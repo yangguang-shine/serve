@@ -1,9 +1,9 @@
 const router = require("koa-router")();
 const { readFile } = require('../tool/fsPromise')
 
-router.prefix("/h5/page");
+router.prefix("/h5/pages");
 
-router.get("/home/main", async (ctx, next) => {
+router.get("/home/index", async (ctx, next) => {
     console.log(123)
     const data = await readFile('./public/h5/index.html')
     ctx.type = 'text/html;charset=utf-8';

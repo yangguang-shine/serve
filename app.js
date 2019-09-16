@@ -19,11 +19,10 @@ const address = require("./routes/address");
 const message = require("./routes/message");
 const h5 = require("./routes/h5");
 const page = require("./routes/page");
-// const session = require('koa-session');
 const SQL = require('./model/mysql')
 const checkLogin = require('./tool/checkLogin')
 const getUserID = require('./tool/getUserID')
-// const sessionConfig = require('./config/session-config')
+const { readFile } = require('./tool/fsPromise')
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -59,46 +58,58 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
-// 判断公众号是否授权
-// 判断是否需要登录
+
 app.use(async (ctx, next) => {
-    console.log(ctx.path)
-    if (ctx.path === '/wechat/wx/login' || ctx.path === '/h5/user/check' || ctx.path === '/user/platform' || ctx.path.startsWith('/h5')) {
-        await next()
-    } else {
-        const token = ctx.cookies.get('token')
-        if (token) {
-            const loginStatus = await checkLogin(ctx.querySQL, token)
-            if (!loginStatus) {
-                ctx.body = {
-                    code: '555',
-                    msg: '凭证过期请登录',
-                    data: null
-                }
-            }
-        } else {
-            ctx.body = {
-                code: '555',
-                msg: '请登录',
-                data: null
-            }
-        }
-        if (ctx.method === 'POST') {
-            const { shopID } = ctx.request.body;
-            if (`${shopID}` === '100055') {
-                const userID = await ctx.getUserID(ctx);
-                console.log(userID)
-                if (`${userID}` !== '100000007') {
-                    ctx.body = {
-                        code: '999',
-                        msg: '该店铺只有开发者可修改',
-                        data: null
-                    }
-                }
-            }
-        }
+    if (ctx.path.startsWith('/h5/pages')) {
+        const data = await readFile('./public/h5/index.html')
+        ctx.type = 'text/html;charset=utf-8';
+        ctx.body = data
     }
 });
+
+// 判断公众号是否授权
+// 判断是否需要登录
+// app.use(async (ctx, next) => {
+//     console.log(ctx.path)
+//     if (ctx.path === '/wechat/wx/login' || ctx.path === '/h5/user/check' || ctx.path === '/user/platform' || ctx.path.startsWith('/h5')) {
+//         await next()
+//     } else {
+//         const token = ctx.cookies.get('token')
+//         if (token) {
+//             const loginStatus = await checkLogin(ctx.querySQL, token)
+//             if (!loginStatus) {
+//                 ctx.body = {
+//                     code: '555',
+//                     msg: '凭证过期请登录',
+//                     data: null
+//                 }
+//             }
+//         } else {
+//             ctx.body = {
+//                 code: '555',
+//                 msg: '请登录',
+//                 data: null
+//             }
+//         }
+//         if (ctx.method === 'POST') {
+//             const { shopID } = ctx.request.body;
+//             if (`${shopID}` === '100055') {
+//                 const userID = await ctx.getUserID(ctx);
+//                 console.log(userID)
+//                 if (`${userID}` !== '100000007') {
+//                     ctx.body = {
+//                         code: '999',
+//                         msg: '该店铺只有开发者可修改',
+//                         data: null
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// });
+
+
+
 // app.use(async (ctx, next) => {
 //     console.log('openid:' + ctx.session.openid)
 //     if (!ctx.session.openid) {
