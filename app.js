@@ -64,7 +64,9 @@ app.use(async (ctx, next) => {
         const data = await readFile('./public/h5/index.html')
         ctx.type = 'text/html;charset=utf-8';
         ctx.body = data
+        return
     }
+    await next()
 });
 
 // 判断公众号是否授权

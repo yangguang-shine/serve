@@ -28,6 +28,7 @@
     "koa2-session-mysql": "^1.0.0",
     "moment": "^2.24.0",
     "mongoose": "^5.5.12",
+    "multy": "^0.1.5",
     "mysql": "^2.17.1",
     "xml2js": "^0.4.19"
   },
