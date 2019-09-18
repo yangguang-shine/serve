@@ -1,1 +1,1 @@
-module.exports = 'py6yk8.natappfree.cc'
+module.exports = 'j2xxkj.natappfree.cc'

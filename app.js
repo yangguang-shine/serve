@@ -60,7 +60,7 @@ app.use(async (ctx, next) => {
 });
 
 app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/h5/pages')) {
+    if (ctx.path.startsWith('/pages')) {
         const data = await readFile('./public/h5/index.html')
         ctx.type = 'text/html;charset=utf-8';
         ctx.body = data
@@ -109,8 +109,6 @@ app.use(async (ctx, next) => {
 //         }
 //     }
 // });
-
-
 
 // app.use(async (ctx, next) => {
 //     console.log('openid:' + ctx.session.openid)
