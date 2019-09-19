@@ -9,10 +9,16 @@ router.prefix('/api/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     console.log('店铺列表')
-    // const query = ctx.query
+    const { businessType } = ctx.query
+    let res = []
     try {
-        const sql = 'select * from shop_list'
-        const res = await ctx.querySQL(sql, [])
+        if (businessType) {
+            const sql = `select * from shop_list where businessTypes like '%${businessType}%'`
+            res = await ctx.querySQL(sql, [])
+        } else {
+            const sql = 'select * from shop_list'
+            res = await ctx.querySQL(sql, [])
+        }
         ctx.body = {
             code: '000',
             msg: '查询成功',
@@ -29,11 +35,11 @@ router.get('/list', async (ctx, next) => {
 })
 router.post('/add', async (ctx, next) => {
     console.log('添加店铺')
-    const { shopName, imgUrl, startTime, endTime, address, minus } = ctx.request.body
+    const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes } = ctx.request.body
     try {
         await ctx.SQLtransaction(async (querySQL) => {
-            const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address, minus) values (?, ?, ?, ?, ?, ?)';
-            const res = await querySQL(sql, [shopName, imgUrl, startTime, endTime, address, minus])
+            const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address, minus, businessTypes) values (?, ?, ?, ?, ?, ?, ?)';
+            const res = await querySQL(sql, [shopName, imgUrl, startTime, endTime, address, minus, businessTypes])
             console.log(res.insertId)
             const shopID = res.insertId
             // throw Error(111)
@@ -122,8 +128,8 @@ router.post('/edit', async (ctx, next) => {
     console.log('更新店铺')
     try {
         const query = ctx.request.body
-        const sql = 'update shop_list set shopName = ?, imgUrl = ?, startTime = ?, endTime = ?, address = ?, minus = ? where shopID = ?;'
-        const res = await ctx.querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address, query.minus, query.shopID])
+        const sql = 'update shop_list set shopName = ?, imgUrl = ?, startTime = ?, endTime = ?, address = ?, minus = ?, businessTypes = ? where shopID = ?;'
+        const res = await ctx.querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address, query.minus, query.businessTypes, query.shopID])
         ctx.body = {
             code: '000',
             msg: '更新成功',

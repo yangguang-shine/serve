@@ -82,15 +82,15 @@ router.post('/submit', async (ctx, next) => {
     console.log('提交订单')
     const orderKey = randomNum()
     const orderTime = new Date()
-    const { shopID, orderAmount, foodList } = ctx.request.body
+    const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime } = ctx.request.body
     const userID = await ctx.getUserID(ctx)
     try {
         await ctx.SQLtransaction(async (querySQL) => {
-            const values = [orderKey, shopID, orderAmount, orderTime]
-            const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime) values (?);`
+            const values = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime]
+            const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime) values (?);`
             const insertOrderKeyPromise = await querySQL(sql, [values])
             const insertOrderPromise = await insertOrderFoodList({ querySQL: querySQL, foodList, orderKey, userID })
-            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime) values (?);`
+            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime) values (?);`
             const insertShopIDOrderKeyPromise = await querySQL(shopSQL, [values])
             const insertShopIDOrderPromise = await insertOrderFoodList({ querySQL: querySQL, foodList, orderKey, shopID })
             await insertOrderKeyPromise
