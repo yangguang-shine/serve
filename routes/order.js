@@ -132,6 +132,46 @@ router.get('/orderList', async (ctx, next) => {
     }
 })
 
+router.get('/orderDetail', async (ctx) => {
+    try {
+        const { orderKey } = ctx.query
+        const userID = await ctx.getUserID(ctx)
+        const sql1 = `select * from order_key_list_${userID} where orderKey = ?`
+        const sql2 = `select * from order_food_list_${userID} where orderKey = ?`
+        const promise1 = ctx.querySQL(sql1, [orderKey])
+        const promise2 = ctx.querySQL(sql2, [orderKey])
+        const orderInfoList = await promise1
+        const foodList = await promise2
+        if (!orderInfoList.length) {
+            ctx.body = {
+                code: '111',
+                msg: '查询失败',
+                data: {}
+            }
+        }
+        const orderInfo = orderInfoList[0]
+        orderInfo.address = JSON.parse(orderInfo.address)
+        orderInfo.orderTime = `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${new Date(orderInfo.orderTime).toTimeString().slice(0, 6)}`
+        orderInfo.takeOutTime = orderInfo.takeOutTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.takeOutTime}` : orderInfo.takeOutTime
+        orderInfo.selfTakeTime = orderInfo.selfTakeTime ? `${new Date().toLocaleDateString().replace(/\//g, '-')} ${orderInfo.selfTakeTime}` : orderInfo.selfTakeTime
+        ctx.body = {
+            code: '000',
+            msg: '查询成功',
+            data: {
+                ...orderInfo,
+                foodList
+            }
+        }
+    } catch(e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '查询失败',
+            data: {}
+        }
+    }
+
+})
 async function insertOrderFoodList({ querySQL, foodList, orderKey, userID = '', shopID = '' } = {}) {
     let sql = ''
     if(userID) {
