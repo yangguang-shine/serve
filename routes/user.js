@@ -1,25 +1,16 @@
 const router = require("koa-router")();
-const register = require('../model/user/register')
-const identification = require('../model/wechats/identification')
-const messageDelivery = require('../model/wechats/messageDelivery')
-router.prefix("/user/platform");
+router.prefix("/user/h5");
 
-router.get("/", async (ctx, next) => {
-    console.log(123)
-    identification(ctx)
-});
-
-router.post("/", async (ctx, next) => {
-    console.log(111)
-    messageDelivery(ctx)
-});
-
-router.get("/register", async (ctx, next) => {
-    await ctx.render("register", {});
+router.post("/login", async (ctx, next) => {
+    const { username, password } = ctx.request.body
 });
 
 router.post("/register", async (ctx, next) => {
-    await register(ctx)
+    const { username, password } = ctx.request.body
+});
+
+router.post("/changePassword", async (ctx, next) => {
+    const { username, password, nowPassword } = ctx.request.body
 });
 
 module.exports = router;

@@ -8,7 +8,7 @@ const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
 
 const index = require("./routes/index");
-const user = require("./routes/user");
+const user = require("./routes/platform");
 const wechat = require("./routes/wechat");
 const food = require("./routes/food");
 const img = require("./routes/img");
@@ -19,10 +19,12 @@ const address = require("./routes/address");
 const message = require("./routes/message");
 const h5 = require("./routes/h5");
 const page = require("./routes/page");
+const platform = require("./routes/platform");
 const SQL = require('./model/mysql')
 const checkLogin = require('./tool/checkLogin')
 const getUserID = require('./tool/getUserID')
 const { readFile } = require('./tool/fsPromise')
+const auth = require('./model/wechats/auth')
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -59,6 +61,31 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
+// 判断公众号是否授权
+app.use(async (ctx, next) => {
+    // const { notNeedLogin } = ctx.query
+    const ignorePath = ['/wechat/wx/login', '/platform/wechat/check']
+    const find = ignorePath.find(item => item === ctx.path)
+    if (find) {
+        await next()
+    } else {
+        const token = ctx.cookies.get('token')
+        console.log(111111)
+        console.log(token)
+        if (token) {
+            const status = await ctx.checkLogin(token)
+            console.log('status')
+            console.log(status)
+            if (status) {
+                await next()
+            } else {
+                await auth(ctx)
+            }
+        } else {
+            await auth(ctx)
+        }
+    }
+});
 app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/pages')) {
         const data = await readFile('./public/h5/index.html')
@@ -68,8 +95,6 @@ app.use(async (ctx, next) => {
     }
     await next()
 });
-
-// 判断公众号是否授权
 // 判断是否需要登录
 // app.use(async (ctx, next) => {
 //     console.log(ctx.path)
@@ -132,6 +157,7 @@ app.use(address.routes(), address.allowedMethods());
 app.use(h5.routes(), h5.allowedMethods());
 app.use(page.routes(), page.allowedMethods());
 app.use(message.routes(), message.allowedMethods());
+app.use(platform.routes(), platform.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

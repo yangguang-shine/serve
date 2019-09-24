@@ -114,10 +114,30 @@ router.post('/submit', async (ctx, next) => {
 })
 
 router.get('/orderList', async (ctx, next) => {
-    const userID = await ctx.getUserID(ctx)
     try {
-        const sql = `select * from order_key_list_${userID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`
-        const orderList = await ctx.querySQL(sql)
+        // 10   待接单
+        // 20   已接单
+        // 30   待自提   已送出
+        // 40   已自提   已送达
+        // 50   已取消
+        const { status, shopID } = ctx.query
+        let sql = ''
+        let orderList = []
+
+        const userIDOrShopID = shopID || await ctx.getUserID(ctx)
+        if (Number(status) === 0) {
+            sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`;
+            orderList = await ctx.querySQL(sql)
+        } else if (Number(status) === 1) {
+            sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? or orderStatus = ? or orderStatus = ? ORDER BY a.orderKey desc`;
+            orderList = await ctx.querySQL(sql, [10, 20, 30])
+        } else if (Number(status) === 2) {
+            sql = sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
+            orderList = await ctx.querySQL(sql, [40])
+        } else if (Number(status) === 3) {
+            sql = sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
+            orderList = await ctx.querySQL(sql, [50])
+        }
         ctx.body = {
             code: '000',
             msg: '查询成功',
@@ -134,10 +154,10 @@ router.get('/orderList', async (ctx, next) => {
 
 router.get('/orderDetail', async (ctx) => {
     try {
-        const { orderKey } = ctx.query
-        const userID = await ctx.getUserID(ctx)
-        const sql1 = `select * from order_key_list_${userID} where orderKey = ?`
-        const sql2 = `select * from order_food_list_${userID} where orderKey = ?`
+        const { orderKey, shopID } = ctx.query
+        const userIDOrShopID = shopID || await ctx.getUserID(ctx)
+        const sql1 = `select * from order_key_list_${userIDOrShopID} where orderKey = ?`
+        const sql2 = `select * from order_food_list_${userIDOrShopID} where orderKey = ?`
         const promise1 = ctx.querySQL(sql1, [orderKey])
         const promise2 = ctx.querySQL(sql2, [orderKey])
         const orderInfoList = await promise1
@@ -153,7 +173,7 @@ router.get('/orderDetail', async (ctx) => {
         orderInfo.address = JSON.parse(orderInfo.address)
         orderInfo.orderTime = `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${new Date(orderInfo.orderTime).toTimeString().slice(0, 6)}`
         orderInfo.takeOutTime = orderInfo.takeOutTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.takeOutTime}` : orderInfo.takeOutTime
-        orderInfo.selfTakeTime = orderInfo.selfTakeTime ? `${new Date().toLocaleDateString().replace(/\//g, '-')} ${orderInfo.selfTakeTime}` : orderInfo.selfTakeTime
+        orderInfo.selfTakeTime = orderInfo.selfTakeTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.selfTakeTime}` : orderInfo.selfTakeTime
         ctx.body = {
             code: '000',
             msg: '查询成功',
@@ -170,8 +190,63 @@ router.get('/orderDetail', async (ctx) => {
             data: {}
         }
     }
-
 })
+
+router.post('/cancell', async (ctx) => {
+    try {
+        const userID = ctx.getUserID()
+        const { orderKey, shopID } = ctx.request.body
+        await ctx.SQLtransaction(async (querySQL) => {
+            const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
+            const sql2 = `update order_key_list_${shopID} set orderStatus = ? where orderKey = ?`;
+            const promise1 = querySQL(sql1, [50, orderKey])
+            const promise2 = querySQL(sql2, [50, orderKey])
+            await promise1
+            await promise2
+        })
+        ctx.body = {
+            code: '000',
+            msg: '取消订单成功',
+            data: {}
+        }
+    } catch (e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '取消订单失败',
+            data: {}
+        }
+    }
+})
+
+router.post('/changeOrderStauts', async (ctx) => {
+    try {
+        const userID = ctx.getUserID()
+        const { orderKey, shopID, orderStatus } = ctx.request.body
+        const nextOrderStatus = Number(orderStatus) + 10
+        await ctx.SQLtransaction(async (querySQL) => {
+            const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
+            const sql2 = `update order_key_list_${shopID} set orderStatus = ? where orderKey = ?`;
+            const promise1 = querySQL(sql1, [nextOrderStatus, orderKey])
+            const promise2 = querySQL(sql2, [nextOrderStatus, orderKey])
+            await promise1
+            await promise2
+        })
+        ctx.body = {
+            code: '000',
+            msg: '订单状态修改成功',
+            data: {}
+        }
+    } catch (e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '订单状态修改失败',
+            data: {}
+        }
+    }
+})
+
 async function insertOrderFoodList({ querySQL, foodList, orderKey, userID = '', shopID = '' } = {}) {
     let sql = ''
     if(userID) {
