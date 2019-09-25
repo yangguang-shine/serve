@@ -197,8 +197,21 @@ router.get('/orderDetail', async (ctx) => {
 
 router.post('/cancell', async (ctx) => {
     try {
-        const userID = await ctx.getUserID(ctx)
+        // const userID = await ctx.getUserID(ctx)
         const { orderKey, shopID } = ctx.request.body
+        const userIDList = await ctx.querySQL(`select userID from order_key_list_${shopID} where orderKey = ?`, [orderKey])
+        let userID = ''
+        if (userIDList.length) {
+            if (userIDList.length > 1) console.log('多个userID');
+            userID = userIDList[0].userID
+        } else {
+            ctx.body = {
+                code: '111',
+                msg: '未找到该订单',
+                data: {}
+            }
+            return
+        }
         await ctx.SQLtransaction(async (querySQL) => {
             const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
             const sql2 = `update order_key_list_${shopID} set orderStatus = ? where orderKey = ?`;
@@ -222,10 +235,22 @@ router.post('/cancell', async (ctx) => {
     }
 })
 
-router.post('/changeOrderStauts', async (ctx) => {
+router.post('/changeOrderStatus', async (ctx) => {
     try {
-        const userID = await ctx.getUserID(ctx)
         const { orderKey, shopID, orderStatus } = ctx.request.body
+        const userIDList = await ctx.querySQL(`select userID from order_key_list_${shopID} where orderKey = ?`, [orderKey])
+        let userID = ''
+        if (userIDList.length) {
+            if (userIDList.length > 1) console.log('多个userID');
+            userID = userIDList[0].userID
+        } else {
+            ctx.body = {
+                code: '111',
+                msg: '未找到该订单',
+                data: {}
+            }
+            return
+        }
         const nextOrderStatus = Number(orderStatus) + 10
         await ctx.SQLtransaction(async (querySQL) => {
             const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
