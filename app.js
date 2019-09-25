@@ -63,28 +63,74 @@ app.use(async (ctx, next) => {
 
 // 判断公众号是否授权
 app.use(async (ctx, next) => {
-    // const { notNeedLogin } = ctx.query
+    // channel    10: 小程序   20: 公众号
+    const { channel } = ctx.query
+    console.log(ctx.path)
+    console.log(channel)
     const ignorePath = ['/wechat/wx/login', '/platform/wechat/check']
     const find = ignorePath.find(item => item === ctx.path)
     if (find) {
         await next()
     } else {
+         // 小程序登录
         const token = ctx.cookies.get('token')
-        console.log(111111)
-        console.log(token)
-        if (token) {
-            const status = await ctx.checkLogin(token)
-            console.log('status')
-            console.log(status)
-            if (status) {
-                await next()
+        if (Number(channel) === 10) {
+            if (token) {
+                const loginStatus = await checkLogin(ctx.querySQL, token)
+                if (!loginStatus) {
+                    ctx.body = {
+                        code: '555',
+                        msg: '凭证过期请登录',
+                        data: null
+                    }
+                } else {
+                    await next()
+                }
+            } else {
+                ctx.body = {
+                    code: '555',
+                    msg: '请登录',
+                    data: null
+                }
+            }
+        } else if (Number(channel) === 20) {
+            // 公众号登录
+            if (token) {
+                const status = await ctx.checkLogin(ctx.querySQL, token)
+                console.log('status')
+                console.log(status)
+                if (status) {
+                    await next()
+                } else {
+                    await auth(ctx)
+                }
             } else {
                 await auth(ctx)
             }
-        } else {
-            await auth(ctx)
         }
     }
+    // const { applet } = ctx.query
+    // const ignorePath = ['/wechat/wx/login', '/platform/wechat/check']
+    // const find = ignorePath.find(item => item === ctx.path)
+    // if (find) {
+    //     await next()
+    // } else {
+    //     const token = ctx.cookies.get('token')
+    //     console.log(111111)
+    //     console.log(token)
+    //     if (token) {
+    //         const status = await ctx.checkLogin(ctx.querySQL, token)
+    //         console.log('status')
+    //         console.log(status)
+    //         if (status) {
+    //             await next()
+    //         } else {
+    //             await auth(ctx)
+    //         }
+    //     } else {
+    //         await auth(ctx)
+    //     }
+    // }
 });
 app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/pages')) {

@@ -48,7 +48,7 @@ module.exports = async (ctx) => {
         const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${openid}`
         const token = await md5.update(secret).digest('hex');
         if (!userIDTokenList.length) {
-            const insertTokenSql = `insert into my_token_store (userID, token) values (?)`
+            const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
             await querySQL(insertTokenSql, [userID, token])
         } else {
             if (userIDTokenList.length > 1) {

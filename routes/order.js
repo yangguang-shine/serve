@@ -123,7 +123,6 @@ router.get('/orderList', async (ctx, next) => {
         const { status, shopID } = ctx.query
         let sql = ''
         let orderList = []
-
         const userIDOrShopID = shopID || await ctx.getUserID(ctx)
         if (Number(status) === 0) {
             sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`;
@@ -138,12 +137,16 @@ router.get('/orderList', async (ctx, next) => {
             sql = sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
             orderList = await ctx.querySQL(sql, [50])
         }
+        orderList.forEach((order) => {
+            order.orderTime = `${new Date(order.orderTime).toLocaleDateString().replace(/\//g, '-')} ${new Date(order.orderTime).toTimeString().slice(0, 5)}`
+        })
         ctx.body = {
             code: '000',
             msg: '查询成功',
             data: orderList
         }
     } catch (e) {
+        console.log(e)
         ctx.body = {
             code: '111',
             msg: '查询失败',
@@ -171,7 +174,7 @@ router.get('/orderDetail', async (ctx) => {
         }
         const orderInfo = orderInfoList[0]
         orderInfo.address = JSON.parse(orderInfo.address)
-        orderInfo.orderTime = `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${new Date(orderInfo.orderTime).toTimeString().slice(0, 6)}`
+        orderInfo.orderTime = `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${new Date(orderInfo.orderTime).toTimeString().slice(0, 5)}`
         orderInfo.takeOutTime = orderInfo.takeOutTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.takeOutTime}` : orderInfo.takeOutTime
         orderInfo.selfTakeTime = orderInfo.selfTakeTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.selfTakeTime}` : orderInfo.selfTakeTime
         ctx.body = {
@@ -194,7 +197,7 @@ router.get('/orderDetail', async (ctx) => {
 
 router.post('/cancell', async (ctx) => {
     try {
-        const userID = ctx.getUserID()
+        const userID = await ctx.getUserID(ctx)
         const { orderKey, shopID } = ctx.request.body
         await ctx.SQLtransaction(async (querySQL) => {
             const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
@@ -221,7 +224,7 @@ router.post('/cancell', async (ctx) => {
 
 router.post('/changeOrderStauts', async (ctx) => {
     try {
-        const userID = ctx.getUserID()
+        const userID = await ctx.getUserID(ctx)
         const { orderKey, shopID, orderStatus } = ctx.request.body
         const nextOrderStatus = Number(orderStatus) + 10
         await ctx.SQLtransaction(async (querySQL) => {
