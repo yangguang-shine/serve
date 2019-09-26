@@ -197,7 +197,6 @@ router.get('/orderDetail', async (ctx) => {
 
 router.post('/cancell', async (ctx) => {
     try {
-        // const userID = await ctx.getUserID(ctx)
         const { orderKey, shopID } = ctx.request.body
         const userIDList = await ctx.querySQL(`select userID from order_key_list_${shopID} where orderKey = ?`, [orderKey])
         let userID = ''

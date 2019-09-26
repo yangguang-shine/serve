@@ -11,17 +11,17 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 26/09/2019 17:14:13
+ Date: 26/09/2019 17:13:36
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for order_key_list_100000007
+-- Table structure for order_key_list_100055
 -- ----------------------------
-DROP TABLE IF EXISTS `order_key_list_100000007`;
-CREATE TABLE `order_key_list_100000007`  (
+DROP TABLE IF EXISTS `order_key_list_100055`;
+CREATE TABLE `order_key_list_100055`  (
   `orderKey` bigint(255) NOT NULL,
   `orderKeyID` int(11) NOT NULL AUTO_INCREMENT,
   `shopID` int(11) NULL DEFAULT NULL,
@@ -34,6 +34,7 @@ CREATE TABLE `order_key_list_100000007`  (
   `reservePhone` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `address` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `orderStatus` int(5) NULL DEFAULT 10,
+  `userID` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`orderKeyID`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 

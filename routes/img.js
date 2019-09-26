@@ -2,6 +2,7 @@ const router = require('koa-router')()
 // const multer = require('koa-multer');
 const fs = require('fs');
 const Multy = require('multy')
+const Images = require('images')
 // const host = require('./host');
 const randomNum = require('../tool/randomNum');
 const { writeFile, unlink, access } = require('../tool/fsPromise');
@@ -15,6 +16,7 @@ router.post('/shop/uploadImg', async (ctx, next) => {
         const num = randomNum(2)
         const ext = ctx.request.body.image.mimetype.split('/')[1]
         const { image, shopID, imgUrl } = ctx.request.body
+        const Images(image).size()
         const stream = fs.createWriteStream(`./public/images/upload/shop/${num}.${ext}`)
         const WritePromise = WriteImg(stream, image)
         let unlinkPromise = null

@@ -18,13 +18,13 @@ const shop = require("./routes/shop");
 const address = require("./routes/address");
 const message = require("./routes/message");
 const h5 = require("./routes/h5");
-const page = require("./routes/page");
+// const page = require("./routes/page");
 const platform = require("./routes/platform");
 const SQL = require('./model/mysql')
 const checkLogin = require('./tool/checkLogin')
 const getUserID = require('./tool/getUserID')
-const { readFile } = require('./tool/fsPromise')
 const auth = require('./model/wechats/auth')
+const compress = require('koa-compress')
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -36,6 +36,7 @@ app.context.querySQL = SQL.querySQL
 app.context.getUserID = getUserID
 app.context.SQLtransaction = SQL.SQLtransaction
 app.context.checkLogin = checkLogin
+
 app.use(xmlParser());
 app.use(
     bodyparser({
@@ -52,9 +53,16 @@ app.use(
     })
 );
 app.keys = ['yangguang'];
-
+app.use(compress({
+    filter: function (content_type) {
+        return /text/i.test(content_type)
+    },
+    threshold: 2048,
+    flush: require('zlib').Z_SYNC_FLUSH
+}))
 // logger
 app.use(async (ctx, next) => {
+    ctx.compress = true
     const start = new Date();
     await next();
     const ms = new Date() - start;
@@ -102,45 +110,41 @@ app.use(async (ctx, next) => {
                 if (status) {
                     await next()
                 } else {
+                    if (!ctx.path.startsWith('/h5/pages')) {
+                        ctx.body = {
+                            code: '666',
+                            msg: '无token',
+                            data: null
+                        }
+                        return
+                    }
                     await auth(ctx)
                 }
             } else {
+                if (!ctx.path.startsWith('/h5/pages')) {
+                    ctx.body = {
+                        code: '666',
+                        msg: '无token',
+                        data: null
+                    }
+                    return
+                }
                 await auth(ctx)
             }
+        } else {
+            await next()
         }
     }
-    // const { applet } = ctx.query
-    // const ignorePath = ['/wechat/wx/login', '/platform/wechat/check']
-    // const find = ignorePath.find(item => item === ctx.path)
-    // if (find) {
-    //     await next()
-    // } else {
-    //     const token = ctx.cookies.get('token')
-    //     console.log(111111)
-    //     console.log(token)
-    //     if (token) {
-    //         const status = await ctx.checkLogin(ctx.querySQL, token)
-    //         console.log('status')
-    //         console.log(status)
-    //         if (status) {
-    //             await next()
-    //         } else {
-    //             await auth(ctx)
-    //         }
-    //     } else {
-    //         await auth(ctx)
-    //     }
-    // }
 });
-app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/pages')) {
-        const data = await readFile('./public/h5/index.html')
-        ctx.type = 'text/html;charset=utf-8';
-        ctx.body = data
-        return
-    }
-    await next()
-});
+// app.use(async (ctx, next) => {
+//     if (ctx.path.startsWith('/h5/pages')) {
+//         const data = await readFile('./public/h5/index.html')
+//         ctx.type = 'text/html;charset=utf-8';
+//         ctx.body = data
+//         return
+//     }
+//     await next()
+// });
 // 判断是否需要登录
 // app.use(async (ctx, next) => {
 //     console.log(ctx.path)
@@ -201,7 +205,7 @@ app.use(order.routes(), order.allowedMethods());
 app.use(shop.routes(), shop.allowedMethods());
 app.use(address.routes(), address.allowedMethods());
 app.use(h5.routes(), h5.allowedMethods());
-app.use(page.routes(), page.allowedMethods());
+// app.use(page.routes(), page.allowedMethods());
 app.use(message.routes(), message.allowedMethods());
 app.use(platform.routes(), platform.allowedMethods());
 

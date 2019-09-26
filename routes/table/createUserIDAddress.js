@@ -1,4 +1,4 @@
-const createUserIDAddress = async (querySQL, userID) => {
+const createUserIDAddress = async ({ querySQL, userID }) => {
     const sql = `CREATE TABLE address_list_${userID}  (
         addressID int(11) NOT NULL AUTO_INCREMENT,
         name varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,

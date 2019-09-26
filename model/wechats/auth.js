@@ -2,11 +2,14 @@ const httpsGet = require('../../tool/httpsGet')
 const dataFormat = require('../../tool/dataFormat')
 const crypto = require('crypto');
 const { readFile } = require('../../tool/fsPromise')
+const createUserIDOrShopIDOrderFoodList = require('../../routes/table/createUserIDOrShopIDOrderFoodList')
+const createUserIDOrShopIDOrderKeyList = require('../../routes/table/createUserIDOrShopIDOrderKeyList')
+const createUserIDAddress = require('../../routes/table/createUserIDAddress')
 
 module.exports = async (ctx) => {
     console.log(ctx.query)
     if (!ctx.query.code) {
-        let redirect_uri = decodeURI(`http://${ctx.hostname}${ctx.path}`)
+        let redirect_uri = decodeURI(`http://${ctx.hostname}${ctx.path}?channel=20`)
         console.log('redirect_uri')
         console.log(redirect_uri)
         // redirect_uri = encodeURI
@@ -18,7 +21,11 @@ module.exports = async (ctx) => {
     const data = await dataFormat(res)
     const { access_token, openid } = JSON.parse(data);
     const sql = `select * from user_openid where openid = ?`
+    console.log('openid')
+    console.log(openid)
     const userList = await ctx.querySQL(sql, [openid])
+    console.log('userList')
+    console.log(userList)
     let userInfo = {}
     let userID = ''
     if (userList.length > 1) {
@@ -30,13 +37,21 @@ module.exports = async (ctx) => {
     const userRes = await httpsGet(`https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`)
     const userData = await dataFormat(userRes)
     const wechatUserInfo = JSON.parse(userData)
+    console.log(wechatUserInfo)
     await ctx.SQLtransaction(async (querySQL) => {
         const { nickname, sex, province, city, country, headimgurl, unionid } = wechatUserInfo
         if (!userInfo.openid) {
-            const sql = `insert into user_openid (nickname, sex, province, city, country, headimgurl, unionid) values (?)`
-            const res = await querySQL(sql, [[nickname, sex, province, city, country, headimgurl, unionid]])
+            const sql = `insert into user_openid (openid, nickname, sex, province, city, country, headimgurl, unionid) values (?)`
+            const res = await querySQL(sql, [[openid, nickname, sex, province, city, country, headimgurl, unionid]])
             console.log(res)
             userID = res.insertId
+            const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
+            const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })
+            const createUserIDAddressPromise = createUserIDAddress({ querySQL, userID })
+            await createUserIDOrderFoodListPromise
+            await createUserIDOrderKeyListPromise
+            await createUserIDAddressPromise
+            console.log(res)
         } else {
             userID = userInfo.userID
             const sql = `update user_openid set  nickname = ?, sex = ?, province =?, city = ?, country = ?, headimgurl = ?, unionid = ? where openid = ?`
@@ -57,6 +72,7 @@ module.exports = async (ctx) => {
             await querySQL(`update my_token_store set token = ? where userID = ?`, [token, userID])
         }
         ctx.cookies.set('token', token)
+        console.log(token)
     })
     const html = await readFile('./public/h5/index.html')
     ctx.type = 'text/html;charset=utf-8';
