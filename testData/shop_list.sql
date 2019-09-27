@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 19/09/2019 14:13:55
+ Date: 27/09/2019 16:43:15
 */
 
 SET NAMES utf8mb4;
@@ -23,14 +23,15 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `shop_list`;
 CREATE TABLE `shop_list`  (
   `shopID` int(11) NOT NULL AUTO_INCREMENT,
-  `shopName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `startTime` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `endTime` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `imgUrl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `minus` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
-  `businessTypes` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `shopName` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `startTime` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `endTime` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `imgUrl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `minus` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `businessTypes` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
+  `manageID` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`shopID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100061 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100064 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

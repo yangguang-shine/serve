@@ -1,43 +1,42 @@
 const router = require("koa-router")();
 const encryption = require('../tool/encryption')
 const crypto = require('crypto');
-router.prefix("/user/h5");
+router.prefix("/manage/user");
 
 router.post("/login", async (ctx, next) => {
     try {
         const { phone, password } = ctx.request.body
         const encryptPassword = encryption(password)
-        const sql = `select encryptPassword, userID, nickname from user_openid where phone = ?`
+        const sql = `select encryptPassword, manageID, nickname from manage_user_info where phone = ?`
         const phoneInfoList = await ctx.querySQL(sql, [phone])
         if (phoneInfoList.length) {
             if (phoneInfoList.length > 1) {
                 console.log('多个phoneInfoList')
             }
             const phoneInfo = phoneInfoList[0];
-
             if (encryptPassword === phoneInfo.encryptPassword) {
                 const nickname = phoneInfo.nickname
-                const userID = phoneInfo.userID
+                const manageID = phoneInfo.manageID
                 const md5 = crypto.createHash('md5');
                 const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
-                const token = await md5.update(secret).digest('hex');
-                const res = await ctx.querySQL('select token from my_token_store where userID = ?', [userID])
+                const manageToken = await md5.update(secret).digest('hex');
+                const res = await ctx.querySQL('select manageToken from manage_token_store where manageID = ?', [manageID])
                 if (res.length) {
                     if (res.length > 1) {
-                        console.log('多个userID')
+                        console.log('多个manageID')
                     }
-                    await ctx.querySQL(`update my_token_store set token = ? where userID = ?`, [token, userID])
+                    await ctx.querySQL(`update manage_token_store set manageToken = ? where manageID = ?`, [manageToken, manageID])
                 } else {
-                    const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
-                    await ctx.querySQL(insertTokenSql, [userID, token])
+                    const insertTokenSql = `insert into my_token_store (manageID, token) values (?, ?)`
+                    await ctx.querySQL(insertTokenSql, [manageID, manageToken])
                 }
-                ctx.cookies.set('token', token)
+                ctx.cookies.set('manageToken', manageToken)
                 ctx.body = {
                     code: '000',
                     msg: '登录成功',
                     data: {
                         nickname,
-                        token
+                        manageToken
                     }
                 }
             } else {
@@ -69,7 +68,7 @@ router.post("/register", async (ctx, next) => {
         const { phone, password, nickname } = ctx.request.body
         const encryptPassword = encryption(password)
         let phoneIsexit = false
-        let sql = `select phone from user_openid where phone = ?`
+        let sql = `select phone from manage_user_info where phone = ?`
         const phoneList = await ctx.querySQL(sql, [phone]);
         if (phoneList.length) {
             phoneIsexit = true
@@ -80,21 +79,21 @@ router.post("/register", async (ctx, next) => {
         if (!phoneIsexit) {
             const md5 = crypto.createHash('md5');
             const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
-            const token = await md5.update(secret).digest('hex');
+            const manageToken = await md5.update(secret).digest('hex');
             await ctx.SQLtransaction(async (querySQL) => {
-                const sql = 'insert into user_openid (phone, encryptPassword, nickname) values (?)'
+                const sql = 'insert into manage_user_info (phone, encryptPassword, nickname) values (?)'
                 const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
-                const userID = res.insertId
-                const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
-                await querySQL(insertTokenSql, [userID, token])
+                const manageID = res.insertId
+                const insertTokenSql = `insert into manage_token_store (manageID, manageToken) values (?, ?)`
+                await querySQL(insertTokenSql, [manageID, manageToken])
             })
-            ctx.cookies.set('token', token)
+            ctx.cookies.set('manageToken', manageToken)
             ctx.body = {
                 code: '000',
                 msg: '注册成功',
                 data: {
                     nickname,
-                    token
+                    manageToken
                 }
             }
         } else {

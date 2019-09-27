@@ -3,7 +3,7 @@ const httpsGet = require('../tool/httpsGet')
 const dataFormat = require('../tool/dataFormat')
 const identification = require('../model/wechats/identification')
 const messageDelivery = require('../model/wechats/messageDelivery')
-const checkLogin = require('../tool/checkLogin')
+const checkUserLogin = require('../tool/checkUserLogin')
 // const mysqlConfig = require('../config/session-config')
 // const MysqlStore = require('koa2-session-mysql')
 
@@ -17,7 +17,7 @@ router.post('/login', function (ctx, next) {
 router.post('/check', async (ctx, next) => {
     try {
         const { token } = ctx.request.body
-        const loginStatus = await checkLogin(ctx.querySQL, token)
+        const loginStatus = await checkUserLogin(ctx.querySQL, token)
         if (loginStatus) {
             ctx.body = {
                 code: '000',

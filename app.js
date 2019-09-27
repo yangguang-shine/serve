@@ -8,7 +8,8 @@ const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
 
 const index = require("./routes/index");
-const user = require("./routes/platform");
+const user = require("./routes/user");
+const manage = require("./routes/manage");
 const wechat = require("./routes/wechat");
 const food = require("./routes/food");
 const img = require("./routes/img");
@@ -21,7 +22,7 @@ const h5 = require("./routes/h5");
 // const page = require("./routes/page");
 const platform = require("./routes/platform");
 const SQL = require('./model/mysql')
-const checkLogin = require('./tool/checkLogin')
+const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
 const auth = require('./model/wechats/auth')
 const compress = require('koa-compress')
@@ -35,7 +36,7 @@ onerror(app);
 app.context.querySQL = SQL.querySQL
 app.context.getUserID = getUserID
 app.context.SQLtransaction = SQL.SQLtransaction
-app.context.checkLogin = checkLogin
+app.context.checkUserLogin = checkUserLogin
 
 app.use(xmlParser());
 app.use(
@@ -82,9 +83,10 @@ app.use(async (ctx, next) => {
     } else {
          // 小程序登录
         const token = ctx.cookies.get('token')
+        console.log(1111111111111111)
         if (Number(channel) === 10) {
             if (token) {
-                const loginStatus = await checkLogin(ctx.querySQL, token)
+                const loginStatus = await checkUserLogin(ctx.querySQL, token)
                 if (!loginStatus) {
                     ctx.body = {
                         code: '555',
@@ -104,9 +106,7 @@ app.use(async (ctx, next) => {
         } else if (Number(channel) === 20) {
             // 公众号登录
             if (token) {
-                const status = await ctx.checkLogin(ctx.querySQL, token)
-                console.log('status')
-                console.log(status)
+                const status = await ctx.checkUserLogin(ctx.querySQL, token)
                 if (status) {
                     await next()
                 } else {
@@ -153,7 +153,7 @@ app.use(async (ctx, next) => {
 //     } else {
 //         const token = ctx.cookies.get('token')
 //         if (token) {
-//             const loginStatus = await checkLogin(ctx.querySQL, token)
+//             const loginStatus = await checkUserLogin(ctx.querySQL, token)
 //             if (!loginStatus) {
 //                 ctx.body = {
 //                     code: '555',
@@ -208,6 +208,7 @@ app.use(h5.routes(), h5.allowedMethods());
 // app.use(page.routes(), page.allowedMethods());
 app.use(message.routes(), message.allowedMethods());
 app.use(platform.routes(), platform.allowedMethods());
+app.use(manage.routes(), manage.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

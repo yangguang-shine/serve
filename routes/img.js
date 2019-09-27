@@ -16,27 +16,28 @@ router.post('/shop/uploadImg', async (ctx, next) => {
         const num = randomNum(2)
         const ext = ctx.request.body.image.mimetype.split('/')[1]
         const { image, shopID, imgUrl } = ctx.request.body
-        const Images(image).size()
-        const stream = fs.createWriteStream(`./public/images/upload/shop/${num}.${ext}`)
-        const WritePromise = WriteImg(stream, image)
+        const imageData = await readImageData(image)
+        Images(imageData).size(200).save(`./public/images/upload/shop/${num}.${ext}`)
+        // const stream = fs.createWriteStream(`./public/images/upload/shop/${num}.${ext}`)
+        // const WritePromise = WriteImg(stream, image)
         let unlinkPromise = null
         let sqlPromise = null
-    if (shopID) {
-        sqlPromise = ctx.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [`/images/upload/shop/${num}.${ext}`, shopID])
-    }
-    if (imgUrl) {
-        unlinkPromise = unlink(`./public/images/upload/shop/${imgUrl}`)
-    }
-    await WritePromise
-    await unlinkPromise
-    await sqlPromise
-    ctx.body = {
-        code: '000',
-        msg: '上传成功',
-        data: {
-            imgUrl: `/images/upload/shop/${num}.${ext}`
+        if (shopID) {
+            sqlPromise = ctx.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [`/images/upload/shop/${num}.${ext}`, shopID])
         }
-    }
+        if (imgUrl) {
+            unlinkPromise = unlink(`./public/images/upload/shop/${imgUrl}`)
+        }
+        // await WritePromise
+        await unlinkPromise
+        await sqlPromise
+        ctx.body = {
+            code: '000',
+            msg: '上传成功',
+            data: {
+                imgUrl: `/images/upload/shop/${num}.${ext}`
+            }
+        }
     } catch (e) {
         console.log(e)
         ctx.body = {
@@ -46,6 +47,28 @@ router.post('/shop/uploadImg', async (ctx, next) => {
         }
     }
 })
+
+function readImageData(image) {
+    return new Promise((resolve, reject) => {
+        let imageData = ''
+        image.on('data', (chunk) => {
+            imageData += chunk
+        })
+        image.on('close', (data) => {
+            console.log(111111111)
+            console.log(data)
+            resolve(imageData)
+        })
+        image.on('error', (data) => {
+            console.log(111111111)
+            console.log(data)
+            reject('imageData')
+        })
+        image.on('error', () => {
+            reject('err')
+        })
+    })
+}
 
 function WriteImg(stream, image) {
     return new Promise((resolve, reject) => {

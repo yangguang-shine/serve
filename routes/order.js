@@ -58,7 +58,6 @@ router.get('/deleteOrderKey', async (ctx, next) => {
     try {
         let sql = `select orderKey from order_key_list;`
         const res = await ctx.querySQL(sql)
-        console.log(res)
         const orderListString = (res.map(item => `order_list_${item.orderKey}`)).join(', ')
         sql = `drop table ${orderListString}`
         await ctx.querySQL(sql)
