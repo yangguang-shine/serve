@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 26/09/2019 17:13:36
+ Date: 28/09/2019 18:16:29
 */
 
 SET NAMES utf8mb4;
@@ -36,6 +36,6 @@ CREATE TABLE `order_key_list_100055`  (
   `orderStatus` int(5) NULL DEFAULT 10,
   `userID` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`orderKeyID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

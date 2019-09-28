@@ -11,22 +11,21 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 28/09/2019 18:15:35
+ Date: 28/09/2019 18:15:14
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for my_token_store
+-- Table structure for manage_token_store
 -- ----------------------------
-DROP TABLE IF EXISTS `my_token_store`;
-CREATE TABLE `my_token_store`  (
-  `userID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `manage_token_store`;
+CREATE TABLE `manage_token_store`  (
+  `manageID` int(11) NULL DEFAULT NULL,
+  `manageToken` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `secret` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 16 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

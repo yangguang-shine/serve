@@ -11,7 +11,7 @@
  Target Server Version : 80017
  File Encoding         : 65001
 
- Date: 26/09/2019 17:14:08
+ Date: 28/09/2019 18:14:59
 */
 
 SET NAMES utf8mb4;
@@ -29,6 +29,6 @@ CREATE TABLE `address_list_100000007`  (
   `address2` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `sex` int(1) NULL DEFAULT 1,
   PRIMARY KEY (`addressID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100010 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100011 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;
