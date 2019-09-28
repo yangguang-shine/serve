@@ -6,6 +6,10 @@ router.prefix('/api/food')
 router.get('/list', async (ctx, next) => {
     console.log('菜品列表')
     const { shopID, categoryID } = ctx.query
+    if (!(shopID && categoryID)) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         const sql = `select * from food_info_${shopID} where categoryID = ?;`
         const res = await ctx.querySQL(sql, [categoryID])
@@ -27,6 +31,10 @@ router.post('/add', async (ctx, next) => {
     console.log('添加菜品')
     console.log(ctx.request.body)
     const { foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID } = ctx.request.body
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         const sql = `insert into food_info_${shopID} (foodName, categoryID, price, unit, imgUrl, description, categoryName) values (?, ?, ?, ?, ?, ?, ?)`;
         await ctx.querySQL(sql, [foodName, categoryID, price, unit, imgUrl, description, categoryName])
@@ -49,6 +57,10 @@ router.post('/add', async (ctx, next) => {
 router.post('/delete', async (ctx, next) => {
     console.log('删除菜品')
     const { shopID, foodID } = ctx.request.body
+    if (!(shopID && foodID)) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         const foodImgUrlList = await ctx.querySQL(`select imgUrl from food_info_${shopID} where foodID = ?`, [foodID])
         console.log(11111)
@@ -86,6 +98,10 @@ router.post('/edit', async (ctx, next) => {
     console.log(ctx.request.body)
     console.log('更新菜品')
     const { shopID, foodName, price, unit, imgUrl, description, foodID } = ctx.request.body
+    if (!(shopID && foodID)) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         const sql = `update food_info_${shopID} set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ?;`
         const res = await ctx.querySQL(sql, [foodName, price, unit, imgUrl, description, foodID])
@@ -110,6 +126,10 @@ router.get('/find', async (ctx, next) => {
     try {
         const query = ctx.query
         console.log(typeof query.foodID)
+        if (!query.foodID) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const res = await ctx.querySQL(`select * from food_info_${query.shopID} where foodID = ?;`, [Number(query.foodID)])
         let data = {}
         if (res.length) {

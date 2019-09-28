@@ -74,7 +74,7 @@ module.exports = async (ctx) => {
         ctx.cookies.set('token', token)
         console.log(token)
     })
-    const html = await readFile('./public/h5/index.html')
+    const html = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
     ctx.type = 'text/html;charset=utf-8';
     ctx.body = html
     // 获取详细信息个人

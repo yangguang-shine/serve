@@ -6,6 +6,10 @@ router.prefix("/manage/user");
 router.post("/login", async (ctx, next) => {
     try {
         const { phone, password } = ctx.request.body
+        if (!(phone && password)) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const encryptPassword = encryption(password)
         const sql = `select encryptPassword, manageID, nickname from manage_user_info where phone = ?`
         const phoneInfoList = await ctx.querySQL(sql, [phone])
@@ -66,6 +70,10 @@ router.post("/login", async (ctx, next) => {
 router.post("/register", async (ctx, next) => {
     try {
         const { phone, password, nickname } = ctx.request.body
+        if (!(phone && password && nickname)) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const encryptPassword = encryption(password)
         let phoneIsexit = false
         let sql = `select phone from manage_user_info where phone = ?`

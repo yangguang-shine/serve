@@ -50,6 +50,10 @@ router.post('/add', async (ctx, next) => {
 router.post('/delete', async (ctx, next) => {
     try {
         const { addressID } = ctx.request.body
+        if (!addressID) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const userID = await ctx.getUserID(ctx)
         const sql = `delete from address_list_${userID} where addressID = ?`;
         await ctx.querySQL(sql, [addressID])
@@ -71,8 +75,12 @@ router.post('/delete', async (ctx, next) => {
 // 更新地址
 router.post('/edit', async (ctx, next) => {
     try {
+        const { name, sex, mobile, address1, address2, addressID } = ctx.request.body
+        if (!addressID) {
+            ctx.body = ctx.parameterError
+            return
+        }
         await ctx.SQLtransaction(async(querySQL) => {
-            const { name, sex, mobile, address1, address2, addressID } = ctx.request.body
             const userID = await ctx.getUserID(ctx)
             const sql = `update address_list_${userID} set name = ?, sex = ?, mobile = ?, address1 = ?, address2 = ? where addressID = ?;`
             await querySQL(sql, [name, sex, mobile, address1, address2, addressID])
@@ -98,6 +106,10 @@ router.get('/find', async (ctx, next) => {
     console.log('查找地址')
     try {
         const { addressID } = ctx.query
+        if (!addressID) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const userID = await ctx.getUserID(ctx)
         const res = await ctx.querySQL(`select * from address_list_${userID} where addressID = ?;`, [addressID])
         let data = {}
@@ -121,6 +133,10 @@ router.get('/find', async (ctx, next) => {
 router.post('/default', async (ctx, next) => {
     try {
         const { addressID } = ctx.request.body
+        if (!addressID) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const userID = await ctx.getUserID(ctx)
         await addressExchange({ querySQL: ctx.querySQL, userID, addressID })
         ctx.body = {

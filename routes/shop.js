@@ -71,6 +71,10 @@ router.post('/add', async (ctx, next) => {
 router.post('/delete', async (ctx, next) => {
     console.log('删除店铺')
     const { shopID } = ctx.request.body
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         console.log(shopID)
         const shopImgUrlList = await ctx.querySQL(`select imgUrl from shop_list where shopID = ?`, [shopID])
@@ -126,10 +130,14 @@ router.post('/delete', async (ctx, next) => {
 // 更新菜品
 router.post('/edit', async (ctx, next) => {
     console.log('更新店铺')
+    const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes, shopID } = ctx.request.body
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
-        const query = ctx.request.body
         const sql = 'update shop_list set shopName = ?, imgUrl = ?, startTime = ?, endTime = ?, address = ?, minus = ?, businessTypes = ? where shopID = ?;'
-        const res = await ctx.querySQL(sql, [query.shopName, query.imgUrl, query.startTime, query.endTime, query.address, query.minus, query.businessTypes, query.shopID])
+        const res = await ctx.querySQL(sql, [shopName, imgUrl, startTime, endTime, address, minus, businessTypes, shopID])
         ctx.body = {
             code: '000',
             msg: '更新成功',
@@ -150,6 +158,10 @@ router.get('/find', async (ctx, next) => {
     console.log('查找菜品')
     try {
         const query = ctx.query
+        if (!query.shopID) {
+            ctx.body = ctx.parameterError
+            return
+        }
         console.log(typeof query.shopID)
         const res = await ctx.querySQL('select * from shop_list where shopID = ?;', [Number(query.shopID)])
         let data = {}

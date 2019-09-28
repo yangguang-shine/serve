@@ -5,7 +5,7 @@ const Multy = require('multy')
 const Images = require('images')
 // const host = require('./host');
 const randomNum = require('../tool/randomNum');
-const { writeFile, unlink, access } = require('../tool/fsPromise');
+const { unlink } = require('../tool/fsPromise');
 
 router.use(Multy())
 router.prefix('/api/img')
@@ -16,19 +16,24 @@ router.post('/shop/uploadImg', async (ctx, next) => {
         const num = randomNum(2)
         const ext = ctx.request.body.image.mimetype.split('/')[1]
         const { image, shopID, imgUrl } = ctx.request.body
-        const imageData = await readImageData(image)
-        Images(imageData).size(200).save(`./public/images/upload/shop/${num}.${ext}`)
-        // const stream = fs.createWriteStream(`./public/images/upload/shop/${num}.${ext}`)
-        // const WritePromise = WriteImg(stream, image)
+        if (!image) {
+            ctx.body = ctx.parameterError
+            return
+        }
+        const stream = fs.createWriteStream(`./public/images/temporary/shop/${num}.${ext}`)
+        const WritePromise = WriteImg(stream, image)
+        await WritePromise
+        Images(`./public/images/temporary/shop/${num}.${ext}`).size(200).save(`./public/images/upload/shop/${num}.${ext}`)
         let unlinkPromise = null
         let sqlPromise = null
+        let unlinkTemporaryPromise = unlink(`./public/images/temporary/shop/${num}.${ext}`)
         if (shopID) {
             sqlPromise = ctx.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [`/images/upload/shop/${num}.${ext}`, shopID])
         }
         if (imgUrl) {
             unlinkPromise = unlink(`./public/images/upload/shop/${imgUrl}`)
         }
-        // await WritePromise
+        await unlinkTemporaryPromise
         await unlinkPromise
         await sqlPromise
         ctx.body = {
@@ -48,28 +53,6 @@ router.post('/shop/uploadImg', async (ctx, next) => {
     }
 })
 
-function readImageData(image) {
-    return new Promise((resolve, reject) => {
-        let imageData = ''
-        image.on('data', (chunk) => {
-            imageData += chunk
-        })
-        image.on('close', (data) => {
-            console.log(111111111)
-            console.log(data)
-            resolve(imageData)
-        })
-        image.on('error', (data) => {
-            console.log(111111111)
-            console.log(data)
-            reject('imageData')
-        })
-        image.on('error', () => {
-            reject('err')
-        })
-    })
-}
-
 function WriteImg(stream, image) {
     return new Promise((resolve, reject) => {
         image
@@ -79,61 +62,33 @@ function WriteImg(stream, image) {
       })
 }
 
-// router.post('/shop/uploadImg', async (ctx, next) => {
-//     try {
-//         const { imgData, ext, imgUrl, shopID } = ctx.request.body
-//         const num = randomNum(2)
-//         const path = `./public/images/upload/shop/${num}.${ext}`;// 从app.js级开始找--在我的项目工程里是这样的
-//         const base64 = imgData.replace(/^data:image\/\w+;base64,/, "");// 去掉图片base64码前面部分data:image/png;base64
-//         const dataBuffer = Buffer.from(base64, 'base64'); // 把base64码转成buffer对象，
-//         const writePromise = writeFile(path, dataBuffer)
-//         let unlinkPromise = null
-//         let sqlPromise = null
-//         if (shopID) {
-//             sqlPromise = ctx.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [`/images/upload/shop/${num}.${ext}`, shopID])
-//         }
-//         if (imgUrl) {
-//             unlinkPromise = unlink(`./public/images/upload/shop/${imgUrl}`)
-//         }
-//         await writePromise
-//         await sqlPromise
-//         await unlinkPromise
-//         ctx.body = {
-//             code: '000',
-//             msg: '上传成功',
-//             data: {
-//                 imgUrl: `/images/upload/shop/${num}.${ext}`
-//             }
-//         }
-//     } catch(e) {
-//         console.log(e)
-//         ctx.body = {
-//             code: '111',
-//             msg: '上传失败',
-//             data: null
-//         }
-//     }
-// })
 router.post('/food/uploadImg', async (ctx, next) => {
     try {
         // console.log(ctx.request.body)
-            const num = randomNum(2)
-            console.log(ctx.request.body)
-            console.log(11111111)
-            console.log(ctx.request.body.foodID)
-            const { image, foodID, imgUrl, shopID } = ctx.request.body
-            const ext = image.mimetype.split('/')[1]
-            const stream = fs.createWriteStream(`./public/images/upload/food/${num}.${ext}`)
-            const WritePromise = WriteImg(stream, image)
-            let unlinkPromise = null
-            let sqlPromise = null
+        const num = randomNum(2)
+        console.log(ctx.request.body)
+        console.log(11111111)
+        console.log(ctx.request.body.foodID)
+        const { image, foodID, imgUrl, shopID } = ctx.request.body
+        if (!(image && shopID)) {
+            ctx.body = ctx.parameterError
+            return
+        }
+        const ext = image.mimetype.split('/')[1]
+        const stream = fs.createWriteStream(`./public/images/temporary/food/${num}.${ext}`)
+        const WritePromise = WriteImg(stream, image)
+        await WritePromise
+        Images(`./public/images/temporary/food/${num}.${ext}`).size(200).save(`./public/images/upload/food/${num}.${ext}`)
+        let unlinkTemporaryPromise = unlink(`./public/images/temporary/food/${num}.${ext}`)
+        let unlinkPromise = null
+        let sqlPromise = null
         if (foodID) {
             sqlPromise = ctx.querySQL(`update food_info_${shopID} set imgUrl = ? where foodID = ?`, [`/images/upload/food/${num}.${ext}`, foodID])
         }
         if (imgUrl) {
             unlinkPromise = unlink(`./public/images/upload/food/${imgUrl}`)
         }
-        await WritePromise
+        await unlinkTemporaryPromise
         await unlinkPromise
         await sqlPromise
         ctx.body = {
@@ -151,39 +106,6 @@ router.post('/food/uploadImg', async (ctx, next) => {
             data: null
         }
     }
-    // try {
-    //     const { imgData, ext, imgUrl, shopID, foodID } = ctx.request.body
-    //     const num = randomNum(2)
-    //     const path = `./public/images/upload/food/${num}.${ext}`;// 从app.js级开始找--在我的项目工程里是这样的
-    //     const base64 = imgData.replace(/^data:image\/\w+;base64,/, "");// 去掉图片base64码前面部分data:image/png;base64
-    //     const dataBuffer = Buffer.from(base64, 'base64'); // 把base64码转成buffer对象，
-    //     const writePromise = writeFile(path, dataBuffer)
-    //     let unlinkPromise = null
-    //     let sqlPromise = null
-    //     if (foodID) {
-    //         sqlPromise = ctx.querySQL(`update food_info_${shopID} set imgUrl = ? where foodID = ?`, [`/images/upload/food/${num}.${ext}`, foodID])
-    //     }
-    //     if (imgUrl) {
-    //         unlinkPromise = unlink(`./public/images/upload/food/${imgUrl}`)
-    //     }
-    //     await writePromise
-    //     await sqlPromise
-    //     await unlinkPromise
-    //     ctx.body = {
-    //         code: '000',
-    //         msg: '上传成功',
-    //         data: {
-    //             imgUrl: `/images/upload/food/${num}.${ext}`
-    //         }
-    //     }
-    // } catch(e) {
-    //     console.log(e)
-    //     ctx.body = {
-    //         code: '111',
-    //         msg: '上传失败',
-    //         data: null
-    //     }
-    // }
 })
 router.post('/delete', async (ctx, next) => {
     try {

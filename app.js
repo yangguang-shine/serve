@@ -26,6 +26,7 @@ const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
 const auth = require('./model/wechats/auth')
 const compress = require('koa-compress')
+const { readFile } = require('./tool/fsPromise')
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -33,8 +34,26 @@ const compress = require('koa-compress')
 // setMenu()
 // error handler
 onerror(app);
+
+// 设置图片、css、js缓存
+app.use(async (ctx, next) => {
+    const reg = /\S*\.(jpe?g|png|js|svg)$/;
+    console.log(1111111111111111)
+    console.log(ctx.path)
+    console.log(reg.test(ctx.path))
+    if (reg.test(ctx.path)) {
+        ctx.response.set('cache-control', `max-age=${60 * 60}`)
+    }
+    await next()
+})
+
 app.context.querySQL = SQL.querySQL
 app.context.getUserID = getUserID
+app.context.parameterError = {
+    code: '222',
+    msg: '参数校验失败',
+    data: {}
+}
 app.context.SQLtransaction = SQL.SQLtransaction
 app.context.checkUserLogin = checkUserLogin
 
@@ -83,7 +102,6 @@ app.use(async (ctx, next) => {
     } else {
          // 小程序登录
         const token = ctx.cookies.get('token')
-        console.log(1111111111111111)
         if (Number(channel) === 10) {
             if (token) {
                 const loginStatus = await checkUserLogin(ctx.querySQL, token)
@@ -132,9 +150,24 @@ app.use(async (ctx, next) => {
                 await auth(ctx)
             }
         } else {
+            console.log('不支持该渠道')
             await next()
         }
     }
+});
+
+app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/h5/pages')) {
+        const data = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
+        ctx.type = 'text/html;charset=utf-8';
+        ctx.body = data
+        return
+    } else if (ctx.path.startsWith('/h5/static')) {
+        const data = await readFile(`F:/my-uni-app/unpackage/dist/build${ctx.path}`)
+        ctx.body = data
+        return
+    }
+    await next()
 });
 // app.use(async (ctx, next) => {
 //     if (ctx.path.startsWith('/h5/pages')) {
@@ -182,16 +215,6 @@ app.use(async (ctx, next) => {
 //                 }
 //             }
 //         }
-//     }
-// });
-
-// app.use(async (ctx, next) => {
-//     console.log('openid:' + ctx.session.openid)
-//     if (!ctx.session.openid) {
-//         console.log('去授权')
-//         await auth(ctx)
-//     } else {
-//         await next();
 //     }
 // });
 // routes

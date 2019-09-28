@@ -6,6 +6,10 @@ router.prefix('/api/order')
 // 添加菜品
 router.get('/menuList', async (ctx, next) => {
     const { shopID } = ctx.query
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         const sql = `select * from food_info_${shopID} group by categoryID, foodID;`;
         const res = await ctx.querySQL(sql, [])
@@ -53,44 +57,25 @@ router.get('/menuList', async (ctx, next) => {
     }
 })
 
-router.get('/deleteOrderKey', async (ctx, next) => {
-    console.log('删除订单')
-    try {
-        let sql = `select orderKey from order_key_list;`
-        const res = await ctx.querySQL(sql)
-        const orderListString = (res.map(item => `order_list_${item.orderKey}`)).join(', ')
-        sql = `drop table ${orderListString}`
-        await ctx.querySQL(sql)
-        await ctx.querySQL('truncate table order_key_list')
-        ctx.body = {
-            code: '000',
-            msg: '删除成功',
-            data: null
-        }
-    } catch (e) {
-        console.log(e)
-        ctx.body = {
-            code: '111',
-            msg: '删除失败',
-            data: null
-        }
-    }
-})
-
 router.post('/submit', async (ctx, next) => {
     console.log('提交订单')
     const orderKey = randomNum()
     const orderTime = new Date()
     const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime } = ctx.request.body
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     const userID = await ctx.getUserID(ctx)
     try {
         await ctx.SQLtransaction(async (querySQL) => {
-            const values = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime]
+            const valuesUserID = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime]
+            const valuesShopID = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, userID]
             const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime) values (?);`
-            const insertOrderKeyPromise = await querySQL(sql, [values])
+            const insertOrderKeyPromise = await querySQL(sql, [valuesUserID])
             const insertOrderPromise = await insertOrderFoodList({ querySQL: querySQL, foodList, orderKey, userID })
-            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime) values (?);`
-            const insertShopIDOrderKeyPromise = await querySQL(shopSQL, [values])
+            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, userID) values (?);`
+            const insertShopIDOrderKeyPromise = await querySQL(shopSQL, [valuesShopID])
             const insertShopIDOrderPromise = await insertOrderFoodList({ querySQL: querySQL, foodList, orderKey, shopID })
             await insertOrderKeyPromise
             await insertOrderPromise
@@ -157,6 +142,10 @@ router.get('/orderList', async (ctx, next) => {
 router.get('/orderDetail', async (ctx) => {
     try {
         const { orderKey, shopID } = ctx.query
+        if (!orderKey) {
+            ctx.body = ctx.parameterError
+            return
+        }
         const userIDOrShopID = shopID || await ctx.getUserID(ctx)
         const sql1 = `select * from order_key_list_${userIDOrShopID} where orderKey = ?`
         const sql2 = `select * from order_food_list_${userIDOrShopID} where orderKey = ?`
@@ -197,6 +186,12 @@ router.get('/orderDetail', async (ctx) => {
 router.post('/cancell', async (ctx) => {
     try {
         const { orderKey, shopID } = ctx.request.body
+        if (!(orderKey && shopID)) {
+            ctx.body = ctx.parameterError
+            return
+        }
+        console.log('shopID')
+        console.log(shopID)
         const userIDList = await ctx.querySQL(`select userID from order_key_list_${shopID} where orderKey = ?`, [orderKey])
         let userID = ''
         if (userIDList.length) {
@@ -210,6 +205,9 @@ router.post('/cancell', async (ctx) => {
             }
             return
         }
+        console.log(1111)
+        console.log(userID)
+        console.log(shopID)
         await ctx.SQLtransaction(async (querySQL) => {
             const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
             const sql2 = `update order_key_list_${shopID} set orderStatus = ? where orderKey = ?`;
@@ -236,6 +234,14 @@ router.post('/cancell', async (ctx) => {
 router.post('/changeOrderStatus', async (ctx) => {
     try {
         const { orderKey, shopID, orderStatus } = ctx.request.body
+        if (!(orderKey && shopID && orderStatus)) {
+            ctx.body = {
+                code: '222',
+                msg: '参数校验失败',
+                data: {}
+            }
+            return
+        }
         const userIDList = await ctx.querySQL(`select userID from order_key_list_${shopID} where orderKey = ?`, [orderKey])
         let userID = ''
         if (userIDList.length) {

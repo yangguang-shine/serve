@@ -5,6 +5,10 @@ router.prefix('/api/category')
 router.get('/list', async (ctx, next) => {
     console.log('查找分类')
     const { shopID } = ctx.query
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         let sql = `select * from category_list_${shopID};`;
         const res = await ctx.querySQL(sql)
@@ -26,6 +30,10 @@ router.post('/add', async (ctx, next) => {
     console.log('添加分类')
     console.log(ctx.request.body)
     const { categoryName, shopID } = ctx.request.body
+    if (!shopID) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         let sql = `insert into category_list_${shopID} (categoryName, shopID) values (?, ?);`
         await ctx.querySQL(sql, [categoryName, shopID])
@@ -47,6 +55,10 @@ router.post('/delete', async (ctx, next) => {
     console.log('修改分类')
     console.log(ctx.request.body)
     const { categoryID, shopID } = ctx.request.body
+    if (!(shopID && categoryID)) {
+        ctx.body = ctx.parameterError
+        return
+    }
     try {
         const foodImgUrlList = await ctx.querySQL(`select imgUrl from food_info_${shopID} where categoryID = ?`, [categoryID])
         await ctx.SQLtransaction(async (querySQL) => {
@@ -82,6 +94,10 @@ router.post('/edit', async (ctx, next) => {
     console.log('修改分类')
     console.log(ctx.request.body)
     const { categoryName, categoryID, shopID } = ctx.request.body
+    if (!(shopID && categoryID)) {
+        ctx.body = ctx.parameterError
+        return
+    }
     console.log(typeof categoryID)
     try {
         await ctx.SQLtransaction(async (querySQL) => {

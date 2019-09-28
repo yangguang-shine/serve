@@ -23,6 +23,9 @@ router.get('/wx/login', async (ctx, next) => {
     try {
         let token = ''
         const { code } = ctx.query
+        if (!code) {
+            ctx.body = ctx.parameterError
+        }
         await ctx.SQLtransaction(async (querySQL) => {
             const res = await httpsGet(`https://api.weixin.qq.com/sns/jscode2session?appid=wx5e8fc6bbef84c4c3&secret=776934fd2bf6193cf8fd5e5af684d30c&js_code=${code}&grant_type=authorization_code`)
             const data = await dataFormat(res)
