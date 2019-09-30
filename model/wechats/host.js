@@ -1,1 +1,1 @@
-module.exports = 'kc783r.natappfree.cc'
+module.exports = 'w68ech.natappfree.cc'

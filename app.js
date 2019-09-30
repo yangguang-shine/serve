@@ -24,6 +24,7 @@ const platform = require("./routes/platform");
 const SQL = require('./model/mysql')
 const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
+const getManageID = require('./tool/getManageID')
 const auth = require('./model/wechats/auth')
 const compress = require('koa-compress')
 const { readFile } = require('./tool/fsPromise')
@@ -38,7 +39,6 @@ onerror(app);
 // 设置图片、css、js缓存
 app.use(async (ctx, next) => {
     const reg = /\S*\.(jpe?g|png|js|svg)$/;
-    console.log(1111111111111111)
     console.log(ctx.path)
     console.log(reg.test(ctx.path))
     if (reg.test(ctx.path)) {
@@ -49,6 +49,7 @@ app.use(async (ctx, next) => {
 
 app.context.querySQL = SQL.querySQL
 app.context.getUserID = getUserID
+app.context.getManageID = getManageID
 app.context.parameterError = {
     code: '222',
     msg: '参数校验失败',
@@ -93,8 +94,6 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     // channel    10: 小程序   20: 公众号
     const { channel } = ctx.query
-    console.log(ctx.path)
-    console.log(channel)
     const ignorePath = ['/wechat/wx/login', '/platform/wechat/check']
     const find = ignorePath.find(item => item === ctx.path)
     if (find) {

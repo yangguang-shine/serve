@@ -8,7 +8,6 @@ const { deleteShopImg, deleteFoodImg } = require('./deleteImg');
 router.prefix('/api/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
-    console.log('店铺列表')
     const { businessType } = ctx.query
     let res = []
     try {
@@ -38,9 +37,9 @@ router.post('/add', async (ctx, next) => {
     const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes } = ctx.request.body
     try {
         await ctx.SQLtransaction(async (querySQL) => {
-            const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address, minus, businessTypes) values (?, ?, ?, ?, ?, ?, ?)';
-            const res = await querySQL(sql, [shopName, imgUrl, startTime, endTime, address, minus, businessTypes])
-            console.log(res.insertId)
+            const manageID = await ctx.getManageID(ctx)
+            const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address, minus, businessTypes, manageID) values (?, ?, ?, ?, ?, ?, ?, ?)';
+            const res = await querySQL(sql, [shopName, imgUrl, startTime, endTime, address, minus, businessTypes, manageID])
             const shopID = res.insertId
             // throw Error(111)
             const createUserIDOrShopIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, shopID })
@@ -69,14 +68,12 @@ router.post('/add', async (ctx, next) => {
 
 // 删除菜品
 router.post('/delete', async (ctx, next) => {
-    console.log('删除店铺')
     const { shopID } = ctx.request.body
     if (!shopID) {
         ctx.body = ctx.parameterError
         return
     }
     try {
-        console.log(shopID)
         const shopImgUrlList = await ctx.querySQL(`select imgUrl from shop_list where shopID = ?`, [shopID])
         const foodImgUrlList = await ctx.querySQL(`select imgUrl from food_info_${shopID}`, [])
         await ctx.SQLtransaction(async (querySQL) => {
@@ -99,11 +96,15 @@ router.post('/delete', async (ctx, next) => {
         try {
             let deleteShopImgPromise = null
             if (shopImgUrlList.length) {
-                deleteShopImgPromise = deleteShopImg(`./public${shopImgUrlList[0].imgUrl}`)
+                if (shopImgUrlList[0].imgUrl) {
+                    deleteShopImgPromise = deleteShopImg(`./public${shopImgUrlList[0].imgUrl}`)
+                }
             }
             const promiseList = []
             foodImgUrlList.forEach((foodImgItem) => {
-                promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))
+                if (foodImgItem.imgUrl) {
+                    promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))
+                }
             })
             await deleteShopImgPromise
             for (let i = 0; i < promiseList.length; i += 1) {

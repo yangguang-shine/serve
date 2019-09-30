@@ -13,7 +13,6 @@ const querySQL = (sql = '', params = []) => {
                 if (e) {
                     reject(e)
                 } else {
-                    console.log("SQL成功")
                     resolve(JSON.parse(JSON.stringify(res)))
                 }
                 con.release()
@@ -42,7 +41,6 @@ const SQLtransaction = (func) => {
                                 if (e) {
                                     reject(e)
                                 } else {
-                                    console.log("SQL成功")
                                     resolve(JSON.parse(JSON.stringify(res)))
                                 }
                             })
@@ -58,7 +56,6 @@ const SQLtransaction = (func) => {
                         }
                     })
                 } catch (err) {
-                    console.log(1111111111)
                     con.rollback(() => { // 事务处理函数reject则回滚事务
                         reject(err)
                     })
