@@ -38,11 +38,11 @@ onerror(app);
 
 // 设置图片、css、js缓存
 app.use(async (ctx, next) => {
-    const reg = /\S*\.(jpe?g|png|js|svg)$/;
+    const reg = /\S*\.(jpe?g|png|js|svg|css|html)$/;
+    console.log('ctx.path')
     console.log(ctx.path)
-    console.log(reg.test(ctx.path))
     if (reg.test(ctx.path)) {
-        ctx.response.set('cache-control', `max-age=${60 * 60}`)
+        ctx.response.set('cache-control', `max-age=${60 * 60 * 24 * 7}`)
     }
     await next()
 })
@@ -60,9 +60,7 @@ app.context.checkUserLogin = checkUserLogin
 
 app.use(xmlParser());
 app.use(
-    bodyparser({
-        enableTypes: ["json", "form", "text"]
-    })
+    bodyparser()
 );
 app.use(json());
 app.use(logger());
@@ -155,28 +153,28 @@ app.use(async (ctx, next) => {
     }
 });
 
-app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/h5/pages')) {
-        const data = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
-        ctx.type = 'text/html;charset=utf-8';
-        ctx.body = data
-        return
-    } else if (ctx.path.startsWith('/h5/static')) {
-        const data = await readFile(`F:/my-uni-app/unpackage/dist/build${ctx.path}`)
-        ctx.body = data
-        return
-    }
-    await next()
-});
 // app.use(async (ctx, next) => {
 //     if (ctx.path.startsWith('/h5/pages')) {
-//         const data = await readFile('./public/h5/index.html')
+//         const data = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
 //         ctx.type = 'text/html;charset=utf-8';
+//         ctx.body = data
+//         return
+//     } else if (ctx.path.startsWith('/h5/static')) {
+//         const data = await readFile(`F:/my-uni-app/unpackage/dist/build${ctx.path}`)
 //         ctx.body = data
 //         return
 //     }
 //     await next()
 // });
+app.use(async (ctx, next) => {
+    if (ctx.path.startsWith('/h5/pages')) {
+        const data = await readFile('./public/index.html')
+        ctx.type = 'text/html;charset=utf-8';
+        ctx.body = data
+        return
+    }
+    await next()
+});
 // 判断是否需要登录
 // app.use(async (ctx, next) => {
 //     console.log(ctx.path)

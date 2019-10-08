@@ -1,1 +1,1 @@
-module.exports = 'w68ech.natappfree.cc'
+module.exports = 'yangguang.natappvip.cc'

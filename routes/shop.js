@@ -8,10 +8,14 @@ const { deleteShopImg, deleteFoodImg } = require('./deleteImg');
 router.prefix('/api/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
-    const { businessType } = ctx.query
+    const { businessType, managerShopList } = ctx.query
     let res = []
     try {
-        if (businessType) {
+        if (managerShopList) {
+            const manageID = await ctx.getManageID(ctx)
+            const sql = 'select * from shop_list where manageID = ?'
+            res = await ctx.querySQL(sql, [manageID])
+        } else if (businessType) {
             const sql = `select * from shop_list where businessTypes like '%${businessType}%'`
             res = await ctx.querySQL(sql, [])
         } else {

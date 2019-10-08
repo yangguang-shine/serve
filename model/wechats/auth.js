@@ -9,12 +9,11 @@ const createUserIDAddress = require('../../routes/table/createUserIDAddress')
 module.exports = async (ctx) => {
     console.log(ctx.query)
     if (!ctx.query.code) {
-        let redirect_uri = decodeURI(`http://${ctx.hostname}${ctx.path}?channel=20`)
+        let redirect_uri = decodeURI(`https://${ctx.hostname}${ctx.path}?channel=20`)
         console.log('redirect_uri')
         console.log(redirect_uri)
         // redirect_uri = encodeURI
-        ctx.redirect(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd3070d04299694f4&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`)
-        return false;
+        return ctx.redirect(`https://open.weixin.qq.com/connect/oauth2/authorize?appid=wxd3070d04299694f4&redirect_uri=${redirect_uri}&response_type=code&scope=snsapi_userinfo&state=STATE#wechat_redirect`)
     }
     let code = ctx.query.code;
     const res = await httpsGet(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxd3070d04299694f4&secret=62e5ae62775a3277d55571b53e212e12&code=${code}&grant_type=authorization_code`)
@@ -74,15 +73,7 @@ module.exports = async (ctx) => {
         ctx.cookies.set('token', token)
         console.log(token)
     })
-    const html = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
+    const html = await readFile('./public/index.html')
     ctx.type = 'text/html;charset=utf-8';
     ctx.body = html
-    // 获取详细信息个人
-            // 验证凭证是否有用
-    //         https.get(`https://api.weixin.qq.com/sns/auth?access_token=${access_token}&openid=${openid}`, async (res) => {
-    //             const data = await dataFormat(res)
-    //             console.log('凭证是否有用：')
-    //             console.log(data)
-    //         })
-    //     })
 }
