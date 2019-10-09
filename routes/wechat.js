@@ -37,6 +37,7 @@ router.get('/wx/login', async (ctx, next) => {
             if (queryUserIDList.length === 1) {
                 sql = `update user_openid set session_key = ? where openid = ?`
                 await querySQL(sql, [session_key, openid])
+                userID = queryUserIDList[0].userID
             } else if (!queryUserIDList.length) {
                 sql = `insert into user_openid (session_key, openid) values (?, ?)`
                 const resInsert = await querySQL(sql, [session_key, openid])
@@ -49,9 +50,7 @@ router.get('/wx/login', async (ctx, next) => {
                 await createUserIDOrderKeyListPromise
                 await createUserIDAddressPromise
             } else {
-                throw new Error('userID查找多个+')
-            }
-            if (queryUserIDList.length === 1) {
+                console.log('userID查找多个+')
                 userID = queryUserIDList[0].userID
             }
             const md5 = crypto.createHash('md5');

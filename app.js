@@ -92,7 +92,7 @@ app.use(async (ctx, next) => {
 app.use(async (ctx, next) => {
     // channel    10: 小程序   20: 公众号
     const { channel } = ctx.query
-    const ignorePath = ['/wechat/wx/login', '/platform/wechat/check']
+    const ignorePath = ['/wechat/wx/login', '/platform/wechat/check', '/user/h5/login', '/user/h5/register']
     const find = ignorePath.find(item => item === ctx.path)
     if (find) {
         await next()
@@ -118,45 +118,40 @@ app.use(async (ctx, next) => {
                     data: null
                 }
             }
-        } else if (Number(channel) === 20) {
-            // 公众号登录
-            if (token) {
+        } else {
+            console.log(token)
+            // H5登录
+            if (ctx.path.startsWith('/h5/pages')) {
+                await next()
+            } else if (token) {
                 const status = await ctx.checkUserLogin(ctx.querySQL, token)
-                if (status) {
-                    await next()
-                } else {
-                    if (!ctx.path.startsWith('/h5/pages')) {
-                        ctx.body = {
-                            code: '666',
-                            msg: '无token',
-                            data: null
-                        }
-                        return
-                    }
-                    await auth(ctx)
-                }
-            } else {
-                if (!ctx.path.startsWith('/h5/pages')) {
+                console.log(status)
+                if (!status) {
                     ctx.body = {
-                        code: '666',
-                        msg: '无token',
+                        code: '555',
+                        msg: '凭证过期请登录',
                         data: null
                     }
                     return
                 }
-                await auth(ctx)
+                await next()
+            } else {
+                ctx.body = {
+                    code: '666',
+                    msg: '请登录',
+                    data: null
+                }
             }
-        } else {
-            console.log('不支持该渠道')
-            await next()
         }
     }
 });
 
 // app.use(async (ctx, next) => {
+//     console.log(111)
 //     if (ctx.path.startsWith('/h5/pages')) {
 //         const data = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
 //         ctx.type = 'text/html;charset=utf-8';
+//         console.log(data)
 //         ctx.body = data
 //         return
 //     } else if (ctx.path.startsWith('/h5/static')) {
@@ -168,52 +163,13 @@ app.use(async (ctx, next) => {
 // });
 app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/h5/pages')) {
-        const data = await readFile('./public/index.html')
+        const data = await readFile('./public/h5/index.html')
         ctx.type = 'text/html;charset=utf-8';
         ctx.body = data
         return
     }
     await next()
 });
-// 判断是否需要登录
-// app.use(async (ctx, next) => {
-//     console.log(ctx.path)
-//     if (ctx.path === '/wechat/wx/login' || ctx.path === '/h5/user/check' || ctx.path === '/user/platform' || ctx.path.startsWith('/h5')) {
-//         await next()
-//     } else {
-//         const token = ctx.cookies.get('token')
-//         if (token) {
-//             const loginStatus = await checkUserLogin(ctx.querySQL, token)
-//             if (!loginStatus) {
-//                 ctx.body = {
-//                     code: '555',
-//                     msg: '凭证过期请登录',
-//                     data: null
-//                 }
-//             }
-//         } else {
-//             ctx.body = {
-//                 code: '555',
-//                 msg: '请登录',
-//                 data: null
-//             }
-//         }
-//         if (ctx.method === 'POST') {
-//             const { shopID } = ctx.request.body;
-//             if (`${shopID}` === '100055') {
-//                 const userID = await ctx.getUserID(ctx);
-//                 console.log(userID)
-//                 if (`${userID}` !== '100000007') {
-//                     ctx.body = {
-//                         code: '999',
-//                         msg: '该店铺只有开发者可修改',
-//                         data: null
-//                     }
-//                 }
-//             }
-//         }
-//     }
-// });
 // routes
 app.use(index.routes(), index.allowedMethods());
 app.use(user.routes(), user.allowedMethods());
@@ -241,3 +197,9 @@ app.on("error", (err, ctx) => {
 });
 
 module.exports = app;
+
+// 000     成功
+// 111     查找错误
+// 555     登录过期
+// 666     请登录
+// 777     管理凭证过期

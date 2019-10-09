@@ -1,6 +1,9 @@
 const router = require("koa-router")();
 const encryption = require('../tool/encryption')
 const crypto = require('crypto');
+const createUserIDOrShopIDOrderFoodList = require('./table/createUserIDOrShopIDOrderFoodList')
+const createUserIDOrShopIDOrderKeyList = require('./table/createUserIDOrShopIDOrderKeyList')
+const createUserIDAddress = require('./table/createUserIDAddress')
 router.prefix("/user/h5");
 
 router.post("/login", async (ctx, next) => {
@@ -36,6 +39,7 @@ router.post("/login", async (ctx, next) => {
                     await ctx.querySQL(insertTokenSql, [userID, token])
                 }
                 ctx.cookies.set('token', token)
+                console.log(token)
                 ctx.body = {
                     code: '000',
                     msg: '登录成功',
@@ -93,6 +97,12 @@ router.post("/register", async (ctx, next) => {
                 const sql = 'insert into user_openid (phone, encryptPassword, nickname) values (?)'
                 const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
                 const userID = res.insertId
+                const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
+                const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })
+                const createUserIDAddressPromise = createUserIDAddress({ querySQL, userID })
+                await createUserIDOrderFoodListPromise
+                await createUserIDOrderKeyListPromise
+                await createUserIDAddressPromise
                 const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
                 await querySQL(insertTokenSql, [userID, token])
             })

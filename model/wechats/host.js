@@ -1,1 +1,1 @@
-module.exports = 'yangguang.natappvip.cc'
+module.exports = 'sku2dd.natappfree.cc'
