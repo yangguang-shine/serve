@@ -124,5 +124,30 @@ router.post("/register", async (ctx, next) => {
 router.post("/changePassword", async (ctx, next) => {
     const { username, password, nowPassword } = ctx.request.body
 });
+router.post("/checkManageLogin", async (ctx, next) => {
+    try {
+        const manageToken = ctx.cookies.get('manageToken')
+        const status = await ctx.checkManageLogin(ctx.querySQL, manageToken)
+        if (status) {
+            ctx.body = {
+                code: '000',
+                msg: '成功',
+                data: true
+            }
+        } else {
+            ctx.body = {
+                code: '888',
+                msg: '管理登录过期',
+                data: false
+            }
+        }
+    } catch (e) {
+        ctx.body = {
+            code: '888',
+            msg: '管理登录过期',
+            data: false
+        }
+    }
+});
 
 module.exports = router;

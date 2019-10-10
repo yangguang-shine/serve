@@ -25,6 +25,7 @@ const SQL = require('./model/mysql')
 const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
 const getManageID = require('./tool/getManageID')
+const checkManageLogin = require('./tool/checkManageLogin')
 const auth = require('./model/wechats/auth')
 const compress = require('koa-compress')
 const { readFile } = require('./tool/fsPromise')
@@ -50,6 +51,7 @@ app.use(async (ctx, next) => {
 app.context.querySQL = SQL.querySQL
 app.context.getUserID = getUserID
 app.context.getManageID = getManageID
+app.context.checkManageLogin = checkManageLogin
 app.context.parameterError = {
     code: '222',
     msg: '参数校验失败',
