@@ -26,9 +26,12 @@ const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
 const getManageID = require('./tool/getManageID')
 const checkManageLogin = require('./tool/checkManageLogin')
-const auth = require('./model/wechats/auth')
+// const auth = require('./model/wechats/auth')
 const compress = require('koa-compress')
 const { readFile } = require('./tool/fsPromise')
+const checkManageLoginInterface = require('./utils/checkManageLoginInterface')
+const checkUserLoginInterface = require('./utils/checkUserLoginInterface')
+const ignoreCheckLogin = require('./utils/ignoreCheckLoginList')
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -90,79 +93,15 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
-// 判断公众号是否授权
-app.use(async (ctx, next) => {
-    // channel    10: 小程序   20: 公众号
-    const { channel } = ctx.query
-    const ignorePath = ['/wechat/wx/login', '/platform/wechat/check', '/user/h5/login', '/user/h5/register']
-    const find = ignorePath.find(item => item === ctx.path)
-    if (find) {
-        await next()
-    } else {
-         // 小程序登录
-        const token = ctx.cookies.get('token')
-        if (Number(channel) === 10) {
-            if (token) {
-                const loginStatus = await checkUserLogin(ctx.querySQL, token)
-                if (!loginStatus) {
-                    ctx.body = {
-                        code: '555',
-                        msg: '凭证过期请登录',
-                        data: null
-                    }
-                } else {
-                    await next()
-                }
-            } else {
-                ctx.body = {
-                    code: '555',
-                    msg: '请登录',
-                    data: null
-                }
-            }
-        } else {
-            console.log(token)
-            // H5登录
-            if (ctx.path.startsWith('/h5/pages')) {
-                await next()
-            } else if (token) {
-                const status = await ctx.checkUserLogin(ctx.querySQL, token)
-                console.log(status)
-                if (!status) {
-                    ctx.body = {
-                        code: '555',
-                        msg: '凭证过期请登录',
-                        data: null
-                    }
-                    return
-                }
-                await next()
-            } else {
-                ctx.body = {
-                    code: '666',
-                    msg: '请登录',
-                    data: null
-                }
-            }
-        }
-    }
-});
+// 判断用户token权限
+app.use(checkUserLoginInterface())
 
-// app.use(async (ctx, next) => {
-//     console.log(111)
-//     if (ctx.path.startsWith('/h5/pages')) {
-//         const data = await readFile('F:/my-uni-app/unpackage/dist/build/h5/index.html')
-//         ctx.type = 'text/html;charset=utf-8';
-//         console.log(data)
-//         ctx.body = data
-//         return
-//     } else if (ctx.path.startsWith('/h5/static')) {
-//         const data = await readFile(`F:/my-uni-app/unpackage/dist/build${ctx.path}`)
-//         ctx.body = data
-//         return
-//     }
-//     await next()
-// });
+// 判断管理员manageToken权限
+app.use(checkManageLoginInterface())
+
+// 用户token权限和manageToken权限判断
+app.use(ignoreCheckLogin())
+
 app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/h5/pages')) {
         const data = await readFile('./public/h5/index.html')
@@ -202,6 +141,8 @@ module.exports = app;
 
 // 000     成功
 // 111     查找错误
+
 // 555     登录过期
 // 666     请登录
 // 777     管理凭证过期
+// 888     管理员登录

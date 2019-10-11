@@ -105,6 +105,10 @@ router.get('/orderList', async (ctx, next) => {
         // 40   已自提   已送达
         // 50   已取消
         const { status, shopID } = ctx.query
+        if (!(Number(status) >= 0 && Number(status) <= 3)) {
+            ctx.body = ctx.parameterError
+            return
+        }
         let sql = ''
         let orderList = []
         const userIDOrShopID = shopID || await ctx.getUserID(ctx)
