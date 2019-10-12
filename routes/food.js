@@ -4,7 +4,6 @@ const { deleteFoodImg } = require('./deleteImg')
 router.prefix('/api/food')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
-    console.log('菜品列表')
     const { shopID, categoryID } = ctx.query
     if (!(shopID && categoryID)) {
         ctx.body = ctx.parameterError
@@ -28,8 +27,6 @@ router.get('/list', async (ctx, next) => {
     }
 })
 router.post('/add', async (ctx, next) => {
-    console.log('添加菜品')
-    console.log(ctx.request.body)
     const { foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID } = ctx.request.body
     if (!shopID) {
         ctx.body = ctx.parameterError
@@ -55,7 +52,6 @@ router.post('/add', async (ctx, next) => {
 
 // 删除菜品
 router.post('/delete', async (ctx, next) => {
-    console.log('删除菜品')
     const { shopID, foodID } = ctx.request.body
     if (!(shopID && foodID)) {
         ctx.body = ctx.parameterError
@@ -63,8 +59,6 @@ router.post('/delete', async (ctx, next) => {
     }
     try {
         const foodImgUrlList = await ctx.querySQL(`select imgUrl from food_info_${shopID} where foodID = ?`, [foodID])
-        console.log(11111)
-        console.log(foodImgUrlList)
         const sql = `delete from food_info_${shopID} where foodID = ?;`;
         const res = await ctx.querySQL(sql, [foodID])
         try {
@@ -95,8 +89,6 @@ router.post('/delete', async (ctx, next) => {
 
 // 更新菜品
 router.post('/edit', async (ctx, next) => {
-    console.log(ctx.request.body)
-    console.log('更新菜品')
     const { shopID, foodName, price, unit, imgUrl, description, foodID } = ctx.request.body
     if (!(shopID && foodID)) {
         ctx.body = ctx.parameterError
@@ -122,10 +114,8 @@ router.post('/edit', async (ctx, next) => {
 
 // 查找菜品
 router.get('/find', async (ctx, next) => {
-    console.log('查找菜品')
     try {
         const query = ctx.query
-        console.log(typeof query.foodID)
         if (!query.foodID) {
             ctx.body = ctx.parameterError
             return

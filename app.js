@@ -19,6 +19,7 @@ const shop = require("./routes/shop");
 const address = require("./routes/address");
 const message = require("./routes/message");
 const h5 = require("./routes/h5");
+const entertainment = require("./routes/entertainment");
 // const page = require("./routes/page");
 const platform = require("./routes/platform");
 const SQL = require('./model/mysql')
@@ -126,6 +127,7 @@ app.use(h5.routes(), h5.allowedMethods());
 app.use(message.routes(), message.allowedMethods());
 app.use(platform.routes(), platform.allowedMethods());
 app.use(manage.routes(), manage.allowedMethods());
+app.use(entertainment.routes(), entertainment.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

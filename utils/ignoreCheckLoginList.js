@@ -1,8 +1,13 @@
 const ignoreCheckLoginList = [
     '/api/order/orderList',
     '/api/order/orderDetail',
-    // '/api/order/cancell',  该接口赞、暂不做校验
+    // '',  该接口赞、暂不做校验
     '/api/shop/list',
+]
+const ignoreLogin = [
+    '/api/order/cancell',
+    '/api/entertainment/newList',
+    '/api/entertainment/',
 ]
 module.exports = () => {
     return async (ctx, next) => {

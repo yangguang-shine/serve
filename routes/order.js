@@ -58,7 +58,6 @@ router.get('/menuList', async (ctx, next) => {
 })
 
 router.post('/submit', async (ctx, next) => {
-    console.log('提交订单')
     const orderKey = randomNum()
     const orderTime = new Date()
     const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime } = ctx.request.body
@@ -194,8 +193,6 @@ router.post('/cancell', async (ctx) => {
             ctx.body = ctx.parameterError
             return
         }
-        console.log('shopID')
-        console.log(shopID)
         const userIDList = await ctx.querySQL(`select userID from order_key_list_${shopID} where orderKey = ?`, [orderKey])
         let userID = ''
         if (userIDList.length) {

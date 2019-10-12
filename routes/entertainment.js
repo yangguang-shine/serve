@@ -1,12 +1,12 @@
 const router = require("koa-router")();
-const { readFile } = require('../tool/fsPromise')
 
-router.prefix("/h5/pages");
+router.prefix("/api/entertainment");
 
-router.get("/home/index", async (ctx, next) => {
-    const data = await readFile('./public/h5/index.html')
-    ctx.type = 'text/html;charset=utf-8';
-    ctx.body = data
+router.get("/jokeList", async (ctx, next) => {
+
+});
+router.get("/newsList", async (ctx, next) => {
+
 });
 // router.get("/home", async (ctx, next) => {
 //     const data = await readFile('./public/h5/index.html')

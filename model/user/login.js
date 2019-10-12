@@ -1,9 +1,7 @@
 const UserInfo = require('../mongodb/UserInfo')
 const crypto = require('crypto');
 module.exports = async (ctx) => {
-    console.log(222)
     const md5 = crypto.createHash('md5');
-    console.log(ctx.request.body)
     const account = ctx.request.body.account
     const password = ctx.request.body.password
     const encodePassword = await md5.update(password).digest('hex');

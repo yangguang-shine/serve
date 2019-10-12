@@ -37,7 +37,6 @@ router.get('/list', async (ctx, next) => {
     }
 })
 router.post('/add', async (ctx, next) => {
-    console.log('添加店铺')
     const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes } = ctx.request.body
     try {
         await ctx.SQLtransaction(async (querySQL) => {
@@ -134,7 +133,6 @@ router.post('/delete', async (ctx, next) => {
 
 // 更新菜品
 router.post('/edit', async (ctx, next) => {
-    console.log('更新店铺')
     const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes, shopID } = ctx.request.body
     if (!shopID) {
         ctx.body = ctx.parameterError
@@ -160,14 +158,12 @@ router.post('/edit', async (ctx, next) => {
 
 // 查找菜品
 router.get('/find', async (ctx, next) => {
-    console.log('查找菜品')
     try {
         const query = ctx.query
         if (!query.shopID) {
             ctx.body = ctx.parameterError
             return
         }
-        console.log(typeof query.shopID)
         const res = await ctx.querySQL('select * from shop_list where shopID = ?;', [Number(query.shopID)])
         let data = {}
         if (res.length) {

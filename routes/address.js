@@ -28,7 +28,6 @@ router.post('/add', async (ctx, next) => {
         const userID = await ctx.getUserID(ctx)
         const sql = `insert into address_list_${userID} (name, sex, mobile, address1, address2) values (?)`;
         const res = await ctx.querySQL(sql, [[name, sex, mobile, address1, address2]])
-        console.log(res)
         const addressID = res.insertId
         await addressExchange({ querySQL: ctx.querySQL, userID, addressID })
         ctx.body = {
@@ -103,7 +102,6 @@ router.post('/edit', async (ctx, next) => {
 
 // 查找地址
 router.get('/find', async (ctx, next) => {
-    console.log('查找地址')
     try {
         const { addressID } = ctx.query
         if (!addressID) {
@@ -161,8 +159,6 @@ async function addressExchange({ querySQL, userID, addressID } = {}) {
     const firstAddressPrimise = querySQL(sql2, [addressID])
     let findAddress = await findAddressPrimise
     let firstAddress = await firstAddressPrimise
-    console.log(findAddress)
-    console.log(firstAddress)
     if(!findAddress.length || !firstAddress.length) {
         throw Error('换位查找出错了')
     }

@@ -12,7 +12,6 @@ router.prefix('/api/img')
 // 上传图片
 router.post('/shop/uploadImg', async (ctx, next) => {
     try {
-    // console.log(ctx.request.body)
         const num = randomNum(2)
         const ext = ctx.request.body.image.mimetype.split('/')[1]
         const { image, shopID, imgUrl } = ctx.request.body
@@ -66,9 +65,6 @@ router.post('/food/uploadImg', async (ctx, next) => {
     try {
         // console.log(ctx.request.body)
         const num = randomNum(2)
-        console.log(ctx.request.body)
-        console.log(11111111)
-        console.log(ctx.request.body.foodID)
         const { image, foodID, imgUrl, shopID } = ctx.request.body
         if (!(image && shopID)) {
             ctx.body = ctx.parameterError

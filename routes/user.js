@@ -39,7 +39,6 @@ router.post("/login", async (ctx, next) => {
                     await ctx.querySQL(insertTokenSql, [userID, token])
                 }
                 ctx.cookies.set('token', token)
-                console.log(token)
                 ctx.body = {
                     code: '000',
                     msg: '登录成功',

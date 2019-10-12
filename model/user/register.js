@@ -2,14 +2,11 @@ const UserInfo = require('../mongodb/UserInfo')
 const crypto = require('crypto');
 module.exports = async (ctx) => {
     const md5 = crypto.createHash('md5');
-    console.log(ctx.request.body)
     const account = ctx.request.body.account
     const password = ctx.request.body.password
     const encodePassword = md5.update(password).digest('hex');
     const user = await ctx.findOne(UserInfo, { account })
-    console.log('user:' + user)
     if (user) {
-        console.log(5555)
         ctx.body = {
             code: '111',
             msg: '该账号已被注册',
