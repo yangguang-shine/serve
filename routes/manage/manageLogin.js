@@ -1,5 +1,5 @@
 const router = require("koa-router")();
-const encryption = require('../tool/encryption')
+const encryption = require('../../tool/encryption')
 const crypto = require('crypto');
 router.prefix("/manage/user");
 

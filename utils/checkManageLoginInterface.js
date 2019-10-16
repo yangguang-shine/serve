@@ -1,28 +1,34 @@
 const checkUserLoginInterfaceList = [
-    '/api/category/list',
-    '/api/category/add',
-    '/api/category/delete',
-    '/api/category/find',
-    '/api/category/edit',
-    '/api/food/list',
-    '/api/food/add',
-    '/api/food/delete',
-    '/api/food/edit',
-    '/api/food/find',
-    '/api/img/shop/uploadImg',
-    '/api/img/food/uploadImg',
-    '/api/img/delete ',
-    '/manage/user/checkManageLogin',
-    '/api/shop/add',
-    '/api/shop/delete',
-    '/api/shop/edit',
-    '/api/shop/find',
-    '/api/order/changeOrderStatus'
+    'manage/api/category/list',
+    'manage/api/category/add',
+    'manage/api/category/delete',
+    'manage/api/category/edit',
+    'manage/api/food/list',
+    'manage/api/food/add',
+    'manage/api/food/delete',
+    'manage/api/food/edit',
+    'manage/api/food/find',
+    'manage/api/img/shop/uploadImg',
+    'manage/api/img/food/uploadImg',
+    'manage/api/img/delete ',
+    'manage/api/manageShop/list',
+    'manage/api/manageShop/add',
+    'manage/api/manageShop/delete',
+    'manage/api/manageShop/edit',
+    'manage/api/manageShop/find',
+    'manage/api/manageOrder/orderList',
+    'manage/api/manageOrder/orderDetail',
+    'manage/api/manageOrder/cancell',
+    'manage/api/manageOrder/changeOrderStatus',
 ]
 
 module.exports = () => {
     return async (ctx, next) => {
         const path = ctx.path
+        if (!path.startsWith('/manage/api')) {
+            await next()
+            return
+        }
         const find = checkUserLoginInterfaceList.find(item => item === path)
         if (find) {
             const manageToken = ctx.cookies.get('manageToken')

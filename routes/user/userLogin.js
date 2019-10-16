@@ -1,10 +1,10 @@
 const router = require("koa-router")();
-const encryption = require('../tool/encryption')
+const encryption = require('../../tool/encryption')
 const crypto = require('crypto');
-const createUserIDOrShopIDOrderFoodList = require('./table/createUserIDOrShopIDOrderFoodList')
-const createUserIDOrShopIDOrderKeyList = require('./table/createUserIDOrShopIDOrderKeyList')
-const createUserIDAddress = require('./table/createUserIDAddress')
-router.prefix("/user/h5");
+const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserIDOrShopIDOrderFoodList')
+const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
+const createUserIDAddress = require('../../creatTable/createUserIDAddress')
+router.prefix("/user/api");
 
 router.post("/login", async (ctx, next) => {
     try {

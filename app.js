@@ -6,33 +6,38 @@ const onerror = require("koa-onerror");
 const bodyparser = require("koa-bodyparser");
 const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
+const compress = require('koa-compress')
 
-const index = require("./routes/index");
-const user = require("./routes/user");
-const manage = require("./routes/manage");
-const wechat = require("./routes/wechat");
-const food = require("./routes/food");
-const img = require("./routes/img");
-const order = require("./routes/order");
-const category = require("./routes/category");
-const shop = require("./routes/shop");
-const address = require("./routes/address");
-const message = require("./routes/message");
-const h5 = require("./routes/h5");
-const entertainment = require("./routes/entertainment");
-// const page = require("./routes/page");
-const platform = require("./routes/platform");
+// 添加路由  用户
+const address = require("./routes/user/address");
+const entertainment = require("./routes/user/entertainment");
+const userLogin = require("./routes/user/userLogin");
+const userOrder = require("./routes/user/userOrder");
+const userShop = require("./routes/user/userShop");
+const wechat = require("./routes/user/wechat");
+
+// 添加路由  管理员
+const category = require("./routes/manage/category");
+const food = require("./routes/manage/food");
+const img = require("./routes/manage/img");
+const manageLogin = require("./routes/manage/manageLogin");
+const manageOrder = require("./routes/manage/manageOrder");
+const manageShop = require("./routes/manage/manageShop");
+
+// 添加路由  公众平台
+const message = require("./routes/platform/message");
+const check = require("./routes/platform/check");
+
+// 引入方法
 const SQL = require('./model/mysql')
 const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
 const getManageID = require('./tool/getManageID')
 const checkManageLogin = require('./tool/checkManageLogin')
 // const auth = require('./model/wechats/auth')
-const compress = require('koa-compress')
 const { readFile } = require('./tool/fsPromise')
 const checkManageLoginInterface = require('./utils/checkManageLoginInterface')
 const checkUserLoginInterface = require('./utils/checkUserLoginInterface')
-const ignoreCheckLogin = require('./utils/ignoreCheckLoginList')
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -101,7 +106,7 @@ app.use(checkUserLoginInterface())
 app.use(checkManageLoginInterface())
 
 // 用户token权限和manageToken权限判断
-app.use(ignoreCheckLogin())
+// app.use(ignoreCheckLogin())
 
 app.use(async (ctx, next) => {
     if (ctx.path.startsWith('/h5/pages')) {
@@ -113,21 +118,20 @@ app.use(async (ctx, next) => {
     await next()
 });
 // routes
-app.use(index.routes(), index.allowedMethods());
-app.use(user.routes(), user.allowedMethods());
+app.use(address.routes(), address.allowedMethods());
+app.use(entertainment.routes(), entertainment.allowedMethods());
+app.use(userLogin.routes(), userLogin.allowedMethods());
+app.use(userOrder.routes(), userOrder.allowedMethods());
+app.use(userShop.routes(), userShop.allowedMethods());
 app.use(wechat.routes(), wechat.allowedMethods());
+app.use(category.routes(), category.allowedMethods());
 app.use(food.routes(), food.allowedMethods());
 app.use(img.routes(), img.allowedMethods());
-app.use(category.routes(), category.allowedMethods());
-app.use(order.routes(), order.allowedMethods());
-app.use(shop.routes(), shop.allowedMethods());
-app.use(address.routes(), address.allowedMethods());
-app.use(h5.routes(), h5.allowedMethods());
-// app.use(page.routes(), page.allowedMethods());
+app.use(manageLogin.routes(), manageLogin.allowedMethods());
+app.use(manageOrder.routes(), manageOrder.allowedMethods());
+app.use(manageShop.routes(), manageShop.allowedMethods());
 app.use(message.routes(), message.allowedMethods());
-app.use(platform.routes(), platform.allowedMethods());
-app.use(manage.routes(), manage.allowedMethods());
-app.use(entertainment.routes(), entertainment.allowedMethods());
+app.use(check.routes(), check.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {

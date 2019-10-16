@@ -1,4 +1,4 @@
-const { unlink } = require('../../tool/fsPromise')
+const { unlink } = require('../tool/fsPromise')
 exports.deleteShopImg = async (path) => {
     try {
         await unlink(path)

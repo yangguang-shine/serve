@@ -4,11 +4,11 @@ const fs = require('fs');
 const Multy = require('multy')
 const Images = require('images')
 // const host = require('./host');
-const randomNum = require('../tool/randomNum');
-const { unlink } = require('../tool/fsPromise');
+const randomNum = require('../../tool/randomNum');
+const { unlink } = require('../../tool/fsPromise');
 
 router.use(Multy())
-router.prefix('/api/img')
+router.prefix('/manage/api/img')
 // 上传图片
 router.post('/shop/uploadImg', async (ctx, next) => {
     try {

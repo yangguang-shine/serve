@@ -2,9 +2,9 @@ const httpsGet = require('../../tool/httpsGet')
 const dataFormat = require('../../tool/dataFormat')
 const crypto = require('crypto');
 const { readFile } = require('../../tool/fsPromise')
-const createUserIDOrShopIDOrderFoodList = require('../../routes/table/createUserIDOrShopIDOrderFoodList')
-const createUserIDOrShopIDOrderKeyList = require('../../routes/table/createUserIDOrShopIDOrderKeyList')
-const createUserIDAddress = require('../../routes/table/createUserIDAddress')
+const createUserIDOrShopIDOrderFoodList = require('../../createTable/createUserIDOrShopIDOrderFoodList')
+const createUserIDOrShopIDOrderKeyList = require('../../createTable/createUserIDOrShopIDOrderKeyList')
+const createUserIDAddress = require('../../createTable/createUserIDAddress')
 
 module.exports = async (ctx) => {
     console.log(ctx.query)

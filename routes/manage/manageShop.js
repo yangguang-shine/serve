@@ -1,11 +1,11 @@
 const router = require('koa-router')()
-const createCategory = require('./table/createCategory')
-const createFoodInfo = require('./table/createFoodInfo')
-const createUserIDOrShopIDOrderFoodList = require('./table/createUserIDOrShopIDOrderFoodList')
-const createUserIDOrShopIDOrderKeyList = require('./table/createUserIDOrShopIDOrderKeyList')
-const { deleteShopImg, deleteFoodImg } = require('./deleteImg');
+const createCategory = require('../../creatTable/createCategory')
+const createFoodInfo = require('../../creatTable/createFoodInfo')
+const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserIDOrShopIDOrderFoodList')
+const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
+const { deleteShopImg, deleteFoodImg } = require('../../utils');
 
-router.prefix('/api/shop')
+router.prefix('/manage/api/manageShop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     const { businessType, managerShopList } = ctx.query

@@ -1,16 +1,16 @@
 const router = require('koa-router')()
-const httpsGet = require('../tool/httpsGet')
-const dataFormat = require('../tool/dataFormat')
-const identification = require('../model/wechats/identification')
-const messageDelivery = require('../model/wechats/messageDelivery')
+const httpsGet = require('../../tool/httpsGet')
+const dataFormat = require('../../tool/dataFormat')
+const identification = require('../../model/wechats/identification')
+const messageDelivery = require('../../model/wechats/messageDelivery')
 // const mysqlConfig = require('../config/session-config')
 // const MysqlStore = require('koa2-session-mysql')
-const createUserIDOrShopIDOrderFoodList = require('./table/createUserIDOrShopIDOrderFoodList')
-const createUserIDOrShopIDOrderKeyList = require('./table/createUserIDOrShopIDOrderKeyList')
-const createUserIDAddress = require('./table/createUserIDAddress')
+const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserIDOrShopIDOrderFoodList')
+const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
+const createUserIDAddress = require('../../creatTable/createUserIDAddress')
 const crypto = require('crypto');
 
-router.prefix('/wechat')
+router.prefix('/user/wechat')
 
 router.get('/', function (ctx, next) {
     identification(ctx)

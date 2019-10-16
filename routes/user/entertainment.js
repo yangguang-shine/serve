@@ -1,6 +1,6 @@
 const router = require("koa-router")();
 
-router.prefix("/api/entertainment");
+router.prefix("/user/api/entertainment");
 
 router.get("/jokeList", async (ctx, next) => {
 
