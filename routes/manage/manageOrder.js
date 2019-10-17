@@ -1,8 +1,7 @@
 const router = require('koa-router')()
-const randomNum = require('../tool/randomNum');
 // const moment = require('moment');
 
-router.prefix('/api/manageOrder')
+router.prefix('/manage/api/manageOrder')
 // 添加菜品
 router.get('/orderList', async (ctx, next) => {
     try {

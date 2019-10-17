@@ -1,7 +1,7 @@
 const router = require("koa-router")();
 const encryption = require('../../tool/encryption')
 const crypto = require('crypto');
-router.prefix("/manage/user");
+router.prefix("/manage/api");
 
 router.post("/login", async (ctx, next) => {
     try {
@@ -31,7 +31,7 @@ router.post("/login", async (ctx, next) => {
                     }
                     await ctx.querySQL(`update manage_token_store set manageToken = ? where manageID = ?`, [manageToken, manageID])
                 } else {
-                    const insertTokenSql = `insert into my_token_store (manageID, token) values (?, ?)`
+                    const insertTokenSql = `insert into manage_token_store (manageID, manageToken) values (?, ?)`
                     await ctx.querySQL(insertTokenSql, [manageID, manageToken])
                 }
                 ctx.cookies.set('manageToken', manageToken)
