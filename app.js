@@ -109,8 +109,13 @@ app.use(checkManageLoginInterface())
 // app.use(ignoreCheckLogin())
 
 app.use(async (ctx, next) => {
-    if (ctx.path.startsWith('/h5/pages')) {
-        const data = await readFile('./public/h5/index.html')
+    if (ctx.path.startsWith('/user/pages')) {
+        const data = await readFile('./public/user/index.html')
+        ctx.type = 'text/html;charset=utf-8';
+        ctx.body = data
+        return
+    } else if (ctx.path.startsWith('/manage/pages')) {
+        const data = await readFile('./public/manage/index.html')
         ctx.type = 'text/html;charset=utf-8';
         ctx.body = data
         return
