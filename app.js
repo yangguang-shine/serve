@@ -30,6 +30,7 @@ const check = require("./routes/platform/check");
 
 // 引入方法
 const SQL = require('./model/mysql')
+const dataFormat = require('./tool/dataFormat')
 const checkUserLogin = require('./tool/checkUserLogin')
 const getUserID = require('./tool/getUserID')
 const getManageID = require('./tool/getManageID')
@@ -58,6 +59,7 @@ app.use(async (ctx, next) => {
 })
 
 app.context.querySQL = SQL.querySQL
+app.context.dataFormat = dataFormat
 app.context.getUserID = getUserID
 app.context.getManageID = getManageID
 app.context.checkManageLogin = checkManageLogin
