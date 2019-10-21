@@ -229,6 +229,37 @@ router.post('/cancell', async (ctx) => {
     }
 })
 
+router.get('/foodList', async (ctx) => {
+    try {
+        const { orderKey, shopID } = ctx.query
+        if (!orderKey || !shopID) {
+            ctx.body = ctx.parameterError
+            return
+        }
+        const sql = `select * from order_food_list_${shopID} where orderKey = ?`
+        const res = await ctx.querySQL(sql, [orderKey])
+        if (res.length) {
+            ctx.body = {
+                code: '000',
+                msg: '查找成功',
+                data: res
+            }
+        } else {
+            ctx.body = {
+                code: '111',
+                msg: '该订单没有菜品',
+                data: []
+            }
+        }
+    } catch (e) {
+        ctx.body = {
+            code: '111',
+            msg: '获取失败',
+            data: []
+        }
+    }
+})
+
 async function insertOrderFoodList({ querySQL, foodList, orderKey, userID = '', shopID = '' } = {}) {
     let sql = ''
     if(userID) {

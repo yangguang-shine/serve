@@ -36,14 +36,18 @@ router.get('/find', async (ctx, next) => {
             return
         }
         const res = await ctx.querySQL('select * from shop_list where shopID = ?;', [Number(query.shopID)])
-        let data = {}
         if (res.length) {
-            data = res[0]
-        }
-        ctx.body = {
-            code: '000',
-            msg: '查找成功',
-            data
+            ctx.body = {
+                code: '000',
+                msg: '查找成功',
+                data: res[0]
+            }
+        } else {
+            ctx.body = {
+                code: '111',
+                msg: '无此店铺',
+                data: {}
+            }
         }
     } catch (e) {
         console.log(e)

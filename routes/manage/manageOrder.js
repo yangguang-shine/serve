@@ -11,24 +11,23 @@ router.get('/orderList', async (ctx, next) => {
         // 40   已自提   已送达
         // 50   已取消
         const { status, shopID } = ctx.query
-        if (!(Number(status) >= 0 && Number(status) <= 3)) {
+        if (!(Number(status) >= 0 && Number(status) <= 3) && !shopID) {
             ctx.body = ctx.parameterError
             return
         }
         let sql = ''
         let orderList = []
-        const userIDOrShopID = shopID || await ctx.getUserID(ctx)
         if (Number(status) === 0) {
-            sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`;
+            sql = `select * from order_key_list_${shopID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`;
             orderList = await ctx.querySQL(sql)
         } else if (Number(status) === 1) {
-            sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? or orderStatus = ? or orderStatus = ? ORDER BY a.orderKey desc`;
+            sql = `select * from order_key_list_${shopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? or orderStatus = ? or orderStatus = ? ORDER BY a.orderKey desc`;
             orderList = await ctx.querySQL(sql, [10, 20, 30])
         } else if (Number(status) === 2) {
-            sql = sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
+            sql = sql = `select * from order_key_list_${shopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
             orderList = await ctx.querySQL(sql, [40])
         } else if (Number(status) === 3) {
-            sql = sql = `select * from order_key_list_${userIDOrShopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
+            sql = sql = `select * from order_key_list_${shopID} a inner join shop_list b on a.shopID = b.shopID where orderStatus = ? ORDER BY a.orderKey desc`;
             orderList = await ctx.querySQL(sql, [50])
         }
         orderList.forEach((order) => {
@@ -52,13 +51,12 @@ router.get('/orderList', async (ctx, next) => {
 router.get('/orderDetail', async (ctx) => {
     try {
         const { orderKey, shopID } = ctx.query
-        if (!orderKey) {
+        if (!orderKey && !shopID) {
             ctx.body = ctx.parameterError
             return
         }
-        const userIDOrShopID = shopID || await ctx.getUserID(ctx)
-        const sql1 = `select * from order_key_list_${userIDOrShopID} where orderKey = ?`
-        const sql2 = `select * from order_food_list_${userIDOrShopID} where orderKey = ?`
+        const sql1 = `select * from order_key_list_${shopID} where orderKey = ?`
+        const sql2 = `select * from order_food_list_${shopID} where orderKey = ?`
         const promise1 = ctx.querySQL(sql1, [orderKey])
         const promise2 = ctx.querySQL(sql2, [orderKey])
         const orderInfoList = await promise1
@@ -113,9 +111,6 @@ router.post('/cancell', async (ctx) => {
             }
             return
         }
-        console.log(1111)
-        console.log(userID)
-        console.log(shopID)
         await ctx.SQLtransaction(async (querySQL) => {
             const sql1 = `update order_key_list_${userID} set orderStatus = ? where orderKey = ?`;
             const sql2 = `update order_key_list_${shopID} set orderStatus = ? where orderKey = ?`;
