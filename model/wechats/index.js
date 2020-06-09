@@ -11,7 +11,7 @@ exports.getAccessToken = async () => {
         }
         if(access_token) return
         console.log('获取token')
-        https.get('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wxd3070d04299694f4&secret=62e5ae62775a3277d55571b53e212e12', async (res) => {
+        https.get('https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=wx5e8fc6bbef84c4c3&secret=907d28beba4d2e9b930c6e1022c7a86f', async (res) => {
             const resData = await dataFormat(res)
             console.log(resData)
             console.log(typeof resData)

@@ -19,14 +19,18 @@ const wechat = require("./routes/user/wechat");
 // 添加路由  管理员
 const category = require("./routes/manage/category");
 const food = require("./routes/manage/food");
-const img = require("./routes/manage/img");
+// const img = require("./routes/manage/img");
 const manageLogin = require("./routes/manage/manageLogin");
 const manageOrder = require("./routes/manage/manageOrder");
 const manageShop = require("./routes/manage/manageShop");
 
 // 添加路由  公众平台
-const message = require("./routes/platform/message");
-const check = require("./routes/platform/check");
+const platformMessage = require("./routes/platform/platformMessage");
+const platformCheck = require("./routes/platform/platformCheck");
+
+// 添加路由  小程序客服
+const appletMessage = require("./routes/applet/appletMessage");
+const appletCheck = require("./routes/applet/appletCheck");
 
 // 引入方法
 const SQL = require('./model/mysql')
@@ -39,6 +43,9 @@ const checkManageLogin = require('./tool/checkManageLogin')
 const { readFile } = require('./tool/fsPromise')
 const checkManageLoginInterface = require('./utils/checkManageLoginInterface')
 const checkUserLoginInterface = require('./utils/checkUserLoginInterface')
+
+// const getAppletAccessToken = require("./model/appletInfo").getAppletAccessToken;
+// getAppletAccessToken();
 
 // const getAccessToken = require("./model/wechats").getAccessToken;
 // getAccessToken();
@@ -125,6 +132,7 @@ app.use(async (ctx, next) => {
     await next()
 });
 // routes
+console.log()
 app.use(address.routes(), address.allowedMethods());
 app.use(entertainment.routes(), entertainment.allowedMethods());
 app.use(userLogin.routes(), userLogin.allowedMethods());
@@ -133,12 +141,14 @@ app.use(userShop.routes(), userShop.allowedMethods());
 app.use(wechat.routes(), wechat.allowedMethods());
 app.use(category.routes(), category.allowedMethods());
 app.use(food.routes(), food.allowedMethods());
-app.use(img.routes(), img.allowedMethods());
+// app.use(img.routes(), img.allowedMethods());
 app.use(manageLogin.routes(), manageLogin.allowedMethods());
 app.use(manageOrder.routes(), manageOrder.allowedMethods());
 app.use(manageShop.routes(), manageShop.allowedMethods());
-app.use(message.routes(), message.allowedMethods());
-app.use(check.routes(), check.allowedMethods());
+app.use(platformMessage.routes(), platformMessage.allowedMethods());
+app.use(platformCheck.routes(), platformCheck.allowedMethods());
+app.use(appletMessage.routes(), appletMessage.allowedMethods());
+app.use(appletCheck.routes(), appletCheck.allowedMethods());
 
 // error-handling
 app.on("error", (err, ctx) => {
