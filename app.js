@@ -8,10 +8,23 @@ const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
 const compress = require('koa-compress')
 
+// 用户登录注册
+const userLoginRegister = require("./routes/loginRegister/userLoginRegister");
+
+// 管理员登录注册
+const manageLoginRegister = require("./routes/loginRegister/manageLoginRegister");
+
+// 管理员店铺
+const manageShop = require("./routes/manage/shop");
+
+// 管理员店铺订单
+const manageOrder = require("./routes/manage/order");
+
+
+
 // 添加路由  用户
 const address = require("./routes/user/address");
 const entertainment = require("./routes/user/entertainment");
-const userLogin = require("./routes/user/userLogin");
 const userOrder = require("./routes/user/userOrder");
 const userShop = require("./routes/user/userShop");
 const wechat = require("./routes/user/wechat");
@@ -20,9 +33,7 @@ const wechat = require("./routes/user/wechat");
 const category = require("./routes/manage/category");
 const food = require("./routes/manage/food");
 // const img = require("./routes/manage/img");
-const manageLogin = require("./routes/manage/manageLogin");
-const manageOrder = require("./routes/manage/manageOrder");
-const manageShop = require("./routes/manage/manageShop");
+// const manageShop = require("./routes/manage/manageShop");
 
 // 添加路由  公众平台
 const platformMessage = require("./routes/platform/platformMessage");
@@ -70,13 +81,13 @@ app.context.dataFormat = dataFormat
 app.context.getUserID = getUserID
 app.context.getManageID = getManageID
 app.context.checkManageLogin = checkManageLogin
+app.context.checkUserLogin = checkUserLogin
 app.context.parameterError = {
-    code: '222',
+    code: '300',
     msg: '参数校验失败',
     data: {}
 }
 app.context.SQLtransaction = SQL.SQLtransaction
-app.context.checkUserLogin = checkUserLogin
 
 app.use(xmlParser());
 app.use(
@@ -107,12 +118,16 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
+// 判断是否是登录
+app.use(userLoginRegister.routes(), userLoginRegister.allowedMethods());
+app.use(manageLoginRegister.routes(), manageLoginRegister.allowedMethods());
+
 
 // 判断用户token权限
-app.use(checkUserLoginInterface())
+// app.use(checkUserLoginInterface())
 
 // 判断管理员manageToken权限
-app.use(checkManageLoginInterface())
+// app.use(checkManageLoginInterface())
 
 // 用户token权限和manageToken权限判断
 // app.use(ignoreCheckLogin())
@@ -132,17 +147,15 @@ app.use(async (ctx, next) => {
     await next()
 });
 // routes
-console.log()
 app.use(address.routes(), address.allowedMethods());
 app.use(entertainment.routes(), entertainment.allowedMethods());
-app.use(userLogin.routes(), userLogin.allowedMethods());
 app.use(userOrder.routes(), userOrder.allowedMethods());
 app.use(userShop.routes(), userShop.allowedMethods());
 app.use(wechat.routes(), wechat.allowedMethods());
 app.use(category.routes(), category.allowedMethods());
 app.use(food.routes(), food.allowedMethods());
 // app.use(img.routes(), img.allowedMethods());
-app.use(manageLogin.routes(), manageLogin.allowedMethods());
+
 app.use(manageOrder.routes(), manageOrder.allowedMethods());
 app.use(manageShop.routes(), manageShop.allowedMethods());
 app.use(platformMessage.routes(), platformMessage.allowedMethods());
@@ -154,7 +167,7 @@ app.use(appletCheck.routes(), appletCheck.allowedMethods());
 app.on("error", (err, ctx) => {
     console.error("server error", err, ctx);
     ctx.body = {
-        code: '111',
+        code: '999',
         msg: '服务错误',
         data: null
     }

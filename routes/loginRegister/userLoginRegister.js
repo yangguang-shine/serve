@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserIDOrShopIDOrderFoodList')
 const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
 const createUserIDAddress = require('../../creatTable/createUserIDAddress')
-router.prefix("/user/api");
+router.prefix("/user");
 
 router.post("/login", async (ctx, next) => {
     try {
@@ -14,7 +14,7 @@ router.post("/login", async (ctx, next) => {
             return
         }
         const encryptPassword = encryption(password)
-        const sql = `select encryptPassword, userID, nickname from user_openid where phone = ?`
+        const sql = `select encryptPassword, userID, nickname from user_info_pass where phone = ?`
         const phoneInfoList = await ctx.querySQL(sql, [phone])
         if (phoneInfoList.length) {
             if (phoneInfoList.length > 1) {
@@ -27,45 +27,45 @@ router.post("/login", async (ctx, next) => {
                 const userID = phoneInfo.userID
                 const md5 = crypto.createHash('md5');
                 const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
-                const token = await md5.update(secret).digest('hex');
-                const res = await ctx.querySQL('select token from my_token_store where userID = ?', [userID])
+                const userToken = await md5.update(secret).digest('hex');
+                const res = await ctx.querySQL('select userToken from user_token_store where userID = ?', [userID])
                 if (res.length) {
                     if (res.length > 1) {
                         console.log('多个userID')
                     }
-                    await ctx.querySQL(`update my_token_store set token = ? where userID = ?`, [token, userID])
+                    await ctx.querySQL(`update user_token_store set userToken = ? where userID = ?`, [userToken, userID])
                 } else {
-                    const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
-                    await ctx.querySQL(insertTokenSql, [userID, token])
+                    const insertTokenSql = `insert into user_token_store (userID, userToken) values (?, ?)`
+                    await ctx.querySQL(insertTokenSql, [userID, userToken])
                 }
-                ctx.cookies.set('token', token)
+                ctx.cookies.set('userToken', userToken)
                 ctx.body = {
                     code: '000',
                     msg: '登录成功',
                     data: {
                         nickname,
-                        token
+                        userToken
                     }
                 }
             } else {
                 ctx.body = {
-                    code: '111',
-                    msg: '密码错误',
+                    code: '101',
+                    msg: '用户密码错误',
                     data: {}
                 }
             }
         } else {
             ctx.body = {
-                code: '111',
-                msg: '改手机号不存在',
+                code: '102',
+                msg: '用户手机号不存在',
                 data: {}
             }
         }
     } catch (e) {
         console.log(e)
         ctx.body = {
-            code: '111',
-            msg: '登录失败',
+            code: '105',
+            msg: '用户登录失败，请稍后再试',
             data: {}
         }
     }
@@ -80,7 +80,7 @@ router.post("/register", async (ctx, next) => {
         }
         const encryptPassword = encryption(password)
         let phoneIsexit = false
-        let sql = `select phone from user_openid where phone = ?`
+        let sql = `select phone from user_info_pass where phone = ?`
         const phoneList = await ctx.querySQL(sql, [phone]);
         if (phoneList.length) {
             phoneIsexit = true
@@ -91,41 +91,41 @@ router.post("/register", async (ctx, next) => {
         if (!phoneIsexit) {
             const md5 = crypto.createHash('md5');
             const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
-            const token = await md5.update(secret).digest('hex');
+            const userToken = await md5.update(secret).digest('hex');
             await ctx.SQLtransaction(async (querySQL) => {
-                const sql = 'insert into user_openid (phone, encryptPassword, nickname) values (?)'
+                const sql = 'insert into user_info_pass (phone, encryptPassword, nickname) values (?)'
                 const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
                 const userID = res.insertId
+                const insertTokenSql = `insert into user_token_store (userID, userToken) values (?, ?)`
+                await querySQL(insertTokenSql, [userID, userToken])
                 const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
                 const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })
                 const createUserIDAddressPromise = createUserIDAddress({ querySQL, userID })
                 await createUserIDOrderFoodListPromise
                 await createUserIDOrderKeyListPromise
                 await createUserIDAddressPromise
-                const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
-                await querySQL(insertTokenSql, [userID, token])
             })
-            ctx.cookies.set('token', token)
+            ctx.cookies.set('userToken', userToken)
             ctx.body = {
                 code: '000',
                 msg: '注册成功',
                 data: {
                     nickname,
-                    token
+                    userToken
                 }
             }
         } else {
             ctx.body = {
-                code: '111',
-                msg: '改手机号已被注册',
+                code: '103',
+                msg: '用户改手机号已被注册',
                 data: {}
             }
         }
     } catch (e) {
         console.log(e)
         ctx.body = {
-            code: '111',
-            msg: '注册失败',
+            code: '104',
+            msg: '用户注册失败，请稍后再试',
             data: {}
         }
     }

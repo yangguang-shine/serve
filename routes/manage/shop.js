@@ -5,7 +5,7 @@ const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserID
 const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
 const { deleteShopImg, deleteFoodImg } = require('../../utils');
 
-router.prefix('/manage/api/manageShop')
+router.prefix('/manage/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     let res = []
@@ -16,7 +16,9 @@ router.get('/list', async (ctx, next) => {
         ctx.body = {
             code: '000',
             msg: '查询成功',
-            data: res
+            data: {
+                shopList: res
+            }
         }
     } catch (e) {
         console.log(e)
@@ -87,26 +89,27 @@ router.post('/delete', async (ctx, next) => {
             await promise4
             await promise5
         })
-        try {
-            let deleteShopImgPromise = null
-            if (shopImgUrlList.length) {
-                if (shopImgUrlList[0].imgUrl) {
-                    deleteShopImgPromise = deleteShopImg(`./public${shopImgUrlList[0].imgUrl}`)
-                }
-            }
-            const promiseList = []
-            foodImgUrlList.forEach((foodImgItem) => {
-                if (foodImgItem.imgUrl) {
-                    promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))
-                }
-            })
-            await deleteShopImgPromise
-            for (let i = 0; i < promiseList.length; i += 1) {
-                await promiseList[i]
-            }
-        } catch(e) {
-            console.log(e)
-        }
+        // // 删除图片
+        // try {
+        //     let deleteShopImgPromise = null
+        //     if (shopImgUrlList.length) {
+        //         if (shopImgUrlList[0].imgUrl) {
+        //             deleteShopImgPromise = deleteShopImg(`./public${shopImgUrlList[0].imgUrl}`)
+        //         }
+        //     }
+        //     const promiseList = []
+        //     foodImgUrlList.forEach((foodImgItem) => {
+        //         if (foodImgItem.imgUrl) {
+        //             promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))
+        //         }
+        //     })
+        //     await deleteShopImgPromise
+        //     for (let i = 0; i < promiseList.length; i += 1) {
+        //         await promiseList[i]
+        //     }
+        // } catch(e) {
+        //     console.log(e)
+        // }
         ctx.body = {
             code: '000',
             msg: '删除成功',
@@ -159,11 +162,17 @@ router.get('/find', async (ctx, next) => {
         let data = {}
         if (res.length) {
             data = res[0]
-        }
-        ctx.body = {
-            code: '000',
-            msg: '查找成功',
-            data
+            ctx.body = {
+                code: '000',
+                msg: '查找成功',
+                data
+            }
+        } else {
+            ctx.body = {
+                code: '111',
+                msg: '查找失败',
+                data: null
+            }
         }
     } catch (e) {
         console.log(e)

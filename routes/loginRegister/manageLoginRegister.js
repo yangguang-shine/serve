@@ -1,7 +1,7 @@
 const router = require("koa-router")();
 const encryption = require('../../tool/encryption')
 const crypto = require('crypto');
-router.prefix("/manage/api");
+router.prefix("/manage");
 
 router.post("/login", async (ctx, next) => {
     try {
@@ -11,7 +11,7 @@ router.post("/login", async (ctx, next) => {
             return
         }
         const encryptPassword = encryption(password)
-        const sql = `select encryptPassword, manageID, nickname from manage_user_info where phone = ?`
+        const sql = `select encryptPassword, manageID, nickname from manage_info_pass where phone = ?`
         const phoneInfoList = await ctx.querySQL(sql, [phone])
         if (phoneInfoList.length) {
             if (phoneInfoList.length > 1) {
@@ -45,14 +45,14 @@ router.post("/login", async (ctx, next) => {
                 }
             } else {
                 ctx.body = {
-                    code: '111',
+                    code: '108',
                     msg: '密码错误',
                     data: {}
                 }
             }
         } else {
             ctx.body = {
-                code: '111',
+                code: '109',
                 msg: '改手机号不存在',
                 data: {}
             }
@@ -60,8 +60,8 @@ router.post("/login", async (ctx, next) => {
     } catch (e) {
         console.log(e)
         ctx.body = {
-            code: '111',
-            msg: '登录失败',
+            code: '110',
+            msg: '管理员登录失败，请稍后再试',
             data: {}
         }
     }
@@ -76,7 +76,7 @@ router.post("/register", async (ctx, next) => {
         }
         const encryptPassword = encryption(password)
         let phoneIsexit = false
-        let sql = `select phone from manage_user_info where phone = ?`
+        let sql = `select phone from manage_info_pass where phone = ?`
         const phoneList = await ctx.querySQL(sql, [phone]);
         if (phoneList.length) {
             phoneIsexit = true
@@ -89,7 +89,7 @@ router.post("/register", async (ctx, next) => {
             const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
             const manageToken = await md5.update(secret).digest('hex');
             await ctx.SQLtransaction(async (querySQL) => {
-                const sql = 'insert into manage_user_info (phone, encryptPassword, nickname) values (?)'
+                const sql = 'insert into manage_info_pass (phone, encryptPassword, nickname) values (?)'
                 const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
                 const manageID = res.insertId
                 const insertTokenSql = `insert into manage_token_store (manageID, manageToken) values (?, ?)`
@@ -106,7 +106,7 @@ router.post("/register", async (ctx, next) => {
             }
         } else {
             ctx.body = {
-                code: '111',
+                code: '106',
                 msg: '改手机号已被注册',
                 data: {}
             }
@@ -114,8 +114,8 @@ router.post("/register", async (ctx, next) => {
     } catch (e) {
         console.log(e)
         ctx.body = {
-            code: '111',
-            msg: '注册失败',
+            code: '107',
+            msg: '管理员注册失败，请稍后再试',
             data: {}
         }
     }

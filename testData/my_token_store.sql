@@ -18,10 +18,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for my_token_store
+-- Table structure for user_token_store
 -- ----------------------------
-DROP TABLE IF EXISTS `my_token_store`;
-CREATE TABLE `my_token_store`  (
+DROP TABLE IF EXISTS `user_token_store`;
+CREATE TABLE `user_token_store`  (
   `userID` int(11) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,

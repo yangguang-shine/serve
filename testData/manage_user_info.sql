@@ -18,10 +18,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for manage_user_info
+-- Table structure for manage_info_pass
 -- ----------------------------
-DROP TABLE IF EXISTS `manage_user_info`;
-CREATE TABLE `manage_user_info`  (
+DROP TABLE IF EXISTS `manage_info_pass`;
+CREATE TABLE `manage_info_pass`  (
   `manageID` int(11) NOT NULL AUTO_INCREMENT,
   `phone` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `encryptPassword` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,

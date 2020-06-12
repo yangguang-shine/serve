@@ -18,10 +18,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for user_openid
+-- Table structure for user_info_pass
 -- ----------------------------
-DROP TABLE IF EXISTS `user_openid`;
-CREATE TABLE `user_openid`  (
+DROP TABLE IF EXISTS `user_info_pass`;
+CREATE TABLE `user_info_pass`  (
   `openid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `session_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `userID` int(11) NOT NULL AUTO_INCREMENT,

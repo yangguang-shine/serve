@@ -19,7 +19,7 @@ module.exports = async (ctx) => {
     const res = await httpsGet(`https://api.weixin.qq.com/sns/oauth2/access_token?appid=wxd3070d04299694f4&secret=62e5ae62775a3277d55571b53e212e12&code=${code}&grant_type=authorization_code`)
     const data = await dataFormat(res)
     const { access_token, openid } = JSON.parse(data);
-    const sql = `select * from user_openid where openid = ?`
+    const sql = `select * from user_info_pass where openid = ?`
     console.log('openid')
     console.log(openid)
     const userList = await ctx.querySQL(sql, [openid])
@@ -40,7 +40,7 @@ module.exports = async (ctx) => {
     await ctx.SQLtransaction(async (querySQL) => {
         const { nickname, sex, province, city, country, headimgurl, unionid } = wechatUserInfo
         if (!userInfo.openid) {
-            const sql = `insert into user_openid (openid, nickname, sex, province, city, country, headimgurl, unionid) values (?)`
+            const sql = `insert into user_info_pass (openid, nickname, sex, province, city, country, headimgurl, unionid) values (?)`
             const res = await querySQL(sql, [[openid, nickname, sex, province, city, country, headimgurl, unionid]])
             console.log(res)
             userID = res.insertId
@@ -53,22 +53,22 @@ module.exports = async (ctx) => {
             console.log(res)
         } else {
             userID = userInfo.userID
-            const sql = `update user_openid set  nickname = ?, sex = ?, province =?, city = ?, country = ?, headimgurl = ?, unionid = ? where openid = ?`
+            const sql = `update user_info_pass set  nickname = ?, sex = ?, province =?, city = ?, country = ?, headimgurl = ?, unionid = ? where openid = ?`
             const res = await querySQL(sql, [nickname, sex, province, city, country, headimgurl, unionid, openid])
             console.log(res)
         }
-        const userIDTokenList = await querySQL(`select * from my_token_store where userID = ?`, [userID])
+        const userIDTokenList = await querySQL(`select * from user_token_store where userID = ?`, [userID])
         const md5 = crypto.createHash('md5');
         const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${openid}`
         const token = await md5.update(secret).digest('hex');
         if (!userIDTokenList.length) {
-            const insertTokenSql = `insert into my_token_store (userID, token) values (?, ?)`
+            const insertTokenSql = `insert into user_token_store (userID, token) values (?, ?)`
             await querySQL(insertTokenSql, [userID, token])
         } else {
             if (userIDTokenList.length > 1) {
                 console.log('查询到多个userID和token')
             }
-            await querySQL(`update my_token_store set token = ? where userID = ?`, [token, userID])
+            await querySQL(`update user_token_store set token = ? where userID = ?`, [token, userID])
         }
         ctx.cookies.set('token', token)
         console.log(token)
