@@ -1,14 +1,14 @@
 const router = require('koa-router')()
 // const moment = require('moment');
 
-router.prefix('/manage/api/manageOrder')
+router.prefix('/manage/order')
 // 添加菜品
 router.get('/orderList', async (ctx, next) => {
     try {
         // 10   待接单
         // 20   已接单
-        // 30   待自提   已送出
-        // 40   已自提   已送达
+        // 30   已送出  |  制作中
+        // 40   已送达  |  制作完
         // 50   已取消
         const { status, shopID } = ctx.query
         if (!(Number(status) >= 0 && Number(status) <= 3) && !shopID) {
@@ -182,26 +182,4 @@ router.post('/changeOrderStatus', async (ctx) => {
     }
 })
 
-async function insertOrderFoodList({ querySQL, foodList, orderKey, userID = '', shopID = '' } = {}) {
-    let sql = ''
-    if(userID) {
-        sql = `insert into order_food_list_${userID} (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?`
-    } else if (shopID) {
-        sql = `insert into order_food_list_${shopID} (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey) values ?`
-    }
-    const values = []
-    foodList.forEach((item) => {
-        const foodID = item.foodID
-        const orderCount = item.orderCount
-        const imgUrl = item.imgUrl
-        const foodName = item.foodName
-        const categoryID = item.categoryID
-        const categoryName = item.categoryName
-        const price = item.price
-        const unit = item.unit
-        const description = item.description
-        values.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey])
-    })
-    await querySQL(sql, [values])
-}
 module.exports = router

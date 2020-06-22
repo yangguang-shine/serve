@@ -1,7 +1,7 @@
 module.exports = async(ctx) => {
-    const token = ctx.cookies.get('token')
-    const sql = `select userID from user_token_store where token = ?`
-    const userIDList = await ctx.querySQL(sql, [token])
+    const userToken = ctx.cookies.get('userToken')
+    const sql = `select userID from user_token_store where userToken = ?`
+    const userIDList = await ctx.querySQL(sql, [userToken])
     let userID = ''
     if (userIDList.length) {
         userID = userIDList[0].userID

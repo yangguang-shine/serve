@@ -3,7 +3,8 @@ const app = new Koa();
 const views = require("koa-views");
 const json = require("koa-json");
 const onerror = require("koa-onerror");
-const bodyparser = require("koa-bodyparser");
+// const bodyparser = require("koa-bodyparser");
+const koaBody = require("koa-body");
 const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
 const compress = require('koa-compress')
@@ -20,19 +21,35 @@ const manageShop = require("./routes/manage/shop");
 // 管理员店铺订单
 const manageOrder = require("./routes/manage/order");
 
+// 管理员菜品分类
+const manageCategory = require("./routes/manage/category");
+
+// 管理员菜品详情
+const manageFood = require("./routes/manage/food");
+
+// 用户地址
+const userAddress = require("./routes/user/address");
+
+// 用户查看店铺列表
+const userShop = require("./routes/user/shop");
+
+// 用户订单
+const userOrder = require("./routes/user/order");
+
+// 图片上传
+const img = require("./routes/manage/img");
+
 
 
 // 添加路由  用户
-const address = require("./routes/user/address");
 const entertainment = require("./routes/user/entertainment");
-const userOrder = require("./routes/user/userOrder");
-const userShop = require("./routes/user/userShop");
+// const userOrder = require("./routes/user/userOrder");
+// const userShop = require("./routes/user/userShop");
 const wechat = require("./routes/user/wechat");
 
 // 添加路由  管理员
-const category = require("./routes/manage/category");
-const food = require("./routes/manage/food");
-// const img = require("./routes/manage/img");
+// const category = require("./routes/manage/category");
+// const food = require("./routes/manage/food");
 // const manageShop = require("./routes/manage/manageShop");
 
 // 添加路由  公众平台
@@ -90,8 +107,11 @@ app.context.parameterError = {
 app.context.SQLtransaction = SQL.SQLtransaction
 
 app.use(xmlParser());
+// app.use(
+//     bodyparser()
+// );
 app.use(
-    bodyparser()
+    koaBody()
 );
 app.use(json());
 app.use(logger());
@@ -147,17 +167,26 @@ app.use(async (ctx, next) => {
     await next()
 });
 // routes
-app.use(address.routes(), address.allowedMethods());
-app.use(entertainment.routes(), entertainment.allowedMethods());
-app.use(userOrder.routes(), userOrder.allowedMethods());
-app.use(userShop.routes(), userShop.allowedMethods());
-app.use(wechat.routes(), wechat.allowedMethods());
-app.use(category.routes(), category.allowedMethods());
-app.use(food.routes(), food.allowedMethods());
-// app.use(img.routes(), img.allowedMethods());
-
+// 管理员routes
 app.use(manageOrder.routes(), manageOrder.allowedMethods());
 app.use(manageShop.routes(), manageShop.allowedMethods());
+app.use(manageCategory.routes(), manageCategory.allowedMethods());
+app.use(manageFood.routes(), manageFood.allowedMethods());
+
+// 用户routes
+
+app.use(userAddress.routes(), userAddress.allowedMethods());
+app.use(userOrder.routes(), userOrder.allowedMethods());
+app.use(userShop.routes(), userShop.allowedMethods());
+
+
+// 其他
+app.use(entertainment.routes(), entertainment.allowedMethods());
+app.use(wechat.routes(), wechat.allowedMethods());
+
+app.use(img.routes(), img.allowedMethods());
+
+
 app.use(platformMessage.routes(), platformMessage.allowedMethods());
 app.use(platformCheck.routes(), platformCheck.allowedMethods());
 app.use(appletMessage.routes(), appletMessage.allowedMethods());

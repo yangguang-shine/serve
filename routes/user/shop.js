@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 
-router.prefix('/user/api/userShop')
+router.prefix('/user/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     const { businessType } = ctx.query

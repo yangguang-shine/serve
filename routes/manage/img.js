@@ -8,7 +8,7 @@ const randomNum = require('../../tool/randomNum');
 const { unlink } = require('../../tool/fsPromise');
 
 router.use(Multy())
-router.prefix('/manage/api/img')
+router.prefix('/manage/img')
 // 上传图片
 router.post('/shop/uploadImg', async (ctx, next) => {
     try {

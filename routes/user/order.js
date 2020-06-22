@@ -2,7 +2,7 @@ const router = require('koa-router')()
 const randomNum = require('../../tool/randomNum');
 // const moment = require('moment');
 
-router.prefix('/user/api/userOrder')
+router.prefix('/user/order')
 // 添加菜品
 router.get('/menuList', async (ctx, next) => {
     const { shopID } = ctx.query
@@ -60,7 +60,7 @@ router.get('/menuList', async (ctx, next) => {
 router.post('/submit', async (ctx, next) => {
     const orderKey = randomNum()
     const orderTime = new Date()
-    const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime } = ctx.request.body
+    const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount } = ctx.request.body
     if (!shopID) {
         ctx.body = ctx.parameterError
         return
@@ -68,12 +68,12 @@ router.post('/submit', async (ctx, next) => {
     const userID = await ctx.getUserID(ctx)
     try {
         await ctx.SQLtransaction(async (querySQL) => {
-            const valuesUserID = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime]
-            const valuesShopID = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, userID]
-            const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime) values (?);`
+            const valuesUserID = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount]
+            const valuesShopID = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, userID, originOrderAmount]
+            const sql = `insert into order_key_list_${userID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount) values (?);`
             const insertOrderKeyPromise = await querySQL(sql, [valuesUserID])
             const insertOrderPromise = await insertOrderFoodList({ querySQL: querySQL, foodList, orderKey, userID })
-            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, userID) values (?);`
+            const shopSQL = `insert into order_key_list_${shopID} (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, userID, originOrderAmount) values (?);`
             const insertShopIDOrderKeyPromise = await querySQL(shopSQL, [valuesShopID])
             const insertShopIDOrderPromise = await insertOrderFoodList({ querySQL: querySQL, foodList, orderKey, shopID })
             await insertOrderKeyPromise
