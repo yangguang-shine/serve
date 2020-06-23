@@ -111,7 +111,9 @@ app.use(xmlParser());
 //     bodyparser()
 // );
 app.use(
-    koaBody()
+    koaBody({
+        multipart: true,
+    })
 );
 app.use(json());
 app.use(logger());

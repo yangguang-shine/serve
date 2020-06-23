@@ -16,9 +16,7 @@ router.get('/list', async (ctx, next) => {
         ctx.body = {
             code: '000',
             msg: '查询成功',
-            data: {
-                shopList: res
-            }
+            data: res
         }
     } catch (e) {
         console.log(e)

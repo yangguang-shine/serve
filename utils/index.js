@@ -1,7 +1,7 @@
-const { unlink } = require('../tool/fsPromise')
+const { removeFile } = require('../tool/fsPromise')
 exports.deleteShopImg = async (path) => {
     try {
-        await unlink(path)
+        await removeFile(path)
     } catch (e) {
         console.log(`${path}  删除失败`)
     }
@@ -9,7 +9,7 @@ exports.deleteShopImg = async (path) => {
 
 exports.deleteFoodImg = async (path) => {
     try {
-        await unlink(path)
+        await removeFile(path)
     } catch (e) {
         console.log(`${path}  删除失败`)
     }

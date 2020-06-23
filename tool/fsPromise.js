@@ -1,5 +1,7 @@
 const fs = require('fs')
-exports.unlink = (path) => {
+
+// 删除文件
+exports.removeFile = (path) => {
     return new Promise((resolve, reject) => {
         fs.unlink(path, function(err) {
             if(err) {
@@ -10,6 +12,20 @@ exports.unlink = (path) => {
         })
     })
 }
+
+// 删除文件加
+exports.rmdir = (path) => {
+    return new Promise((resolve, reject) => {
+        fs.rmdir(path, function(err) {
+            if(err) {
+                reject(err);
+            }else {
+                resolve('创建成功！');
+            }
+        })
+    })
+}
+// 创建文件夹
 exports.mkdir = (path) => {
     return new Promise((resolve, reject) => {
         fs.mkdir(path, function(err) {
@@ -21,6 +37,8 @@ exports.mkdir = (path) => {
         })
     })
 }
+
+// 写文件
 exports.writeFile = (path, dataBuffer) => {
     return new Promise((resolve, reject) => {
         fs.writeFile(path, dataBuffer, function(err) {
@@ -32,6 +50,8 @@ exports.writeFile = (path, dataBuffer) => {
         })
     })
 }
+
+// 读文件
 exports.readFile = (path) => {
     return new Promise((resolve, reject) => {
         fs.readFile(path, function(err, data) {
@@ -43,6 +63,8 @@ exports.readFile = (path) => {
         })
     })
 }
+
+// 判断存在
 exports.access = (path) => {
     return new Promise((resolve, reject) => {
         fs.access(path, function(err) {
