@@ -39,9 +39,9 @@ exports.mkdir = (path) => {
 }
 
 // 写文件
-exports.writeFile = (path, dataBuffer) => {
+exports.writeFile = (path, dataBuffer, options) => {
     return new Promise((resolve, reject) => {
-        fs.writeFile(path, dataBuffer, function(err) {
+        fs.writeFile(path, dataBuffer, options, function(err) {
             if(err) {
                 reject(err);
             }else {
@@ -73,6 +73,22 @@ exports.access = (path) => {
             } else {
                 resolve(true)
             }
+        })
+    })
+}
+exports.readPipe = (readStream, writeStream, finish, error) => {
+    return new Promise((resolve, reject) => {
+        readStream.pipe(writeStream).on('finish', () => {
+            resolve()
+        }).on('error', () => {
+            reject()
+        })
+    })
+    return new Promise((resolve, reject) => {
+        readStream.pipe(writeStream).on('finish', () => {
+            resolve()
+        }).on('error', () => {
+            reject()
         })
     })
 }

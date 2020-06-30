@@ -7,7 +7,7 @@ const path = require('path');
 // const host = require('./host');
 const randomNum = require('../../tool/randomNum');
 const { removeFile } = require('../../tool/fsPromise');
-const { getImageExt, deleteShopImg, deleteFoodImg } = require('./imageTool/index')
+const { getImageName, deleteShopImg, deleteFoodImg } = require('./imageTool/index')
 
 // router.use(Multy())
 router.prefix('/manage/uploadImg/img')
@@ -16,14 +16,12 @@ router.post('/shop', async (ctx, next) => {
     try {
         const { name, path: imagePath } = ctx.request.files.image
         const { shopID, imgUrl } = ctx.request.body
-        console.log(imgUrl)
-        const imageExt = getImageExt(name)
+        const imageName = getImageName(name)
         const imageReader = fs.createReadStream(imagePath)
-        const imageNameNum = randomNum(2)
-        const distDir = path.join(__dirname, `../../public/upload/img/shop/${imageNameNum}.${imageExt}`)
+        const distDir = path.join(__dirname, `../../public/upload/img/shop/${imageName}`)
         const imageWriter = fs.createWriteStream(distDir)
         imageReader.pipe(imageWriter)
-        const updateImgUrl = `/upload/img/shop/${imageNameNum}.${imageExt}`
+        const updateImgUrl = `/upload/img/shop/${imageName}`
         let removeFilePromise = null
         let sqlPromise = null
         // let removeFileTemporaryPromise = removeFile(`./public/images/temporary/shop/${num}.${ext}`)
@@ -111,13 +109,12 @@ router.post('/food', async (ctx, next) => {
         const { name, path: imagePath } = ctx.request.files.image
         const { shopID, imgUrl, foodID } = ctx.request.body
         console.log(imgUrl)
-        const imageExt = getImageExt(name)
+        const imageName = getImageName(name)
         const imageReader = fs.createReadStream(imagePath)
-        const imageNameNum = randomNum(2)
-        const distDir = path.join(__dirname, `../../public/upload/img/food/${imageNameNum}.${imageExt}`)
+        const distDir = path.join(__dirname, `../../public/upload/img/food/${imageName}`)
         const imageWriter = fs.createWriteStream(distDir)
         imageReader.pipe(imageWriter)
-        const updateImgUrl = `/upload/img/food/${imageNameNum}.${imageExt}`
+        const updateImgUrl = `/upload/img/food/${imageName}`
         let removeFilePromise = null
         let sqlPromise = null
         // let removeFileTemporaryPromise = removeFile(`./public/images/temporary/food/${num}.${ext}`)

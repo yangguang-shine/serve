@@ -4,6 +4,17 @@ const createFoodInfo = require('../../creatTable/createFoodInfo')
 const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserIDOrShopIDOrderFoodList')
 const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
 const { deleteShopImg, deleteFoodImg } = require('../../utils');
+const { toBulkImportFood } = require('./shopTool/index')
+
+
+
+const httpsGet = require('../../tool/httpsGet')
+const httpGet = require('../../tool/httpGet')
+const dataFormat = require('../../tool/dataFormat')
+const { writeFile } = require('../../tool/fsPromise')
+const { getImageName } = require('./imageTool/index')
+const path = require('path')
+const fs = require('fs')
 
 router.prefix('/manage/shop')
 // 添加菜品
@@ -181,5 +192,68 @@ router.get('/find', async (ctx, next) => {
         }
     }
 })
+
+// 批量导入菜品信息
+router.post('/bulkImportFood', async (ctx, next) => {
+    try {
+        const { categoryList, shopID } = ctx.request.body
+        if (!(shopID && categoryList.length)) {
+            ctx.body = ctx.parameterError
+            return
+        }
+        await toBulkImportFood(ctx, {
+            shopID,
+            categoryList
+        })
+        ctx.body = {
+            code: '000',
+            msg: '更新成功',
+            data: null
+        }
+    } catch (e) {
+        console.log(e)
+        ctx.body = {
+            code: '111',
+            msg: '更新失败',
+            data: null
+        }
+    }
+})
+
+// 批量导入菜品信息
+// router.post('/img', async (ctx, next) => {
+//     try {
+//         const imgUrl = 'http://p0.meituan.net/xianfu/e6cac7bae7b9d776fdc158fe2314a2bd50176.jpg'
+//         const imageName = getImageName(imgUrl)
+//         const distDir = path.join(__dirname, `../../public/upload/img/food/${imageName}`)
+//         const res = await httpGet(imgUrl)
+//         // const data = await dataFormat(res, 'binary')
+//                     // const fsReadSream = fs.createReadStream(data)
+//             const fsWriteSream = fs.createWriteStream(distDir)
+//             res.pipe(fsWriteSream).on('finish', () => {
+//                 console.log('写入已完成');
+//               }).on('error', () => {
+//                 console.log('写入失败');
+//               }) 
+       
+//             // console.log(2)
+//             // console.log(res.pipe(fsWriteSream))
+//         // await writeFile(distDir, data, {
+//         //     encoding: 'binary'
+//         // })
+//         ctx.body = {
+//             code: '000',
+//             msg: '更新成功',
+//             data: null
+//         }
+//     } catch (e) {
+//         console.log(e)
+//         ctx.body = {
+//             code: '111',
+//             msg: '更新失败',
+//             data: null
+//         }
+//     }
+// })
 
 module.exports = router

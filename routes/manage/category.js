@@ -33,7 +33,8 @@ router.post('/add', async (ctx, next) => {
     }
     try {
         let sql = `insert into category_list_${shopID} (categoryName, shopID) values (?, ?);`
-        await ctx.querySQL(sql, [categoryName, shopID])
+        const res = await ctx.querySQL(sql, [categoryName, shopID])
+        console.log(res)
         ctx.body = {
             code: '000',
             msg: '添加成功',

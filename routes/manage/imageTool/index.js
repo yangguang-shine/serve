@@ -1,12 +1,17 @@
 const { removeFile } = require('../../../tool/fsPromise')
+const randomNum = require('../../../tool/randomNum');
 
-const getImageExt = (name = '') => {
+const getImageName = (name = '') => {
+    const imageNameNum = randomNum(2)
     const splitList = name.split('.')
+    let ext = ''
     if (splitList.length) {
-        return splitList[splitList.length -1]
+        ext = splitList[splitList.length -1]
+        return `${imageNameNum}.${ext}`
     } else {
         throw '无后缀'
     }
+    return 
 }
 const deleteShopImg = async (path) => {
     try {
@@ -24,7 +29,7 @@ const deleteFoodImg = async (path) => {
     }
 }
 module.exports = {
-    getImageExt,
+    getImageName,
     deleteShopImg,
     deleteFoodImg
 }
