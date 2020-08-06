@@ -1,7 +1,8 @@
-const httpsGet = require('../../tool/httpsGet')
-const dataFormat = require('../../tool/dataFormat')
+const httpsGet = require('../../tools/httpsGet')
+const dataFormat = require('../../tools/dataFormat')
 const crypto = require('crypto');
-const { readFile } = require('../../tool/fsPromise')
+const fsPromise = require('fs').promises;
+const { readFile } = fsPromise
 const createUserIDOrShopIDOrderFoodList = require('../../createTable/createUserIDOrShopIDOrderFoodList')
 const createUserIDOrShopIDOrderKeyList = require('../../createTable/createUserIDOrShopIDOrderKeyList')
 const createUserIDAddress = require('../../createTable/createUserIDAddress')

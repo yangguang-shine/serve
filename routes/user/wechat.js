@@ -1,6 +1,5 @@
 const router = require('koa-router')()
-const httpsGet = require('../../tool/httpsGet')
-const dataFormat = require('../../tool/dataFormat')
+const httpsGet = require('../../tools/httpsGet')
 const identification = require('../../model/wechats/identification')
 const messageDelivery = require('../../model/wechats/messageDelivery')
 // const mysqlConfig = require('../config/session-config')
@@ -28,7 +27,7 @@ router.get('/wx/login', async (ctx, next) => {
         }
         await ctx.SQLtransaction(async (querySQL) => {
             const res = await httpsGet(`https://api.weixin.qq.com/sns/jscode2session?appid=wx5e8fc6bbef84c4c3&secret=776934fd2bf6193cf8fd5e5af684d30c&js_code=${code}&grant_type=authorization_code`)
-            const data = await dataFormat(res)
+            const data = await ctx.dataFormat(res)
             const { session_key, openid } = JSON.parse(data)
             let sql = `select userID from user_info_pass where openid = ?`
             let queryUserIDList = await querySQL(sql, [openid])

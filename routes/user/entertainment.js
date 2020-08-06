@@ -1,5 +1,5 @@
 const router = require("koa-router")();
-const httpGet = require('../../tool/httpGet')
+const httpGet = require('../../tools/httpGet')
 
 router.prefix("/user/api/entertainment");
 

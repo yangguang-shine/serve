@@ -1,6 +1,6 @@
 const https = require('https');
 const fs = require('fs');
-const dataFormat = require('../../tool/dataFormat')
+const dataFormat = require('../../tools/dataFormat')
 
 exports.getAppletAccessToken = async () => {
     fs.readFile(__dirname + '/access_token.txt', (err, data) => {

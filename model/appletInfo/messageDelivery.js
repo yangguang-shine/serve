@@ -4,7 +4,7 @@ const judgeEvent = require('./judgeEvent')
 const builder = new xml2js.Builder();
 const https = require('https');
 const fs = require('fs');
-const dataFormat = require('../../tool/dataFormat')
+const dataFormat = require('../../tools/dataFormat')
 
 // const parser = new xml2js.Parser();
 module.exports = async (ctx) => {

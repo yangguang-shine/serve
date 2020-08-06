@@ -1,6 +1,6 @@
 const router = require('koa-router')()
-const httpsGet = require('../../tool/httpsGet')
-const dataFormat = require('../../tool/dataFormat')
+const httpsGet = require('../../tools/httpsGet')
+const dataFormat = require('../../tools/dataFormat')
 const identification = require('../../model/wechats/identification')
 const messageDelivery = require('../../model/wechats/messageDelivery')
 // const mysqlConfig = require('../config/session-config')
