@@ -1,6 +1,6 @@
 // this 指向 this
 
-module.exports = async function add() {
+module.exports = async function edit() {
     const { name, sex, mobile, address1, address2, addressID } = this.request.body
         if (!addressID) {
             this.body = this.parameterError

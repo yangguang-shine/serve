@@ -20,6 +20,7 @@ module.exports = async function remove() {
             await promiseList[i]
         }
     } catch (e) {
+        console.log(e)
     }
     this.body = {
         code: '000',

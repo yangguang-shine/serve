@@ -8,7 +8,7 @@ const changePassword = require('./changePassword')
 router.prefix('/manage/account')
 
 // 添加菜品
-router.get('/login', async (ctx, next) => {
+router.post('/login', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(login, {
         code: '110',
         msg: '管理员登录失败，请稍后再试',
@@ -36,6 +36,5 @@ router.post('/checkManageLogin', async (ctx, next) => {
         data: false
     })
 })
-
 
 module.exports = router

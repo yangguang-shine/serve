@@ -1,6 +1,6 @@
 // this 指向 this
 
-module.exports = async function remove() {
+module.exports = async function orderDetail() {
     const { orderKey } = this.query
     if (!orderKey) {
         this.body = this.parameterError

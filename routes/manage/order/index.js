@@ -11,7 +11,7 @@ router.get('/orderList', async (ctx, next) => {
         msg: '查询失败'
     })
 })
-router.post('/orderDetail', async (ctx, next) => {
+router.get('/orderDetail', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(orderDetail, {
         msg: '添加失败'
     })
@@ -25,7 +25,7 @@ router.post('/cancell', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/changeOrderStatus', async (ctx, next) => {
+router.post('/changeOrderStatus', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(changeOrderStatus, {
         msg: '订单状态修改失败'
     })

@@ -6,7 +6,6 @@ module.exports = (res, encode = 'utf-8') => {
             reject(new Error('error'))
         })
         res.on('data', (chunk) => {
-            debugger
             data += chunk
         })
         res.on('end', () => {

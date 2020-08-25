@@ -1,5 +1,5 @@
 
-module.exports = async function edit() {
+module.exports = async function list() {
     const { businessType } = this.query
     let res = []
     if (businessType) {

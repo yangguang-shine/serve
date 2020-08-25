@@ -1,5 +1,5 @@
 
-module.exports = async function edit() {
+module.exports = async function list() {
     let res = []
     const manageID = await this.getManageID()
     const sql = 'select * from shop_list where manageID = ?'

@@ -6,7 +6,7 @@ const edit = require('./edit')
 const find = require('./find')
 const bulkImportFood = require('./bulkImportFood')
 
-router.prefix('/manage/order')
+router.prefix('/manage/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {
@@ -27,7 +27,7 @@ router.post('/remove', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/edit', async (ctx, next) => {
+router.post('/edit', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(edit, {
         msg: '更新失败'
     })
@@ -41,7 +41,7 @@ router.get('/find', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/bulkImportFood', async (ctx, next) => {
+router.post('/bulkImportFood', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(bulkImportFood, {
         msg: '更新失败'
     })

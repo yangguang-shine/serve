@@ -1,6 +1,6 @@
 // this 指向 this
 
-module.exports = async function add() {
+module.exports = async function menuList() {
     const { shopID } = this.query
     if (!shopID) {
         this.body = this.parameterError

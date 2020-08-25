@@ -1,9 +1,9 @@
-exports.readPipe = (readStream, writeStream, finish, error) => {
+exports.readPipe = (readStream, writeStream) => {
     return new Promise((resolve, reject) => {
-        readStream.pipe(writeStream).on('finish', () => {
+        readStream.pipe(writeStream).on('error', (e) => {
+            reject(e)
+        }).on('finish', () => {
             resolve()
-        }).on('error', () => {
-            reject()
         })
     })
 }

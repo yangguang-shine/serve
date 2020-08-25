@@ -27,7 +27,7 @@ router.post('/remove', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/edit', async (ctx, next) => {
+router.post('/edit', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(edit, {
         msg: '更新失败'
     })
@@ -41,7 +41,7 @@ router.get('/find', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/setDefault', async (ctx, next) => {
+router.post('/setDefault', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(setDefault, {
         msg: '查找失败'
     })

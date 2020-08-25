@@ -1,7 +1,7 @@
 // this 指向 ctx
 const { createUserIDOrShopIDOrderFoodList, createUserIDOrShopIDOrderKeyList, createCategory, createFoodInfo } = require('../../../creatTable')
 
-module.exports = async function remove() {
+module.exports = async function add() {
     const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes } = this.request.body
     await this.SQLtransaction(async (querySQL) => {
         const manageID = await this.getManageID()

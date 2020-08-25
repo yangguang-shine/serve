@@ -1,6 +1,6 @@
 // this 指向 ctx
 
-module.exports = async function remove() {
+module.exports = async function orderDetail() {
     const { orderKey, shopID } = this.query
     if (!orderKey && !shopID) {
         this.body = this.parameterError

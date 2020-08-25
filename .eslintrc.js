@@ -13,6 +13,9 @@ module.exports = {
     'ecmaVersion': 2018
   },
   'rules': {
+    'no-multiple-empty-lines': 0,
+    'no-throw-literal': 0,
+    'no-trailing-spaces': 0,
     'no-path-concat': 0,
     'comma-dangle': 0,
     'semi': 0,

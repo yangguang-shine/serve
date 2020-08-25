@@ -1,6 +1,6 @@
 // this 指向 ctx
 
-module.exports = async function add() {
+module.exports = async function edit() {
     const { shopName, imgUrl, startTime, endTime, address, minus, businessTypes, shopID } = this.request.body
     if (!shopID) {
         this.body = this.parameterError

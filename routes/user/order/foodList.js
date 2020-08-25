@@ -1,5 +1,5 @@
 
-module.exports = async function find() {
+module.exports = async function foodList() {
     const { orderKey, shopID } = this.query
     if (!orderKey || !shopID) {
         this.body = this.parameterError

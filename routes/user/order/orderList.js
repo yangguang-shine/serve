@@ -1,6 +1,6 @@
 // this 指向 this
 
-module.exports = async function add() {
+module.exports = async function orderList() {
         // 10   待接单
         // 20   已接单
         // 30   待自提   已送出
@@ -14,6 +14,7 @@ module.exports = async function add() {
         let sql = ''
         let orderList = []
         const userID = await this.getUserID()
+        console.log(userID)
         if (Number(status) === 0) {
             sql = `select * from order_key_list_${userID} a inner join shop_list b on a.shopID = b.shopID ORDER BY a.orderKey desc`;
             orderList = await this.querySQL(sql)

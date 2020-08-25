@@ -1,6 +1,6 @@
 // this 指向 this
 
-module.exports = async function remove() {
+module.exports = async function add() {
     const { name, sex, mobile, address1, address2 } = this.request.body
     const userID = await this.getUserID()
     const sql = `insert into address_list_${userID} (name, sex, mobile, address1, address2) values (?)`;

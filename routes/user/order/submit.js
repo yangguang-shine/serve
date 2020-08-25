@@ -2,7 +2,7 @@
 
 const randomNum = require('../../../tools/randomNum');
 
-module.exports = async function add() {
+module.exports = async function submit() {
     const orderKey = randomNum()
     const orderTime = new Date()
     const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount } = this.request.body

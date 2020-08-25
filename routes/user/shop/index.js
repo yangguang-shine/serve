@@ -2,7 +2,7 @@ const router = require('koa-router')()
 const list = require('./list')
 const find = require('./find')
 
-router.prefix('/manage/order')
+router.prefix('/user/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {

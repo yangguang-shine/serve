@@ -1,5 +1,5 @@
 
-module.exports = async function edit() {
+module.exports = async function cancell() {
     const { orderKey, shopID } = this.request.body
     if (!(orderKey && shopID)) {
         this.body = this.parameterError

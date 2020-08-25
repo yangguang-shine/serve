@@ -1,7 +1,7 @@
 // this 指向 ctx
 const { deleteShopImg, deleteFoodImg } = require('../_manageCommonTool')
 
-module.exports = async function add() {
+module.exports = async function remove() {
     const { shopID } = this.request.body
     if (!shopID) {
         this.body = this.parameterError

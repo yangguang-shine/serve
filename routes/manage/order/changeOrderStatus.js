@@ -1,6 +1,6 @@
 // this 指向 ctx
 
-module.exports = async function find() {
+module.exports = async function changeOrderStatus() {
     const { orderKey, shopID, orderStatus } = this.request.body
     if (!(orderKey && shopID && orderStatus)) {
         this.body = {
