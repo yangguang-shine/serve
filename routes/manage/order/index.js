@@ -4,7 +4,7 @@ const cancell = require('./cancell')
 const orderList = require('./orderList')
 const changeOrderStatus = require('./changeOrderStatus')
 
-router.prefix('/manage/order')
+router.prefix('/api/manage/order')
 // 添加菜品
 router.get('/orderList', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(orderList, {

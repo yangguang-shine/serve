@@ -16,7 +16,7 @@ const { getImageName } = require('./imageTool/index')
 const path = require('path')
 const fs = require('fs')
 
-router.prefix('/manage/shop')
+router.prefix('/api/manage/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     let res = []

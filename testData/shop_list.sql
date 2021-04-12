@@ -32,6 +32,6 @@ CREATE TABLE `shop_list`  (
   `businessTypes` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '',
   `manageID` int(11) NULL DEFAULT NULL,
   PRIMARY KEY (`shopID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 100064 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 100000 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

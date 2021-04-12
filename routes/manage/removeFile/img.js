@@ -12,7 +12,7 @@ const { unlink } = require('fs').promises;
 const { getImageName, deleteShopImg, deleteFoodImg } = require('./imageTool/index')
 
 // router.use(Multy())
-router.prefix('/manage/uploadImg')
+router.prefix('/api/manage/uploadImg')
 
 router.post('/shop', async (ctx, next) => {
     try {

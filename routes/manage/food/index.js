@@ -5,7 +5,7 @@ const list = require('./list')
 const find = require('./find')
 const remove = require('./remove')
 
-router.prefix('/manage/food')
+router.prefix('/api/manage/food')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {

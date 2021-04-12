@@ -6,7 +6,7 @@ const messageDelivery = require('../../model/wechats/messageDelivery')
 // const mysqlConfig = require('../config/session-config')
 // const MysqlStore = require('koa2-session-mysql')
 
-router.prefix('/')
+router.prefix('/api/')
 
 router.post('/index', async function (ctx, next) {
     messageDelivery(ctx)

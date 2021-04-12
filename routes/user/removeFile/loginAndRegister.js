@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const createUserIDOrShopIDOrderFoodList = require('../../creatTable/createUserIDOrShopIDOrderFoodList')
 const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDOrShopIDOrderKeyList')
 const createUserIDAddress = require('../../creatTable/createUserIDAddress')
-router.prefix("/user");
+router.prefix("/api/user");
 
 router.post("/login", async (ctx, next) => {
     try {

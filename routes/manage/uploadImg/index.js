@@ -3,7 +3,7 @@ const shop = require('./shop')
 const food = require('./food')
 const remove = require('./remove')
 
-router.prefix('/manage/uploadImg')
+router.prefix('/api/manage/uploadImg')
 // 店铺上传图片
 router.post('/shop', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(shop, {

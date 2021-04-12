@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 // const moment = require('moment');
 
-router.prefix('/manage/order')
+router.prefix('/api/manage/order')
 // 添加菜品
 router.get('/orderList', async (ctx, next) => {
     try {

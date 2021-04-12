@@ -6,7 +6,7 @@ const edit = require('./edit')
 const find = require('./find')
 const setDefault = require('./setDefault')
 
-router.prefix('/user/address')
+router.prefix('/api/user/address')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {

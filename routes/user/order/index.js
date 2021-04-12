@@ -7,7 +7,7 @@ const menuList = require('./menuList')
 const submit = require('./submit')
 const foodList = require('./foodList')
 
-router.prefix('/user/order')
+router.prefix('/api/user/order')
 
 // 查询订单列表
 router.get('/orderList', async (ctx, next) => {

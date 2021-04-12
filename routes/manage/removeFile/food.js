@@ -1,7 +1,7 @@
 const router = require('koa-router')()
 const { deleteFoodImg } = require('../../utils')
 
-router.prefix('/manage/food')
+router.prefix('/api/manage/food')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     const { shopID, categoryID } = ctx.query

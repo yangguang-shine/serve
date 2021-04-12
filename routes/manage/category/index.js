@@ -4,7 +4,7 @@ const edit = require('./edit')
 const list = require('./list')
 const remove = require('./remove')
 
-router.prefix('/manage/category')
+router.prefix('/api/manage/category')
 
 // 添加菜品
 router.get('/list', async (ctx, next) => {

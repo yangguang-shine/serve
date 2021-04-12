@@ -1,6 +1,6 @@
 const router = require('koa-router')();
 const _404 = require('./404')
-router.prefix('/status')
+router.prefix('/api/status')
 
 // 添加菜品
 router.get('/404', async (ctx, next) => {

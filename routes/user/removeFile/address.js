@@ -1,6 +1,6 @@
 const router = require('koa-router')()
 
-router.prefix('/user/address')
+router.prefix('/api/user/address')
 // 添加地址
 router.get('/list', async (ctx, next) => {
     // const query = ctx.query

@@ -2,7 +2,7 @@ const router = require('koa-router')()
 const randomNum = require('../../tools/randomNum');
 // const moment = require('moment');
 
-router.prefix('/user/order')
+router.prefix('/api/user/order')
 // 添加菜品
 router.get('/menuList', async (ctx, next) => {
     const { shopID } = ctx.query

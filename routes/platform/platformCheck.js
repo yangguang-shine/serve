@@ -1,7 +1,7 @@
 const router = require("koa-router")();
 const identification = require('../../model/wechats/identification')
 const messageDelivery = require('../../model/wechats/messageDelivery')
-router.prefix("/platform/wechat");
+router.prefix("/api/platform/wechat");
 
 router.get("/check", async (ctx, next) => {
     identification(ctx)

@@ -6,7 +6,7 @@ const edit = require('./edit')
 const find = require('./find')
 const bulkImportFood = require('./bulkImportFood')
 
-router.prefix('/manage/shop')
+router.prefix('/api/manage/shop')
 // 添加菜品
 router.get('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {

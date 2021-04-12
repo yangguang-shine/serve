@@ -1,11 +1,11 @@
 const router = require('koa-router')()
 
-router.prefix("/user/account");
+router.prefix("/api/user/account");
 const login = require('./login')
 const register = require('./register')
 const changePassword = require('./changePassword')
 
-router.prefix('/user/account')
+router.prefix('/api/user/account')
 
 // 用户登录
 router.post('/login', async (ctx, next) => {

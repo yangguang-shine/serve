@@ -1,7 +1,7 @@
 const router = require("koa-router")();
 const encryption = require('../../tools/encryption')
 const crypto = require('crypto');
-router.prefix("/manage");
+router.prefix("/api/manage");
 
 router.post("/login", async (ctx, next) => {
     try {
