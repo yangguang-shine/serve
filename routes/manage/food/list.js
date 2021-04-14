@@ -6,7 +6,7 @@ module.exports = async function list() {
         this.body = this.parameterError
         return
     }
-    const sql = `select * from food_info_${shopID} where categoryID = ?;`
+    const sql = `select * from shop_food_info where categoryID = ?;`
     const res = await this.querySQL(sql, [categoryID])
     this.body = {
         code: '000',

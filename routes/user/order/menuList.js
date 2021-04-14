@@ -6,8 +6,8 @@ module.exports = async function menuList() {
         this.body = this.parameterError
         return
     }
-    const sql = `select * from food_info_${shopID} group by categoryID, foodID;`;
-    const res = await this.querySQL(sql, [])
+    const sql = `select * from shop_food_info where shopID = ? group by categoryID, foodID;`;
+    const res = await this.querySQL(sql, [shopID])
     const AllfoodList = (res || []).reduce((list, item) => {
         if (!list.length) {
             list.push({

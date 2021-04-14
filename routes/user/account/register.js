@@ -12,7 +12,7 @@ module.exports = async function register() {
         }
         const encryptPassword = encryption(password)
         let phoneIsexit = false
-        let sql = `select phone from user_info_pass where phone = ?`
+        let sql = `select phone from pass_info_user where phone = ?`
         const phoneList = await this.querySQL(sql, [phone]);
         if (phoneList.length) {
             phoneIsexit = true
@@ -25,10 +25,10 @@ module.exports = async function register() {
             const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
             const userToken = await md5.update(secret).digest('hex');
             await this.SQLtransaction(async (querySQL) => {
-                const sql = 'insert into user_info_pass (phone, encryptPassword, nickname) values (?)'
+                const sql = 'insert into pass_info_user (phone, encryptPassword, nickname) values (?)'
                 const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
                 const userID = res.insertId
-                const insertTokenSql = `insert into user_token_store (userID, userToken) values (?, ?)`
+                const insertTokenSql = `insert into token_store_user (userID, userToken) values (?, ?)`
                 await querySQL(insertTokenSql, [userID, userToken])
                 const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
                 const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })

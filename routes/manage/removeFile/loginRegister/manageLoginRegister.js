@@ -11,7 +11,7 @@ router.post("/login", async (ctx, next) => {
             return
         }
         const encryptPassword = encryption(password)
-        const sql = `select encryptPassword, manageID, nickname from manage_info_pass where phone = ?`
+        const sql = `select encryptPassword, manageID, nickname from pass_info_manage where phone = ?`
         const phoneInfoList = await ctx.querySQL(sql, [phone])
         if (phoneInfoList.length) {
             if (phoneInfoList.length > 1) {
@@ -24,14 +24,14 @@ router.post("/login", async (ctx, next) => {
                 const md5 = crypto.createHash('md5');
                 const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
                 const manageToken = await md5.update(secret).digest('hex');
-                const res = await ctx.querySQL('select manageToken from manage_token_store where manageID = ?', [manageID])
+                const res = await ctx.querySQL('select manageToken from token_store_manage where manageID = ?', [manageID])
                 if (res.length) {
                     if (res.length > 1) {
                         console.log('多个manageID')
                     }
-                    await ctx.querySQL(`update manage_token_store set manageToken = ? where manageID = ?`, [manageToken, manageID])
+                    await ctx.querySQL(`update token_store_manage set manageToken = ? where manageID = ?`, [manageToken, manageID])
                 } else {
-                    const insertTokenSql = `insert into manage_token_store (manageID, manageToken) values (?, ?)`
+                    const insertTokenSql = `insert into token_store_manage (manageID, manageToken) values (?, ?)`
                     await ctx.querySQL(insertTokenSql, [manageID, manageToken])
                 }
                 ctx.cookies.set('manageToken', manageToken)
@@ -76,7 +76,7 @@ router.post("/register", async (ctx, next) => {
         }
         const encryptPassword = encryption(password)
         let phoneIsexit = false
-        let sql = `select phone from manage_info_pass where phone = ?`
+        let sql = `select phone from pass_info_manage where phone = ?`
         const phoneList = await ctx.querySQL(sql, [phone]);
         if (phoneList.length) {
             phoneIsexit = true
@@ -89,10 +89,10 @@ router.post("/register", async (ctx, next) => {
             const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
             const manageToken = await md5.update(secret).digest('hex');
             await ctx.SQLtransaction(async (querySQL) => {
-                const sql = 'insert into manage_info_pass (phone, encryptPassword, nickname) values (?)'
+                const sql = 'insert into pass_info_manage (phone, encryptPassword, nickname) values (?)'
                 const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
                 const manageID = res.insertId
-                const insertTokenSql = `insert into manage_token_store (manageID, manageToken) values (?, ?)`
+                const insertTokenSql = `insert into token_store_manage (manageID, manageToken) values (?, ?)`
                 await querySQL(insertTokenSql, [manageID, manageToken])
             })
             ctx.cookies.set('manageToken', manageToken)

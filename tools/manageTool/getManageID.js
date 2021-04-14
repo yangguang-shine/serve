@@ -2,7 +2,7 @@
 
 module.exports = async function getManageID () {
     const manageToken = this.cookies.get('manageToken')
-    const sql = `select manageID from manage_token_store where manageToken = ?`
+    const sql = `select manageID from token_store_manage where manageToken = ?`
     const manageIDList = await this.querySQL(sql, [manageToken])
     let manageID = ''
     if (manageIDList.length) {

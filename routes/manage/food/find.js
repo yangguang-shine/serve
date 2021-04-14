@@ -6,7 +6,7 @@ module.exports = async function find() {
         this.body = this.parameterError
         return
     }
-    const res = await this.querySQL(`select * from food_info_${query.shopID} where foodID = ?;`, [Number(query.foodID)])
+    const res = await this.querySQL(`select * from shop_food_info where foodID = ?;`, [Number(query.foodID)])
     let data = {}
     if (res.length) {
         data = res[0]

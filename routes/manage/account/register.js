@@ -10,7 +10,7 @@ module.exports = async function register() {
     }
     const encryptPassword = encryption(password)
     let phoneIsexit = false
-    let sql = `select phone from manage_info_pass where phone = ?`
+    let sql = `select phone from pass_info_manage where phone = ?`
     const phoneList = await this.querySQL(sql, [phone]);
     if (phoneList.length) {
         phoneIsexit = true
@@ -23,10 +23,10 @@ module.exports = async function register() {
         const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
         const manageToken = await md5.update(secret).digest('hex');
         await this.SQLtransaction(async (querySQL) => {
-            const sql = 'insert into manage_info_pass (phone, encryptPassword, nickname) values (?)'
+            const sql = 'insert into pass_info_manage (phone, encryptPassword, nickname) values (?)'
             const res = await querySQL(sql, [[phone, encryptPassword, nickname]])
             const manageID = res.insertId
-            const insertTokenSql = `insert into manage_token_store (manageID, manageToken) values (?, ?)`
+            const insertTokenSql = `insert into token_store_manage (manageID, manageToken) values (?, ?)`
             await querySQL(insertTokenSql, [manageID, manageToken])
         })
         this.cookies.set('manageToken', manageToken)

@@ -9,7 +9,7 @@ module.exports = async function login() {
         return
     }
     const encryptPassword = encryption(password)
-    const sql = `select encryptPassword, userID, nickname from user_info_pass where phone = ?`
+    const sql = `select encryptPassword, userID, nickname from pass_info_user where phone = ?`
     const phoneInfoList = await this.querySQL(sql, [phone])
     if (phoneInfoList.length) {
         if (phoneInfoList.length > 1) {
@@ -23,14 +23,14 @@ module.exports = async function login() {
             const md5 = crypto.createHash('md5');
             const secret = `${Math.random().toString(36).slice(2)}${+new Date()}${phone}`
             const userToken = await md5.update(secret).digest('hex');
-            const res = await this.querySQL('select userToken from user_token_store where userID = ?', [userID])
+            const res = await this.querySQL('select userToken from token_store_user where userID = ?', [userID])
             if (res.length) {
                 if (res.length > 1) {
                     console.log('多个userID')
                 }
-                await this.querySQL(`update user_token_store set userToken = ? where userID = ?`, [userToken, userID])
+                await this.querySQL(`update token_store_user set userToken = ? where userID = ?`, [userToken, userID])
             } else {
-                const insertTokenSql = `insert into user_token_store (userID, userToken) values (?, ?)`
+                const insertTokenSql = `insert into token_store_user (userID, userToken) values (?, ?)`
                 await this.querySQL(insertTokenSql, [userID, userToken])
             }
             this.cookies.set('userToken', userToken)

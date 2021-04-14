@@ -6,7 +6,7 @@ module.exports = async function find() {
         return
     }
     const userID = await this.getUserID()
-    const res = await this.querySQL(`select * from address_list_${userID} where addressID = ?;`, [addressID])
+    const res = await this.querySQL(`select * from user_address_list where addressID = ? and userID = ?;`, [addressID, userID])
     let data = {}
     if (res.length) {
         data = res[0]

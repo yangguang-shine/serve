@@ -6,7 +6,7 @@ module.exports = async function add() {
         this.body = this.parameterError
         return
     }
-    let sql = `insert into category_list_${shopID} (categoryName, shopID) values (?, ?);`
+    let sql = `insert into shop_category_list (categoryName, shopID) values (?, ?);`
     await this.querySQL(sql, [categoryName, shopID])
     this.body = {
         code: '000',

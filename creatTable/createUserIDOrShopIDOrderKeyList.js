@@ -1,10 +1,11 @@
 const createUserIDOrShopIDOrderKeyList = async ({ querySQL, userID = '', shopID = '' } = {}) => {
   let sql = ''
   if (userID) {
-    sql = `CREATE TABLE order_key_list_${userID} (
+    sql = `CREATE TABLE order_key_list (
       orderKey bigint(255) NOT NULL,
       orderKeyID int(11) NOT NULL AUTO_INCREMENT,
-      shopID int(11) NULL DEFAULT NULL,
+      shopID int(11) NOT NULL,
+      userID int(11) NOT NULL,
       orderAmount varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
       orderTime timestamp(0) NULL DEFAULT NULL,
       businessType int(2) NULL DEFAULT NULL,
@@ -18,10 +19,10 @@ const createUserIDOrShopIDOrderKeyList = async ({ querySQL, userID = '', shopID 
       PRIMARY KEY (orderKeyID) USING BTREE
     ) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;`
   } else if (shopID) {
-    sql = `CREATE TABLE order_key_list_${shopID} (
+    sql = `CREATE TABLE shop_order_key_list (
       orderKey bigint(255) NOT NULL,
       orderKeyID int(11) NOT NULL AUTO_INCREMENT,
-      shopID int(11) NULL DEFAULT NULL,
+      shopID int(11) NOT NULL,
       orderAmount varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
       orderTime timestamp(0) NULL DEFAULT NULL,
       businessType int(2) NULL DEFAULT NULL,

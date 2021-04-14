@@ -33,7 +33,7 @@ router.post('/cancell', async (ctx, next) => {
 // 获取菜单列表
 router.get('/menuList', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(menuList, {
-        msg: '订单状态修改失败'
+        msg: '菜品列表获取失败'
     })
 })
 // 提交订单

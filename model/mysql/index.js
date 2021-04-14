@@ -6,7 +6,6 @@ const querySQL = (sql = '', params = []) => {
         pool.getConnection((err, con) => {
             if (err) {
                 reject(err)
-                con.release()
                 return
             }
             con.query(sql, params, (e, res, fields) => {
@@ -25,13 +24,11 @@ const SQLtransaction = (func) => {
         pool.getConnection((err, con) => {
             if (err) {
                 reject(err)
-                con.release()
                 return
             }
             con.beginTransaction(async (e) => {
                 if (err) {
                     reject(err)
-                    con.release()
                     return
                 }
                 try {

@@ -8,8 +8,8 @@ module.exports = async function edit() {
         }
         await this.SQLtransaction(async(querySQL) => {
             const userID = await this.getUserID()
-            const sql = `update address_list_${userID} set name = ?, sex = ?, mobile = ?, address1 = ?, address2 = ? where addressID = ?;`
-            await querySQL(sql, [name, sex, mobile, address1, address2, addressID])
+            const sql = `update user_address_list set name = ?, sex = ?, mobile = ?, address1 = ?, address2 = ? where addressID = ? and userID = ?;`
+            await querySQL(sql, [name, sex, mobile, address1, address2, addressID, userID])
             // await addressExchange({ querySQL, userID, addressID })
         })
         this.body = {

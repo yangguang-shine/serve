@@ -18,10 +18,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for manage_info_pass
+-- Table structure for pass_info_manage
 -- ----------------------------
-DROP TABLE IF EXISTS `manage_info_pass`;
-CREATE TABLE `manage_info_pass`  (
+DROP TABLE IF EXISTS `pass_info_manage`;
+CREATE TABLE `pass_info_manage`  (
   `openid` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `session_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `manageID` int(11) NOT NULL AUTO_INCREMENT,

@@ -40,7 +40,7 @@ module.exports = () => {
                     data: null
                 }
             } else {
-                const sql = `select manageID from manage_token_store where manageToken = ?`
+                const sql = `select manageID from token_store_manage where manageToken = ?`
                 const manageIDList = await ctx.querySQL(sql, [manageToken])
                 if (manageIDList.length) {
                     console.log(3333)

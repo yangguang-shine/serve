@@ -29,7 +29,7 @@ module.exports = () => {
                     data: null
                 }
             } else {
-                const sql = `select userID from user_token_store where token = ?`
+                const sql = `select userID from token_store_user where token = ?`
                 const userIDList = await ctx.querySQL(sql, [token])
                 if (userIDList.length) {
                     await next()

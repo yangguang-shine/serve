@@ -6,7 +6,7 @@ module.exports = async function edit() {
         this.body = this.parameterError
         return
     }
-    const sql = `update food_info_${shopID} set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ?;`
+    const sql = `update shop_food_info set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ?;`
     const res = await this.querySQL(sql, [foodName, price, unit, imgUrl, description, foodID])
     this.body = {
         code: '000',

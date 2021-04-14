@@ -7,8 +7,8 @@ module.exports = async function remove() {
         return
     }
     const userID = await this.getUserID()
-    const sql = `delete from address_list_${userID} where addressID = ?`;
-    await this.querySQL(sql, [addressID])
+    const sql = `delete from user_address_list where addressID = ? and userID = ?`;
+    await this.querySQL(sql, [addressID, userID])
     this.body = {
         code: '000',
         msg: '删除成功',
