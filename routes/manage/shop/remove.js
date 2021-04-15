@@ -8,7 +8,7 @@ module.exports = async function remove() {
         return
     }
     const shopImgUrlList = await this.querySQL(`select imgUrl from shop_list where shopID = ?`, [shopID])
-    const foodImgUrlList = await this.querySQL(`select imgUrl from food_info_${shopID}`, [])
+    const foodImgUrlList = await this.querySQL(`select imgUrl from shop_food_info where shopID = ?`, [shopID])
     await this.SQLtransaction(async (querySQL) => {
         const sql1 = `delete from shop_list where shopID = ?`;
         const sql2 = `delete from shop_category_list where shopID = ?`;
@@ -20,7 +20,7 @@ module.exports = async function remove() {
         await promise2
         await promise3
     })
-    // deleteAllImg(shopImgUrlList, foodImgUrlList)
+    deleteAllImg(shopImgUrlList, foodImgUrlList)
     this.body = {
         code: '000',
         msg: '删除成功',

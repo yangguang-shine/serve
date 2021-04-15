@@ -7,10 +7,10 @@ module.exports = async function remove() {
         this.body = this.parameterError
         return
     }
-    const foodImgUrlList = await this.querySQL(`select imgUrl from food_info_${shopID} where categoryID = ?`, [categoryID])
+    const foodImgUrlList = await this.querySQL(`select imgUrl from shop_food_info where shopID = ? and categoryID = ?`, [shopID, categoryID])
     await this.SQLtransaction(async (querySQL) => {
-        let sql = `delete from category_list_${shopID} where categoryID = ?; delete from food_info_${shopID} where categoryID = ?`
-        await querySQL(sql, [categoryID, categoryID])
+        let sql = `delete from shop_category_list where shopID = ? and categoryID = ?; delete from shop_food_info where shopID = ? and categoryID = ?;`
+        await querySQL(sql, [shopID, categoryID, shopID, categoryID])
     })
     try {
         const promiseList = []

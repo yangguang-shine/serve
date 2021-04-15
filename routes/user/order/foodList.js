@@ -1,12 +1,12 @@
 
 module.exports = async function foodList() {
-    const { orderKey, shopID } = this.query
-    if (!orderKey || !shopID) {
+    const { orderKey } = this.query
+    if (!orderKey) {
         this.body = this.parameterError
         return
     }
-    const sql = `select * from shop_order_food_list where orderKey = ? and shopID = ?`
-    const res = await this.querySQL(sql, [orderKey, shopID])
+    const sql = `select * from order_food_list where orderKey = ?`
+    const res = await this.querySQL(sql, [orderKey])
     if (res.length) {
         this.body = {
             code: '000',

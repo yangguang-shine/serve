@@ -7,10 +7,10 @@ module.exports = async function orderDetail() {
         return
     }
     const userID = await this.getUserID()
-    const sql1 = `select * from order_key_list_${userID} where orderKey = ?`
-    const sql2 = `select * from order_food_list_${userID} where orderKey = ?`
-    const promise1 = this.querySQL(sql1, [orderKey])
-    const promise2 = this.querySQL(sql2, [orderKey])
+    const sql1 = `select * from order_key_list where orderKey = ? and userID = ?`
+    const sql2 = `select * from order_food_list where orderKey = ? and userID = ?`
+    const promise1 = this.querySQL(sql1, [orderKey, userID])
+    const promise2 = this.querySQL(sql2, [orderKey, userID])
     const orderInfoList = await promise1
     const foodList = await promise2
     if (!orderInfoList.length) {
@@ -22,9 +22,6 @@ module.exports = async function orderDetail() {
     }
     const orderInfo = orderInfoList[0]
     orderInfo.address = JSON.parse(orderInfo.address)
-    orderInfo.orderTime = `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${new Date(orderInfo.orderTime).toTimeString().slice(0, 5)}`
-    orderInfo.takeOutTime = orderInfo.takeOutTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.takeOutTime}` : orderInfo.takeOutTime
-    orderInfo.selfTakeTime = orderInfo.selfTakeTime ? `${new Date(orderInfo.orderTime).toLocaleDateString().replace(/\//g, '-')} ${orderInfo.selfTakeTime}` : orderInfo.selfTakeTime
     this.body = {
         code: '000',
         msg: '查询成功',
