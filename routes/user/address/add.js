@@ -6,8 +6,8 @@ module.exports = async function add() {
         const userID = await this.getUserID()
         const sql = `insert into user_address_list (name, sex, mobile, address1, address2, userID) values (?)`;
         const res = await querySQL(sql, [[name, sex, mobile, address1, address2, userID]])
-        const addressID = res.insertId
-        await addressExchange({ querySQL, userID, addressID })
+        // const addressID = res.insertId
+        // await addressExchange({ querySQL, userID, addressID })
     })
     this.body = {
         code: '000',

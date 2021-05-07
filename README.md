@@ -68,3 +68,39 @@
 #### 删除主键
     ALTER TABLE order_key_list CHANGE id id int(10); --- 先删除自增
     ALTER TABLE order_key_list DROP PRIMARY KEY; --- 再删除主键
+
+
+
+    8.54 * 100 / 100 !== 8.54
+
+    this.blurValue = (parseInt((+eventValue * 100 + 0.5), 10) / 100).toFixed(2)
+
+    ```
+        cosnt promise1 = () => {
+			return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    reject(4000)
+                }, 4000);
+                })
+		};
+		cosnt promise2= () => {
+			return new Promise((resolve, reject) => {
+			  setTimeout(() => {
+				  reject(8000)
+			  }, 8000);
+			})
+		};
+			
+	    async function run () {
+			try {
+			   a = promise1()
+			   b = promise2()
+                await a
+                await b
+			} catch(e) {
+			   console.log(e)
+			} 
+		};
+        run()
+        // b的错误捕获不到
+    ```

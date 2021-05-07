@@ -8,32 +8,23 @@ const fs = require('fs')
 const toBulkImportFood = async (ctx, options) => {
     await ctx.SQLtransaction(async (querySQL) => {
         const { shopID, categoryList } = options
-        const promiseList = []
-        categoryList.forEach((categoryItem) => {
-            const promise = toInsertCategoryItem(querySQL, shopID, categoryItem)
-            promiseList.push(promise)
-        })
-        for (let i = 0; i < promiseList.length; i++) {
-            await promiseList[i]
+        for (let i = 0; i < categoryList.length; i++) {
+            await toInsertCategoryItem({ querySQL, shopID, categoryItem: categoryList[i] })
         }
     })
 }
-const toInsertCategoryItem = async (querySQL, shopID, categoryItem) => {
-    const dowmLoadImgPromiseList = [];
-    (categoryItem.foodList || []).forEach((item) => {
-        const promise = downloadImg(item)
-        dowmLoadImgPromiseList.push(promise)
-    })
-
-    for (let i = 0; i < dowmLoadImgPromiseList.length; i++) {
-        // eslint-disable-next-line no-unused-expressions
-        dowmLoadImgPromiseList[i]
-    }
-    const insertCategory = `insert into category_list_${shopID} (categoryName, shopID) values (?, ?);`
-    const insertCategoryPromise = querySQL(insertCategory, [categoryItem.categoryName, shopID])
-    const insertCategoryRes = await insertCategoryPromise
+const toInsertCategoryItem = async ({ querySQL, shopID, categoryItem }) => {
+    const insertCategory = `insert into shop_category_list (categoryName, shopID) values (?, ?);`
+    const insertCategoryRes = await querySQL(insertCategory, [categoryItem.categoryName, shopID])
+    await toDownLoadAllImg(categoryItem.foodList || [])
     const categoryID = insertCategoryRes.insertId
-    const foodList = (categoryItem.foodList || []).map((item) => {
+    await insertFoodList({ querySQL, foodList: categoryItem.foodList || [], categoryID, shopID})
+
+
+}
+
+const insertFoodList = async ({ foodList, categoryID, querySQL, shopID }) => {
+    const insertFoodList = foodList.map((item) => {
         return [
             item.foodName,
             categoryID,
@@ -42,25 +33,30 @@ const toInsertCategoryItem = async (querySQL, shopID, categoryItem) => {
             item.imgUrl,
             item.description,
             item.categoryName,
+            shopID
         ]
     })
-    const insertFood = `insert into food_info_${shopID} (foodName, categoryID, price, unit, imgUrl, description, categoryName) values ?`;
-    const insertFoodRes = await querySQL(insertFood, [foodList])
-    console.log(insertFoodRes)
+    const insertFood = `insert into shop_food_info (foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID) values ?`;
+    await querySQL(insertFood, [insertFoodList])
+}
+const toDownLoadAllImg = async (foodList) => {
+    for (let i = 0; i < foodList.length; i++)
+        await downloadOneImg(foodList[i])
 }
 
-const downloadImg = async (item) => {
+const downloadOneImg = async (item) => {
     let res = ''
-    const reg = /^https:\/\//
     const imageName = getImageName(item.originImgUrl)
     item.imgUrl = `/upload/img/food/${imageName}`
     const distDir = path.join(__dirname, `../../../public/upload/img/food/${imageName}`)
     const fsWriteSream = fs.createWriteStream(distDir)
     try {
-        if (reg.test(item.originImgUrl)) {
+        if (item.originImgUrl.startsWith('https://')) {
             res = await httpsGet(item.originImgUrl)
-        } else {
+        } else if (item.originImgUrl.startsWith('http://')) {
             res = await httpGet(item.originImgUrl)
+        } else {
+            return
         }
         await readPipe(res, fsWriteSream)
     } catch (e) {
