@@ -43,9 +43,13 @@
 
     SHOW INDEX FROM shop_food_info;
 
- #### 删除索引
+#### 删除索引
 
     DROP INDEX indexOrderKey ON order_food_list;
+
+#### 新增表字段
+
+    ALTER TABLE user_address_list ADD [字段名] NVARCHAR (50) NULL  
 
 #### 修改字段名称和改变数据结构
 
@@ -71,36 +75,4 @@
 
 
 
-    8.54 * 100 / 100 !== 8.54
-
-    this.blurValue = (parseInt((+eventValue * 100 + 0.5), 10) / 100).toFixed(2)
-
-    ```
-        cosnt promise1 = () => {
-			return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    reject(4000)
-                }, 4000);
-                })
-		};
-		cosnt promise2= () => {
-			return new Promise((resolve, reject) => {
-			  setTimeout(() => {
-				  reject(8000)
-			  }, 8000);
-			})
-		};
-			
-	    async function run () {
-			try {
-			   a = promise1()
-			   b = promise2()
-                await a
-                await b
-			} catch(e) {
-			   console.log(e)
-			} 
-		};
-        run()
-        // b的错误捕获不到
-    ```
+   
