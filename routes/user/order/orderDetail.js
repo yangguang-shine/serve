@@ -21,7 +21,7 @@ module.exports = async function orderDetail() {
         }
     }
     const orderInfo = orderInfoList[0]
-    orderInfo.address = JSON.parse(orderInfo.address)
+    // orderInfo.address = JSON.parse(orderInfo.address)
     this.body = {
         code: '000',
         msg: '查询成功',

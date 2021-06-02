@@ -5,7 +5,7 @@ const randomNum = require('../../../tools/randomNum');
 module.exports = async function submit() {
     const orderKey = randomNum()
     const orderTime = +new Date()
-    const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount } = this.request.body
+    const { shopID, orderAmount, foodList, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, noteText } = this.request.body
     if (!shopID) {
         this.body = this.parameterError
         return
@@ -13,8 +13,8 @@ module.exports = async function submit() {
     const userID = await this.getUserID()
     await this.SQLtransaction(async (querySQL) => {
         // 插入order_key_list
-        const orderKeyValues = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, userID]
-        const insertOrderKeyListSQL = `insert into order_key_list (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, userID) values (?);`
+        const orderKeyValues = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, noteText, userID]
+        const insertOrderKeyListSQL = `insert into order_key_list (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, noteText, userID) values (?);`
         const insertOrderKeyListSQLPromist = querySQL(insertOrderKeyListSQL, [orderKeyValues])
         // 插入 order_food_list
         const foodListValues = []
