@@ -1,9 +1,8 @@
 
-module.exports = async function list() {
+module.exports = async function list(next) {
     let res = []
-    const manageID = await this.getManageID()
     const sql = 'select * from shop_list where manageID = ?'
-    res = await this.querySQL(sql, [manageID])
+    res = await this.querySQL(sql, [this.manageID])
     this.body = {
         code: '000',
         msg: '查询成功',

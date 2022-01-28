@@ -11,14 +11,14 @@ const crypto = require('crypto');
 
 router.prefix('/api/user/wechat')
 
-router.get('/', function (ctx, next) {
+router.post('/', function (ctx, next) {
     identification(ctx)
 })
 router.post('/', function (ctx, next) {
     messageDelivery(ctx)
 })
 
-router.get('/wx/login', async (ctx, next) => {
+router.post('/wx/login', async (ctx, next) => {
     try {
         let token = ''
         const { code } = ctx.query

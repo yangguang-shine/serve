@@ -1,5 +1,5 @@
 // 以下 this 指向的是 ctx
-
+const interfaceUserList = require('../const')
 module.exports = async function getUserID () {
     const userToken = this.cookies.get('userToken')
     const sql = `select userID from token_store_user where userToken = ?`

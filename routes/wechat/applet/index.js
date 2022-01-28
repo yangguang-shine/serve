@@ -3,7 +3,7 @@ const login = require('./login')
 
 router.prefix('/api/wechat/applet')
 // 添加菜品
-router.get('/login', async (ctx, next) => {
+router.post('/login', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(login, {
         msg: '登录失败'
     })

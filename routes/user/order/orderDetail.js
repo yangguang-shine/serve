@@ -1,16 +1,15 @@
 // this 指向 this
 
 module.exports = async function orderDetail() {
-    const { orderKey } = this.query
+    const { orderKey } = this.request.body
     if (!orderKey) {
         this.body = this.parameterError
         return
     }
-    const userID = await this.getUserID()
     const sql1 = `select * from order_key_list where orderKey = ? and userID = ?`
     const sql2 = `select * from order_food_list where orderKey = ? and userID = ?`
-    const promise1 = this.querySQL(sql1, [orderKey, userID])
-    const promise2 = this.querySQL(sql2, [orderKey, userID])
+    const promise1 = this.querySQL(sql1, [orderKey, this.userID])
+    const promise2 = this.querySQL(sql2, [orderKey, this.userID])
     const orderInfoList = await promise1
     const foodList = await promise2
     if (!orderInfoList.length) {

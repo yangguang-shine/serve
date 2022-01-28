@@ -1,25 +1,25 @@
 const router = require('koa-router')()
 const orderDetail = require('./orderDetail')
-const cancell = require('./cancell')
+const cancel = require('./cancel')
 const orderList = require('./orderList')
 const changeOrderStatus = require('./changeOrderStatus')
 
 router.prefix('/api/manage/order')
 // 添加菜品
-router.get('/orderList', async (ctx, next) => {
+router.post('/orderList', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(orderList, {
         msg: '查询失败'
     })
 })
-router.get('/orderDetail', async (ctx, next) => {
+router.post('/orderDetail', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(orderDetail, {
         msg: '添加失败'
     })
 })
 
 // 更新菜品
-router.post('/cancell', async (ctx, next) => {
-    await ctx.simpleRouterTryCatchHandle(cancell, {
+router.post('/cancel', async (ctx, next) => {
+    await ctx.simpleRouterTryCatchHandle(cancel, {
         msg: '取消订单失败'
     })
 })

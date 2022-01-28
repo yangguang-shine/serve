@@ -1,12 +1,11 @@
 
 module.exports = async function find() {
-    const { addressID } = this.query
+    const { addressID } = this.request.body
     if (!addressID) {
         this.body = this.parameterError
         return
     }
-    const userID = await this.getUserID()
-    const res = await this.querySQL(`select * from user_address_list where addressID = ? and userID = ?;`, [addressID, userID])
+    const res = await this.querySQL(`select * from user_address_list where addressID = ? and userID = ?;`, [addressID, this.userID])
     let data = {}
     if (res.length) {
         data = res[0]

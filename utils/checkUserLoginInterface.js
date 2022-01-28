@@ -9,7 +9,7 @@ const checkUserLoginInterfaceList = [
     '/user/api/userOrder/submit',
     '/user/api/userOrder/orderList',
     '/user/api/userOrder/orderDetail',
-    '/user/api/userOrder/cancell',
+    '/user/api/userOrder/cancel',
     // '/api/order/orderList',
 ]
 module.exports = () => {

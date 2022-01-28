@@ -1,6 +1,6 @@
 
 module.exports = async function foodList() {
-    const { orderKey } = this.query
+    const { orderKey } = this.request.body
     if (!orderKey) {
         this.body = this.parameterError
         return

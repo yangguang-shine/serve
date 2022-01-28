@@ -1,6 +1,6 @@
 
 module.exports = async function find() {
-    const query = this.query
+    const query = this.request.body
     if (!query.shopID) {
         this.body = this.parameterError
         return

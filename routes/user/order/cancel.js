@@ -1,6 +1,5 @@
-// this 指向 ctx
 
-module.exports = async function cancell() {
+module.exports = async function cancel() {
     const { orderKey } = this.request.body
     if (!(orderKey)) {
         this.body = this.parameterError

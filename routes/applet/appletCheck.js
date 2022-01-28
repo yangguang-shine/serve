@@ -3,7 +3,7 @@ const identification = require('../../model/appletInfo/identification')
 const messageDelivery = require('../../model/appletInfo/messageDelivery')
 router.prefix("/api/applet/wechat");
 
-router.get("/check", async (ctx, next) => {
+router.post("/check", async (ctx, next) => {
     identification(ctx)
 });
 

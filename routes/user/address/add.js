@@ -1,14 +1,11 @@
 // this 指向 this
 
 module.exports = async function add() {
-    await this.SQLtransaction(async (querySQL) => {
         const { name, sex, mobile, address1, address2, longitude, latitude } = this.request.body
-        const userID = await this.getUserID()
         const sql = `insert into user_address_list (name, sex, mobile, address1, address2, userID, longitude, latitude) values (?)`;
-        const res = await querySQL(sql, [[name, sex, mobile, address1, address2, userID, `${longitude}`, `${latitude}`]])
+        const res = await this.querySQL(sql, [[name, sex, mobile, address1, address2, this.userID, `${longitude}`, `${latitude}`]])
         // const addressID = res.insertId
         // await addressExchange({ querySQL, userID, addressID })
-    })
     this.body = {
         code: '000',
         msg: '添加成功',

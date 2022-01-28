@@ -10,12 +10,12 @@ module.exports = async function remove() {
     const shopImgUrlList = await this.querySQL(`select imgUrl from shop_list where shopID = ?`, [shopID])
     const foodImgUrlList = await this.querySQL(`select imgUrl from shop_food_info where shopID = ?`, [shopID])
     await this.SQLtransaction(async (querySQL) => {
-        const sql1 = `delete from shop_list where shopID = ?`;
-        const sql2 = `delete from shop_category_list where shopID = ?`;
-        const sql3 = `delete from shop_food_info  where shopID = ?`;
-        const promise1 = querySQL(sql1, [shopID])
-        const promise2 = querySQL(sql2, [shopID])
-        const promise3 = querySQL(sql3, [shopID])
+        const sql1 = `delete from shop_list where shopID = ? and manageID = ?`;
+        const sql2 = `delete from shop_category_list where shopID = ? and manageID = ?`;
+        const sql3 = `delete from shop_food_info  where shopID = ? and manageID = ?`;
+        const promise1 = querySQL(sql1, [shopID, this.manageID])
+        const promise2 = querySQL(sql2, [shopID, this.manageID])
+        const promise3 = querySQL(sql3, [shopID, this.manageID])
         await promise1
         await promise2
         await promise3

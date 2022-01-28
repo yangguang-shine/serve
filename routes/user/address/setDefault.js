@@ -37,8 +37,7 @@ module.exports = async function setDefault() {
             this.body = this.parameterError
             return
         }
-        const userID = await this.getUserID()
-        await addressExchange({ querySQL, userID, addressID })
+        await addressExchange({ querySQL, userID: this.userID, addressID })
     })
 
 

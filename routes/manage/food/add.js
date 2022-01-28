@@ -6,8 +6,8 @@ module.exports = async function add() {
         this.body = this.parameterError
         return
     }
-    const sql = `insert into shop_food_info (foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID) values (?, ?, ?, ?, ?, ?, ?, ?)`;
-    await this.querySQL(sql, [foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID])
+    const sql = `insert into shop_food_info (foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID, manageID) values (?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    await this.querySQL(sql, [foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID, this.manageID])
     this.body = {
         code: '000',
         msg: '添加成功',

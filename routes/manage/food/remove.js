@@ -8,9 +8,9 @@ module.exports = async function remove() {
         this.body = this.parameterError
         return
     }
-    const foodImgUrlList = await this.querySQL(`select imgUrl from shop_food_info where foodID = ?`, [foodID])
-    const sql = `delete from shop_food_info where foodID = ?;`;
-    const res = await this.querySQL(sql, [foodID])
+    const foodImgUrlList = await this.querySQL(`select imgUrl from shop_food_info where foodID = ? and manageID = ?`, [foodID, this.manageID])
+    const sql = `delete from shop_food_info where foodID = ? and manageID = ?;`;
+    const res = await this.querySQL(sql, [foodID, this.manageID])
     const promiseList = []
     foodImgUrlList.forEach((foodImgItem) => {
         promiseList.push(deleteFoodImg(`./public${foodImgItem.imgUrl}`))

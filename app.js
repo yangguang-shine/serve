@@ -43,7 +43,7 @@ const entertainment = require("./routes/user/entertainment");
 const wechatApplet = require("./routes/wechat/applet");
 
 // 路由404
-const { handleStatus404 } = require('./middleware')
+const { checkLogin, handleStatus404 } = require('./middleware')
 // const status405 = require('./routes/status')
 // 添加路由  公众平台  TODO
 // const platformMessage = require("./routes/platform/platformMessage");
@@ -61,8 +61,8 @@ const { querySQL, SQLtransaction } = require('./model/mysql')
 const dataFormat = require('./tools/dataFormat')
 
 // 管理员和用户的登录状态和获取ID方法
-const { getUserID, checkUserLogin } = require('./tools/userTool')
-const { getManageID, checkManageLogin } = require('./tools/manageTool')
+// const { getUserID, checkUserLogin } = require('./tools/userTool')
+// const { getManageID, checkManageLogin } = require('./tools/manageTool')
 
 // 简单路由 try catch 处理的方法
 const simpleRouterTryCatchHandle = require('./tools/simpleRouterTryCatchHandle')
@@ -96,10 +96,10 @@ app.context.querySQL = querySQL
 app.context.SQLtransaction = SQLtransaction
 app.context.dataFormat = dataFormat
 app.context.simpleRouterTryCatchHandle = simpleRouterTryCatchHandle
-app.context.getUserID = getUserID
-app.context.getManageID = getManageID
-app.context.checkManageLogin = checkManageLogin
-app.context.checkUserLogin = checkUserLogin
+// app.context.getUserID = getUserID
+// // app.context.getManageID = getManageID
+// app.context.checkManageLogin = checkManageLogin
+// app.context.checkUserLogin = checkUserLogin
 
 // 参数校验失败返回对象
 app.context.parameterError = {
@@ -156,6 +156,7 @@ app.use(async (ctx, next) => {
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
+app.use(checkLogin)
 // 判断用户token权限
 // app.use(checkUserLoginInterface())
 

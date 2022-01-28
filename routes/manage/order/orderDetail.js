@@ -1,7 +1,7 @@
 // this 指向 ctx
 
 module.exports = async function orderDetail() {
-    const { orderKey, shopID } = this.query
+    const { orderKey, shopID } = this.request.body
     if (!orderKey && !shopID) {
         this.body = this.parameterError
         return

@@ -3,7 +3,7 @@ const httpGet = require('../../tools/httpGet')
 
 router.prefix("/api/user/api/entertainment");
 
-router.get("/jokeList", async (ctx, next) => {
+router.post("/jokeList", async (ctx, next) => {
     try {
         const joke_key = 'f93b640770d982eeaf1004d564ee2e71';
         const joke_list_domain = 'http://v.juhe.cn/joke/content/list.php'
@@ -37,7 +37,7 @@ router.get("/jokeList", async (ctx, next) => {
     }
 });
 
-router.get("/newsList", async (ctx, next) => {
+router.post("/newsList", async (ctx, next) => {
     try {
         const news_key = '074a12b156303ae068905d86d73233b5'
         const news_domain = 'http://v.juhe.cn/toutiao/index'
@@ -71,7 +71,7 @@ router.get("/newsList", async (ctx, next) => {
     }
 });
 
-router.get("/cuisineList", async (ctx, next) => {
+router.post("/cuisineList", async (ctx, next) => {
     try {
         const food_key = 'f2770f608d21700c9900924fc9bdb3eb';
         const cuisine_list_domain = 'http://apis.juhe.cn/cook/query'
@@ -104,7 +104,7 @@ router.get("/cuisineList", async (ctx, next) => {
         }
     }
 });
-router.get("/getAnswer", async (ctx, next) => {
+router.post("/getAnswer", async (ctx, next) => {
     try {
 // https://api.jisuapi.com/iqa/query?appkey=yourappkey&question=杭州天气
         const app_key = '0a7864f280b81212';

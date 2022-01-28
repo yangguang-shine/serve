@@ -7,7 +7,7 @@ const remove = require('./remove')
 
 router.prefix('/api/manage/food')
 // 添加菜品
-router.get('/list', async (ctx, next) => {
+router.post('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {
         msg: '查询失败'
     })
@@ -32,7 +32,7 @@ router.post('/edit', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/find', async (ctx, next) => {
+router.post('/find', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(find, {
         msg: '查找失败'
     })

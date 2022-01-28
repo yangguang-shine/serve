@@ -26,7 +26,7 @@ const SQLtransaction = (func) => {
                 reject(err)
                 return
             }
-            con.beginTransaction(async (e) => {
+            con.beginTransaction(async (err) => {
                 if (err) {
                     reject(err)
                     return

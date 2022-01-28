@@ -10,10 +10,9 @@ module.exports = async function submit() {
         this.body = this.parameterError
         return
     }
-    const userID = await this.getUserID()
     await this.SQLtransaction(async (querySQL) => {
         // 插入order_key_list
-        const orderKeyValues = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, noteText, userID]
+        const orderKeyValues = [orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, noteText, this.userID]
         const insertOrderKeyListSQL = `insert into order_key_list (orderKey, shopID, orderAmount, orderTime, minusPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, originOrderAmount, noteText, userID) values (?);`
         const insertOrderKeyListSQLPromist = querySQL(insertOrderKeyListSQL, [orderKeyValues])
         // 插入 order_food_list
@@ -28,7 +27,7 @@ module.exports = async function submit() {
             const price = item.price
             const unit = item.unit
             const description = item.description
-            foodListValues.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, userID])
+            foodListValues.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, this.userID])
         })
         // await querySQL(sql, [values])
         const insertOrderFoodListSQL = 'insert into order_food_list (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, userID) values ?'

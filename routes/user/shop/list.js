@@ -1,6 +1,6 @@
 
 module.exports = async function list() {
-    const { businessType } = this.query
+    const { businessType } = this.request.body
     let res = []
     if (businessType) {
         const sql = `select * from shop_list where businessTypes like '%${businessType}%'`

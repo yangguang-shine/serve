@@ -6,7 +6,7 @@ module.exports = async function orderList() {
         // 30   已送出  |  制作中
         // 40   已送达  |  制作完
         // 50   已取消
-        const { status, shopID } = this.query
+        const { status, shopID } = this.request.body
         if (!(Number(status) >= 0 && Number(status) <= 3) && !shopID) {
             this.body = this.parameterError
             return

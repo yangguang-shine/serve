@@ -1,5 +1,5 @@
 
-const getUserID = require('./getUserID')
+const getUserID = require('../getUserID')
 const checkUserLogin = require('./checkUserLogin')
 module.exports = {
     getUserID,

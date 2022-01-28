@@ -1,12 +1,13 @@
 // this 指向 ctx
 
 module.exports = async function find() {
-    const query = this.query
+    const query = this.request.body
     if (!query.shopID) {
         this.body = this.parameterError
         return
     }
-    const res = await this.querySQL('select * from shop_list where shopID = ?;', [Number(query.shopID)])
+    console.log()
+    const res = await this.querySQL('select * from shop_list where shopID = ? and manageID = ?;', [Number(query.shopID), this.manageID])
     let data = {}
     if (res.length) {
         data = res[0]

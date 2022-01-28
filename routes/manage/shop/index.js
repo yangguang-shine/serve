@@ -8,7 +8,7 @@ const bulkImportFood = require('./bulkImportFood')
 
 router.prefix('/api/manage/shop')
 // 添加菜品
-router.get('/list', async (ctx, next) => {
+router.post('/list', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(list, {
         msg: '查询失败'
     })
@@ -19,7 +19,7 @@ router.post('/add', async (ctx, next) => {
     })
 })
 
-// 更新菜品
+// 删除店铺
 router.post('/remove', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(remove, {
         msg: '删除失败'
@@ -34,7 +34,7 @@ router.post('/edit', async (ctx, next) => {
 })
 
 // 查找菜品
-router.get('/find', async (ctx, next) => {
+router.post('/find', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(find, {
         msg: '查找失败'
     })

@@ -55,7 +55,7 @@
 
     ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20);
 
-    ALTER TABLE order_key_list RENAME orderKeyID TO id; --- 仅修改属性名称
+    ALTER TABLE order_key_list RENAME COLUMN orderKeyID TO id; --- 仅修改属性名称
 
 #### 修改表的自增初始值
 

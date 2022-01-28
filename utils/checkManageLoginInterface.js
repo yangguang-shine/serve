@@ -18,7 +18,7 @@ const checkUserLoginInterfaceList = [
     '/manage/api/manageShop/find',
     '/manage/api/manageOrder/orderList',
     '/manage/api/manageOrder/orderDetail',
-    '/manage/api/manageOrder/cancell',
+    '/manage/api/manageOrder/cancel',
     '/manage/api/manageOrder/changeOrderStatus',
 ]
 

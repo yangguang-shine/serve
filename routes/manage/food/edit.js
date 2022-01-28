@@ -6,8 +6,8 @@ module.exports = async function edit() {
         this.body = this.parameterError
         return
     }
-    const sql = `update shop_food_info set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ?;`
-    const res = await this.querySQL(sql, [foodName, price, unit, imgUrl, description, foodID])
+    const sql = `update shop_food_info set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where foodID = ? and manageID = ?;`
+    const res = await this.querySQL(sql, [foodName, price, unit, imgUrl, description, foodID, this.manageID])
     this.body = {
         code: '000',
         msg: '更新成功',

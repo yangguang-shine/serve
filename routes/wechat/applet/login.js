@@ -7,7 +7,7 @@ const crypto = require('crypto');
 
 module.exports = async function login() {
     let token = ''
-    const { code } = this.query
+    const { code } = this.request.body
     if (!code) {
         this.body = this.parameterError
     }

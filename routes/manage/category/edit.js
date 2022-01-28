@@ -7,10 +7,10 @@ module.exports = async function edit() {
         return
     }
     await this.SQLtransaction(async (querySQL) => {
-        let sql1 = `update shop_category_list set categoryName = ? where categoryID = ?`
-        let sql2 = `update shop_food_info set categoryName = ? where categoryID = ?`
-        const promise1 = querySQL(sql1, [categoryName, categoryID])
-        const promise2 = querySQL(sql2, [categoryName, categoryID])
+        let sql1 = `update shop_category_list set categoryName = ? where categoryID = ? and manageID = ?`
+        let sql2 = `update shop_food_info set categoryName = ? where categoryID = ? and manageID = ?`
+        const promise1 = querySQL(sql1, [categoryName, categoryID, this.manageID])
+        const promise2 = querySQL(sql2, [categoryName, categoryID, this.manageID])
         await promise1
         await promise2
     })

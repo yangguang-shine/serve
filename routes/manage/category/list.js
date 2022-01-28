@@ -1,7 +1,7 @@
 // manage > category > list
 
 module.exports = async function list() {
-    const { shopID } = this.query
+    const { shopID } = this.request.body
     if (!shopID) {
         this.body = this.parameterError
         return
