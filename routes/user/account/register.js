@@ -2,7 +2,6 @@
 
 const encryption = require('../../../tools/encryption')
 const crypto = require('crypto');
-const { createUserIDOrShopIDOrderFoodList, createUserIDOrShopIDOrderKeyList, createUserIDAddress } = require('../../../creatTable')
 
 module.exports = async function register() {
         const { phone, password, nickname } = this.request.body
@@ -30,12 +29,6 @@ module.exports = async function register() {
                 const userID = res.insertId
                 const insertTokenSql = `insert into token_store_user (userID, userToken) values (?, ?)`
                 await querySQL(insertTokenSql, [userID, userToken])
-                const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
-                const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })
-                const createUserIDAddressPromise = createUserIDAddress({ querySQL, userID })
-                await createUserIDOrderFoodListPromise
-                await createUserIDOrderKeyListPromise
-                await createUserIDAddressPromise
             })
             this.cookies.set('userToken', userToken)
             this.body = {

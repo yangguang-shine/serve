@@ -16,18 +16,17 @@ module.exports = async function shop() {
     const distDir = path.join(__dirname, `../../../public/upload/img/shop/${imageName}`)
     const imageWriter = fs.createWriteStream(distDir)
     const saveImgPromise = readPipe(imageReader, imageWriter)
-    const updateImgUrl = `${imageName}`
     let sqlPromise = null
     if (shopID) {
-        sqlPromise = this.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [updateImgUrl, shopID])
+        sqlPromise = this.querySQL(`update shop_list set imgUrl = ? where shopID = ?`, [imageName, shopID])
     }
     await sqlPromise
     await saveImgPromise
     this.body = {
         code: '000',
-        msg: '上传成功',
+        msg: '上传并更新店铺图片成功',
         data: {
-            imgUrl: updateImgUrl
+            imgUrl: imageName
         }
     }
 }

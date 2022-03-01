@@ -22,4 +22,17 @@ module.exports = {
     '/api/manage/food/find': 1,
     '/api/manage/food/edit': 1,
     '/api/manage/food/remove': 1,
+    /**
+     * 订单信息
+     */
+    '/api/manage/order/orderList': 1,
+    '/api/manage/order/changeOrderStatus': 1,
+    '/api/manage/order/orderDetail': 1,
+    '/api/manage/order/cancel': 1,
+
+    /**
+     * 图片上传
+     */
+    '/api/manage/uploadImg/shop': 1,
+    '/api/manage/uploadImg/food': 1,
 }

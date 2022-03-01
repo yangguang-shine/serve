@@ -3,6 +3,8 @@ const chalk = require('chalk')
 const { userLoginInfo, manageLoginInfo, ignoreLoginInfo } = require('../constant')
 const getUserID = async (ctx) => {
     const userToken = ctx.cookies.get('userToken')
+    console.log('userToken')
+    console.log(userToken)
     const sql = `select userID from token_store_user where userToken = ?`
     const userIDList = await ctx.querySQL(sql, [userToken])
     let userID = ''

@@ -1,5 +1,10 @@
 module.exports = {
     /**
+     * 用户注销
+     */
+
+    '/api/user/account/logout': 1,
+    /**
      * 用户地址
      */
     '/api/user/address/list': 1,

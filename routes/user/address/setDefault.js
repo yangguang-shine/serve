@@ -2,9 +2,9 @@
 
 async function addressExchange({ querySQL, userID, addressID } = {}) {
     const sql1 = `select * from user_address_list where addressID = ? and userID = ?;`
-    const sql2 = `select * from user_address_list limit 1`
+    const sql2 = `select * from user_address_list where userID = ? limit 1`
     const findAddressPrimise = querySQL(sql1, [addressID, userID])
-    const firstAddressPrimise = querySQL(sql2, [addressID, userID])
+    const firstAddressPrimise = querySQL(sql2, [userID])
     let findAddress = await findAddressPrimise
     let firstAddress = await firstAddressPrimise
     if(!findAddress.length || !firstAddress.length) {
@@ -33,6 +33,8 @@ module.exports = async function setDefault() {
 
     await this.SQLtransaction(async (querySQL) => {
         const { addressID } = this.request.body
+        console.log('addressID')
+        console.log(addressID)
         if (!addressID) {
             this.body = this.parameterError
             return

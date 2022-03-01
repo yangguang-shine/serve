@@ -59,11 +59,6 @@ const { querySQL, SQLtransaction } = require('./model/mysql')
 
 // 流数据的获取
 const dataFormat = require('./tools/dataFormat')
-
-// 管理员和用户的登录状态和获取ID方法
-// const { getUserID, checkUserLogin } = require('./tools/userTool')
-// const { getManageID, checkManageLogin } = require('./tools/manageTool')
-
 // 简单路由 try catch 处理的方法
 const simpleRouterTryCatchHandle = require('./tools/simpleRouterTryCatchHandle')
 // const auth = require('./model/wechats/auth')
@@ -96,11 +91,6 @@ app.context.querySQL = querySQL
 app.context.SQLtransaction = SQLtransaction
 app.context.dataFormat = dataFormat
 app.context.simpleRouterTryCatchHandle = simpleRouterTryCatchHandle
-// app.context.getUserID = getUserID
-// // app.context.getManageID = getManageID
-// app.context.checkManageLogin = checkManageLogin
-// app.context.checkUserLogin = checkUserLogin
-
 // 参数校验失败返回对象
 app.context.parameterError = {
     code: '300',
@@ -110,9 +100,7 @@ app.context.parameterError = {
 
 // xml 中间件
 app.use(xmlParser());
-// app.use(
-//     bodyparser()
-// );
+
 app.use(
     koaBody({
         multipart: true,
