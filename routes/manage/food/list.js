@@ -6,8 +6,8 @@ module.exports = async function list() {
         this.body = this.parameterError
         return
     }
-    const sql = `select * from shop_food_info where categoryID = ? and manageID = ?;`
-    const res = await this.querySQL(sql, [categoryID, this.manageID])
+    const sql = `select * from shop_food_info where shopID = ? and categoryID = ? and manageID = ?;`
+    const res = await this.querySQL(sql, [shopID, categoryID, this.manageID])
     this.body = {
         code: '000',
         msg: '查询成功',

@@ -13,6 +13,7 @@ module.exports = {
     '/api/user/address/edit': 1,
     '/api/user/address/remove': 1,
     '/api/user/address/setDefault': 1,
+    '/api/user/address/getDefault': 1,
     /**
      * 店铺相关
      */

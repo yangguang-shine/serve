@@ -5,6 +5,7 @@ const list = require('./list')
 const edit = require('./edit')
 const find = require('./find')
 const setDefault = require('./setDefault')
+const getDefault = require('./getDefault')
 
 router.prefix('/api/user/address')
 // 添加菜品
@@ -44,6 +45,12 @@ router.post('/find', async (ctx, next) => {
 router.post('/setDefault', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(setDefault, {
         msg: '查找失败'
+    })
+})
+// 获取默认地址
+router.post('/getDefault', async (ctx, next) => {
+    await ctx.simpleRouterTryCatchHandle(getDefault, {
+        msg: '获取失败'
     })
 })
 

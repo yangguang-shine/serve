@@ -72,7 +72,10 @@
 #### 删除主键
     ALTER TABLE order_key_list CHANGE id id int(10); --- 先删除自增
     ALTER TABLE order_key_list DROP PRIMARY KEY; --- 再删除主键
-
-
+    
+#### 清空表信息主键
+    TRUNCATE TABLE table_name;
+    DELETE * FROM table_name;
+    truncate 是整体删除 (速度较快)，delete是逐条删除 (速度较慢)
 
    
