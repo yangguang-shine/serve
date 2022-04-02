@@ -1,7 +1,7 @@
 const router = require("koa-router")();
 const httpGet = require('../../tools/httpGet')
 
-router.prefix("/api/user/api/entertainment");
+router.prefix("/api/api/entertainment");
 
 router.post("/jokeList", async (ctx, next) => {
     try {

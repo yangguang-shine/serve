@@ -5,11 +5,11 @@
 //     '/api/shop/list',
 // ]
 const ignoreCheck = [
-    '/user/wechat/wx/login',
-    '/user/api/userShop/list',
-    '/user/api/userShop/find',
-    '/user/api/login',
-    '/user/api/register',
+    '/wechat/wx/login',
+    '/api/userShop/list',
+    '/api/userShop/find',
+    '/api/login',
+    '/api/register',
     '/manage/api/login',
     '/manage/api/register',
 ]

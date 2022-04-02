@@ -1,10 +1,10 @@
 // this 指向 ctx
 
 module.exports = async function add() {
-    const { shopName, imgUrl, startTime, endTime, address, description, businessTypes, minus, latitude, longitude, location } = this.request.body
+    const { shopName, imgUrl, startTime, endTime, address, description, businessTypes, minus, latitude, longitude, location, mainColor } = this.request.body
     await this.SQLtransaction(async (querySQL) => {
-        const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address,description, businessTypes, minus, latitude, longitude, location, manageID) values (?)';
-        await querySQL(sql, [[shopName, imgUrl, startTime, endTime, address, description, businessTypes, minus, latitude, longitude, location, this.manageID]])
+        const sql = 'insert into shop_list (shopName, imgUrl, startTime, endTime, address,description, businessTypes, minus, latitude, longitude, location,mainColor, manageID) values (?)';
+        await querySQL(sql, [[shopName, imgUrl, startTime, endTime, address, description, businessTypes, minus, latitude, longitude, location, mainColor, this.manageID]])
     })
     this.body = {
         code: '000',

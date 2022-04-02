@@ -9,7 +9,7 @@ const createUserIDOrShopIDOrderKeyList = require('../../creatTable/createUserIDO
 const createUserIDAddress = require('../../creatTable/createUserIDAddress')
 const crypto = require('crypto');
 
-router.prefix('/api/user/wechat')
+router.prefix('/api/wechat')
 
 router.post('/', function (ctx, next) {
     identification(ctx)

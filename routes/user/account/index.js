@@ -1,12 +1,13 @@
 const router = require('koa-router')()
 
-router.prefix("/api/user/account");
 const login = require('./login')
 const register = require('./register')
+const getUserInfo = require('./getUserInfo')
+const changeUserInfo = require('./changeUserInfo')
 const logout = require('./logout')
 const changePassword = require('./changePassword')
 
-router.prefix('/api/user/account')
+router.prefix('/api/account')
 
 // 用户登录
 router.post('/login', async (ctx, next) => {
@@ -41,6 +42,24 @@ router.post('/changePassword', async (ctx, next) => {
         
     })
 })
+
+
+// 获取用户信息
+router.post('/getUserInfo', async (ctx, next) => {
+    await ctx.simpleRouterTryCatchHandle(getUserInfo, {
+        
+    })
+})
+
+// 修改用户信息
+router.post('/changeUserInfo', async (ctx, next) => {
+    await ctx.simpleRouterTryCatchHandle(changeUserInfo, {
+        
+    })
+})
+
+
+
 
 
 

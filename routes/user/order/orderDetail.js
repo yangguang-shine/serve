@@ -20,12 +20,13 @@ module.exports = async function orderDetail() {
         }
     }
     const orderInfo = orderInfoList[0]
+    console.log(orderInfo)
     // orderInfo.address = JSON.parse(orderInfo.address)
     this.body = {
         code: '000',
         msg: '查询成功',
         data: {
-            ...orderInfo,
+            orderInfo,
             foodList
         }
     }

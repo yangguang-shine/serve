@@ -1,21 +1,21 @@
 const checkUserLoginInterfaceList = [
-    '/user/api/address/list',
-    '/user/api/address/add',
-    '/user/api/address/delete',
-    '/user/api/address/edit',
-    '/user/api/address/find',
-    '/user/api/address/default',
-    '/user/api/userOrder/menuList',
-    '/user/api/userOrder/submit',
-    '/user/api/userOrder/orderList',
-    '/user/api/userOrder/orderDetail',
-    '/user/api/userOrder/cancel',
+    '/api/address/list',
+    '/api/address/add',
+    '/api/address/delete',
+    '/api/address/edit',
+    '/api/address/find',
+    '/api/address/default',
+    '/api/userOrder/menuList',
+    '/api/userOrder/submit',
+    '/api/userOrder/orderList',
+    '/api/userOrder/orderDetail',
+    '/api/userOrder/cancel',
     // '/api/order/orderList',
 ]
 module.exports = () => {
     return async (ctx, next) => {
         const path = ctx.path
-        if (!path.startsWith('/user/api')) {
+        if (!path.startsWith('/api')) {
             await next()
             return
         }

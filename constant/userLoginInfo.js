@@ -3,31 +3,36 @@ module.exports = {
      * 用户注销
      */
 
-    '/api/user/account/logout': 1,
+    '/api/account/logout': 1,
+
+    /**
+     * 用户信息
+     */
+    '/api/account/getUserInfo': 1,
+    '/api/account/changeUserInfo': 1,
     /**
      * 用户地址
      */
-    '/api/user/address/list': 1,
-    '/api/user/address/add': 1,
-    '/api/user/address/find': 1,
-    '/api/user/address/edit': 1,
-    '/api/user/address/remove': 1,
-    '/api/user/address/setDefault': 1,
-    '/api/user/address/getDefault': 1,
+    '/api/address/list': 1,
+    '/api/address/add': 1,
+    '/api/address/find': 1,
+    '/api/address/edit': 1,
+    '/api/address/remove': 1,
+    '/api/address/setDefault': 1,
+    '/api/address/getDefault': 1,
     /**
      * 店铺相关
      */
-    '/api/user/shop/list': 1,
-    '/api/user/shop/find': 1,
-
+    '/api/shop/list': 1,
+    '/api/shop/find': 1,
+    '/api/shop/menu': 1,
     /**
      * 用户订单相关
      */
-    '/api/user/order/menuList': 1,
-    '/api/user/order/submit': 1,
-    '/api/user/order/orderList': 1,
-    '/api/user/order/orderDetail': 1,
-    '/api/user/order/foodList': 1,
-    '/api/user/order/cancel': 1,
+    '/api/order/submit': 1,
+    '/api/order/orderList': 1,
+    '/api/order/orderDetail': 1,
+    '/api/order/foodList': 1,
+    '/api/order/cancel': 1,
 }
 

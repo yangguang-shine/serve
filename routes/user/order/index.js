@@ -3,11 +3,11 @@ const router = require('koa-router')()
 const orderDetail = require('./orderDetail')
 const cancel = require('./cancel')
 const orderList = require('./orderList')
-const menuList = require('./menuList')
+// const menuList = require('./menuList')
 const submit = require('./submit')
 const foodList = require('./foodList')
 
-router.prefix('/api/user/order')
+router.prefix('/api/order')
 
 // 查询订单列表
 router.post('/orderList', async (ctx, next) => {
@@ -31,11 +31,11 @@ router.post('/cancel', async (ctx, next) => {
 })
 
 // 获取菜单列表
-router.post('/menuList', async (ctx, next) => {
-    await ctx.simpleRouterTryCatchHandle(menuList, {
-        msg: '菜品列表获取失败'
-    })
-})
+// router.post('/menuList', async (ctx, next) => {
+//     await ctx.simpleRouterTryCatchHandle(menuList, {
+//         msg: '菜品列表获取失败'
+//     })
+// })
 // 提交订单
 router.post('/submit', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(submit, {
@@ -45,7 +45,7 @@ router.post('/submit', async (ctx, next) => {
 // 获得订单菜品详情
 router.post('/foodList', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(foodList, {
-        msg: '订单状态修改失败'
+        msg: '菜品查询失败'
     })
 })
 
