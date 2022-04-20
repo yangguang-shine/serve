@@ -1,13 +1,14 @@
 // this 指向 ctx
 
 module.exports = async function edit() {
-    const { shopID, foodName, price, unit, imgUrl, description, foodID, categoryID } = this.request.body
+    const { shopID, foodName, price, unit, imgUrl, description, foodID, categoryID, packPrice, reserveCount } = this.request.body
+    console.log(this.request.body)
     if (!(shopID && categoryID && foodID)) {
         this.body = this.parameterError
         return
     }
-    const sql = `update shop_food_info set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ? where shopID = ? and categoryID= ? and foodID = ? and manageID = ?;`
-    const res = await this.querySQL(sql, [foodName, price, unit, imgUrl, description,shopID, categoryID, foodID, this.manageID])
+    const sql = `update shop_food_info set foodName = ?, price = ?, unit = ?, imgUrl = ?, description = ?, packPrice = ? , reserveCount = ? where shopID = ? and categoryID= ? and foodID = ? and manageID = ?;`
+    const res = await this.querySQL(sql, [foodName, price, unit, imgUrl, description, packPrice, reserveCount, shopID, categoryID, foodID, this.manageID])
     this.body = {
         code: '000',
         msg: '更新成功',

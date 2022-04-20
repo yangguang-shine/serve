@@ -33,7 +33,7 @@ module.exports = async function login() {
                 const insertTokenSql = `insert into token_store_user (userID, userToken) values (?, ?)`
                 await this.querySQL(insertTokenSql, [userID, userToken])
             }
-            this.cookies.set('userToken', userToken, {maxAge: 7200000 * 24})
+            this.cookies.set('userToken', userToken, { maxAge: 7200000 * 24 })
             this.body = {
                 code: '000',
                 msg: '登录成功',
