@@ -55,6 +55,7 @@
 
     ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20);
 
+
     ALTER TABLE order_key_list RENAME COLUMN orderKeyID TO id; --- 仅修改属性名称
 
 #### 修改表的自增初始值
@@ -70,12 +71,21 @@
     DROP TABLES shop_order_key_list , user_order_food_list  ;
 
 #### 删除主键
+
     ALTER TABLE order_key_list CHANGE id id int(10); --- 先删除自增
-    ALTER TABLE order_key_list DROP PRIMARY KEY; --- 再删除主键
-    
+    ALTER TABLE order_key_list DROP PRIMARY KEY; --- 再删除主键;
+
 #### 清空表信息主键
+
     TRUNCATE TABLE table_name;
     DELETE * FROM table_name;
-    truncate 是整体删除 (速度较快)，delete是逐条删除 (速度较慢)
+    truncate 是整体删除 (速度较快)，delete是逐条删除 (速度较慢);
 
-   
+#### 查看表字段信息结构
+
+    DESC table_name;
+
+
+    TRUNCATE TABLE order_food_list;
+    ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20);
+
