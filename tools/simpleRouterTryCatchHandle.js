@@ -8,9 +8,9 @@ module.exports = async function simpleRouterTryCatchHandle(handle, errorObj = {}
         console.log('error')
         console.log(e)
         this.body = {
-            code: errorObj.code || '111',
-            msg: errorObj.msg || '查询错误',
-            data: errorObj.data || {}
+            code: e.code || errorObj.code || '111',
+            msg: e.msg || errorObj.msg || '查询错误',
+            data: e.data || errorObj.data || {}
         }
     }
 }

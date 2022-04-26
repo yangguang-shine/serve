@@ -89,3 +89,17 @@
     TRUNCATE TABLE order_food_list;
     ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20);
 
+#### 一次性更新多条数据
+UPDATE mytable SET
+
+    myfield = CASE id
+
+        WHEN 1 THEN 'value'
+
+        WHEN 2 THEN 'value'
+
+        WHEN 3 THEN 'value'
+
+    END
+
+WHERE id IN (1,2,3)
