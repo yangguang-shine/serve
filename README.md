@@ -54,6 +54,8 @@
 #### 修改字段名称和改变数据结构
 
     ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20);
+    ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20) default 0;
+    ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20) default 0 not null;
 
 
     ALTER TABLE order_key_list RENAME COLUMN orderKeyID TO id; --- 仅修改属性名称
@@ -90,16 +92,20 @@
     ALTER TABLE order_key_list CHANGE orderTime orderTime bigint(20);
 
 #### 一次性更新多条数据
-UPDATE mytable SET
+    UPDATE mytable SET
 
-    myfield = CASE id
+        myfield = CASE foodID
 
-        WHEN 1 THEN 'value'
+            WHEN 1 THEN 'value'
 
-        WHEN 2 THEN 'value'
+            WHEN 2 THEN 'value'
 
-        WHEN 3 THEN 'value'
+            WHEN 3 THEN 'value'
 
-    END
+        END
 
-WHERE id IN (1,2,3)
+    WHERE foodID IN (1,2,3)
+
+#### 功能添加
+
+1. 7.5 实现美团数据批量导入（特殊符号导入会失败）

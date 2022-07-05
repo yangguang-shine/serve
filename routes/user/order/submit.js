@@ -76,14 +76,18 @@ async function checkoutOrderReserveCount({
     orderFoodIDMap = {},
     querySQL,
 }) {
-    let sqlReserveCountListSQL = `select foodID, reserveCount from shop_food_info where foodID = ?`;
     const length = orderFoodIDList.length
-    sqlReserveCountListSQL = orderFoodIDList.reduce((sql, foodIDItem, index) => {
-        if (length > 1) {
-            sql = `${sqlReserveCountListSQL} or foodID = ?${index + 1 === length ? ';' : ''}`
+    console.log(length)
+    const sqlReserveCountListSQL = orderFoodIDList.reduce((sql, foodIDItem, index) => {
+        console.log(index)
+        if (index === 0) {
+            sql = `select foodID, reserveCount from shop_food_info where foodID = ?`;
+        } else {
+            sql = `${sql} or foodID = ?${index + 1 === length ? ';' : ''}`
         }
         return sql
-    }, sqlReserveCountListSQL)
+    }, '')
+    console.log(sqlReserveCountListSQL)
     const foodInfoList = await querySQL(sqlReserveCountListSQL, orderFoodIDList)
     // const tlist1 = [
     //     { foodID: 11176, reserveCount: 9 },

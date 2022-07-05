@@ -7,6 +7,8 @@ module.exports = {
     '/api/manage/shop/find': 1,
     '/api/manage/shop/edit': 1,
     '/api/manage/shop/remove': 1,
+    '/api/manage/shop/bulkImportFood': 1,
+
     /**
      * 菜品分类
      */
