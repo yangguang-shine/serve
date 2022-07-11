@@ -49,7 +49,7 @@
 
 #### 新增表字段
 
-    ALTER TABLE user_address_list ADD [字段名] NVARCHAR (50) NULL  
+    ALTER TABLE user_address_list ADD [字段名] NVARCHAR (50) not NULL  
 
 #### 修改字段名称和改变数据结构
 
@@ -106,6 +106,93 @@
 
     WHERE foodID IN (1,2,3)
 
+#### 删除表一行数据
+
+    DELETE FROM order_food_list WHERE categoryID = 1161;
+
+#### 修改表的数据结构
+    ALTER TABLE order_food_list CHANGE orderCount orderCount int default 0  not  null;
+    ALTER TABLE order_food_list CHANGE imgUrl imgUrl varchar(255)  not  null;
+    ALTER TABLE order_food_list CHANGE foodName foodName varchar(255) not  null;
+    ALTER TABLE order_food_list CHANGE unit unit varchar(255) not  null;
+    ALTER TABLE order_food_list CHANGE description description varchar(255) not  null;
+    ALTER TABLE order_food_list CHANGE categoryName categoryName varchar(255) not  null;
+    ALTER TABLE order_food_list CHANGE orderKey orderKey varchar(50) not  null;
+    ALTER TABLE order_food_list CHANGE categoryID categoryID int not  null;
+    ALTER TABLE order_food_list CHANGE price price decimal(10,2) not  null;
+
+
+    order_key_list 
+    ALTER TABLE order_key_list CHANGE orderKey orderKey varchar(50) not  null;
+    ALTER TABLE order_key_list CHANGE payPrice payPrice decimal(10,2) not  null;
+    ALTER TABLE order_key_list CHANGE orderTime orderTime bigint not  null;
+    ALTER TABLE order_key_list CHANGE businessType businessType int not  null;
+    ALTER TABLE order_key_list CHANGE minusPrice minusPrice decimal(10,2) not  null;
+    ALTER TABLE order_key_list CHANGE takeOutTime takeOutTime varchar(50) default '' not  null;
+    ALTER TABLE order_key_list CHANGE selfTakeTime selfTakeTime varchar(50) default '' not  null;
+    ALTER TABLE order_key_list CHANGE reservePhone reservePhone varchar(50) not  null;
+    ALTER TABLE order_key_list CHANGE address address varchar(1000) not  null;
+    ALTER TABLE order_key_list CHANGE orderStatus orderStatus int not  null;
+    ALTER TABLE order_key_list CHANGE orderOriginAmount orderOriginAmount decimal(10,2) not  null;
+    ALTER TABLE order_key_list CHANGE noteText noteText varchar(255) not  null;
+    ALTER TABLE order_key_list CHANGE allPackPrice allPackPrice decimal(10,2) not  null;
+    ALTER TABLE order_key_list CHANGE deliverPrice deliverPrice decimal(10,2) not  null;
+
+
+    shop_food_info
+    ALTER TABLE shop_food_info CHANGE foodName foodName varchar(255) not  null;
+    ALTER TABLE shop_food_info CHANGE categoryID categoryID int not  null;
+    ALTER TABLE shop_food_info CHANGE categoryName categoryName varchar(255) not  null;
+    ALTER TABLE shop_food_info CHANGE unit unit varchar(255) not  null;
+    ALTER TABLE shop_food_info CHANGE price price decimal(10,2) not  null;
+    ALTER TABLE shop_food_info CHANGE orderCount orderCount int default 0  not  null;
+    ALTER TABLE shop_food_info CHANGE imgUrl imgUrl varchar(255)  not  null;
+    ALTER TABLE shop_food_info CHANGE description description varchar(255) not  null;
+    ALTER TABLE shop_food_info CHANGE shopID shopID int not  null;
+    ALTER TABLE shop_food_info CHANGE manageID manageID int not  null;
+    ALTER TABLE shop_food_info CHANGE packPrice packPrice decimal(10,2) not  null;
+    ALTER TABLE shop_food_info CHANGE reserveCount reserveCount int default 0 not  null;
+
+    shop_list
+    ALTER TABLE shop_list CHANGE minus minus varchar(500)  not  null;
+    ALTER TABLE shop_list CHANGE manageID manageID int  not  null;
+    ALTER TABLE shop_list CHANGE description description varchar(500)  not  null;
+    ALTER TABLE shop_list CHANGE mainColor mainColor varchar(50)  not  null;
+    ALTER TABLE shop_list CHANGE deliverPrice deliverPrice decimal(10,2) 0.00 not  null;
+    ALTER TABLE shop_list CHANGE startDeliverPrice startDeliverPrice decimal(10,2) default 0.00 not  null;
+    ALTER TABLE shop_list CHANGE mode mode varchar(50) default 'vertical' not  null;
+
+    user_address_list
+
+    ALTER TABLE user_address_list CHANGE name name varchar(255) not  null;
+    ALTER TABLE user_address_list CHANGE mobile mobile varchar(255) not  null;
+    ALTER TABLE user_address_list CHANGE address1 address1 varchar(255) not  null;
+    ALTER TABLE user_address_list CHANGE address2 address2 varchar(255) not  null;
+    ALTER TABLE user_address_list CHANGE sex sex int  not  null;
+    ALTER TABLE user_address_list CHANGE latitude latitude varchar(50) not  null;
+    ALTER TABLE user_address_list CHANGE longitude longitude varchar(50) not  null;
+
+
+packPrice
+
+
+noteText
+orderStatus
+    address
+
+takeOutTime
+minusPrice
+businessType
+orderTime
+    
+
+price
+    <!-- ALTER TABLE order_food_list CHANGE categoryID categoryID int not  null; -->
+    foodName
+    categoryID
+    ALTER TABLE order_food_list CHANGE orderCount orderCount int default 0  not  null;
+
 #### 功能添加
+
 
 1. 7.5 实现美团数据批量导入（特殊符号导入会失败）
