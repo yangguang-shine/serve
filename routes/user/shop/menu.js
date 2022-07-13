@@ -6,7 +6,7 @@ module.exports = async function menu() {
         this.body = this.parameterError
         return
     }
-    const sql = `select categoryID,categoryName,description,foodID,foodName,imgUrl,shopID,packPrice,price,reserveCount,unit,orderCount from shop_food_info where shopID = ?`;
+    const sql = `select categoryID,categoryName,description,foodID,foodName,imgUrl,shopID,packPrice,price,reserveCount,unit,orderCount, specification from shop_food_info where shopID = ?`;
     const sql1 = `select categoryID,categoryName,required from shop_category_list where shopID = ?`;
     const sqlPromise = this.querySQL(sql, [shopID])
     const sql1Promise = this.querySQL(sql1, [shopID])

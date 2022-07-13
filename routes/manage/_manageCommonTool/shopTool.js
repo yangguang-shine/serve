@@ -47,10 +47,11 @@ const insertFoodList = async ({ foodList, categoryID, querySQL, shopID, manageID
             shopID,
             manageID,
             item.packPrice,
+            item.specification,
             99
         ]
     })
-    const insertFood = `insert into shop_food_info (foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID,manageID,packPrice, reserveCount) values ?`;
+    const insertFood = `insert into shop_food_info (foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID,manageID,packPrice, specification,reserveCount) values ?`;
     console.log(insertFoodList)
     await querySQL(insertFood, [insertFoodList])
 }
