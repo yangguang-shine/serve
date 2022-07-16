@@ -1,5 +1,6 @@
 const router = require('koa-router')()
 const shop = require('./shop')
+const common = require('./common')
 const food = require('./food')
 const remove = require('./remove')
 
@@ -7,6 +8,11 @@ router.prefix('/api/manage/uploadImg')
 // 店铺上传图片
 router.post('/shop', async (ctx, next) => {
     await ctx.simpleRouterTryCatchHandle(shop, {
+        msg: '上传失败'
+    })
+})
+router.post('/common', async (ctx, next) => {
+    await ctx.simpleRouterTryCatchHandle(common, {
         msg: '上传失败'
     })
 })

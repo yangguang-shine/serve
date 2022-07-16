@@ -37,4 +37,5 @@ module.exports = {
      */
     '/api/manage/uploadImg/shop': 1,
     '/api/manage/uploadImg/food': 1,
+    '/api/manage/uploadImg/common': 1
 }

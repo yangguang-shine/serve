@@ -23,7 +23,7 @@ const toInsertCategoryItem = async ({ querySQL, shopID, categoryItem, manageID }
     await insertFoodList({ querySQL, foodList: categoryItem.foodList || [], categoryID, shopID, manageID })
 }
 async function createFoodShopDir(shopID) {
-    const foodImgDir = path.join(__dirname, `../../../public/uploadImg/food/${shopID}`)
+    const foodImgDir = path.join(__dirname, `../../../public/image/food/${shopID}`)
     console.log(foodImgDir)
     try {
         await fsPromise.access(foodImgDir)
@@ -65,7 +65,7 @@ const downloadOneImg = async (item) => {
     let res = ''
     const imageName = getImageName(item.originImgUrl)
     item.imgUrl = imageName
-    const distDir = path.join(__dirname, `../../../public/uploadImg/food/${item.shopID}/${imageName}`)
+    const distDir = path.join(__dirname, `../../../public/image/food/${item.shopID}/${imageName}`)
     const fsWriteSream = await fs.createWriteStream(distDir)
     fsWriteSream.on('error', (e) => {
         console.log(e)

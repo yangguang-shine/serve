@@ -12,7 +12,7 @@ module.exports = async function submit() {
     }
     await this.SQLtransaction(async (querySQL) => {
         // 插入order_key_list
-        const orderKeyValues = [orderKey, shopID, payPrice, orderTime, minusPrice, allPackPrice, deliverPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, orderOriginAmount, noteText, this.userID]
+        const orderKeyValues = [orderKey, shopID, payPrice, orderTime, minusPrice, allPackPrice, deliverPrice, businessType, reservePhone, selfTakeTime, address, 10, takeOutTime, orderOriginAmount, noteText, this.userID]
         // 插入 order_food_list
         const foodListValues = []
         const orderFoodIDList = []
@@ -27,7 +27,10 @@ module.exports = async function submit() {
             const price = item.price
             const unit = item.unit
             const description = item.description
-            foodListValues.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, this.userID])
+            const specification = item.specification || '[]'
+            const orderSpecifaListJSON = JSON.stringify(item.orderSpecifaList || [])
+
+            foodListValues.push([foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, this.userID, specification, orderSpecifaListJSON])
             orderFoodIDList.push(foodID)
             orderFoodIDMap[foodID] = orderCount
         })
@@ -146,10 +149,13 @@ async function insertOrderKeyList({
     querySQL,
     orderKeyValues
 }) {
-    const insertOrderKeyListSQL = `insert into order_key_list (orderKey, shopID, payPrice, orderTime, minusPrice, allPackPrice, deliverPrice, businessType, reservePhone, selfTakeTime, address, takeOutTime, orderOriginAmount, noteText, userID) values (?);`
+    const insertOrderKeyListSQL = `insert into order_key_list (orderKey, shopID, payPrice, orderTime, minusPrice, allPackPrice, deliverPrice, businessType, reservePhone, selfTakeTime, address,orderStatus, takeOutTime, orderOriginAmount, noteText, userID) values (?);`
     await querySQL(insertOrderKeyListSQL, [orderKeyValues])
 }
 async function insertOrderFoodList({ querySQL, foodListValues = [] }) {
-    const insertOrderFoodListSQL = 'insert into order_food_list (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, userID) values ?'
+    const insertOrderFoodListSQL = 'insert into order_food_list (foodID, orderCount, imgUrl, foodName, categoryID, categoryName, price, unit, description, orderKey, shopID, userID, specification, orderSpecifaListJSON) values ?'
     await querySQL(insertOrderFoodListSQL, [foodListValues])
 }
+
+// specification
+// orderSpecifaList
