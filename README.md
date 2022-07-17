@@ -192,7 +192,17 @@ price
     categoryID
     ALTER TABLE order_food_list CHANGE orderCount orderCount int default 0  not  null;
 
+
+#### 导出数据库和导出表 导入ngfan 
+/usr/local/MYSQ/bin/mysqldump -u root -p [DATABASE] > ./data.sql
+/usr/local/MYSQ/bin/mysqldump -u root -p [DATABASE] > [TABLE] ./data.sql
+/usr/local/MYSQ/bin/mysqldump -u root -p [DATABASE] [TABLE]>  ./data.sql
+
+#### 创建数据库
+
+ create database my_data_base default charset=utf8;
+
 #### 功能添加
 
 
-1. 7.5 实现美团数据批量导入（特殊符号导入会失败）
+1. 7.5 实现美团数据批量导入（特殊符号如表情会导入会失败）

@@ -7,6 +7,7 @@ const koaBody = require("koa-body");
 const xmlParser = require("koa-xml-body");
 const logger = require("koa-logger");
 const compress = require('koa-compress')
+const { readFile } = require('fs/promises')
 
 // 用户登录注册
 const userAccount = require("./routes/user/account");
@@ -78,10 +79,10 @@ onerror(app);
 
 // 设置图片、css、js缓存
 app.use(async (ctx, next) => {
-    const reg = /\S*\.(jpe?g|png|js|svg|css)$/;
+    const reg = /\S*\.(jpe?g|png|js|svg|css|ico)$/;
     console.log(ctx.path)
     if (reg.test(ctx.path)) {
-        ctx.response.set('cache-control', `max-age=${60 * 60 * 24 * 7}`)
+        ctx.response.set('cache-control', `max-age=${60 * 60 * 24 * 700}`)
     }
     await next()
 })
@@ -143,6 +144,28 @@ app.use(async (ctx, next) => {
     const ms = new Date() - start;
     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
+
+
+app.use(async (ctx, next) => {
+    console.log('ctx.path')
+    console.log(ctx.path)
+    console.log(ctx.path.startsWith('/pages'))
+    if (ctx.path.startsWith('/pages') || ctx.path === '/' 
+    || ctx.path.startsWith('/h5/pages')) {
+        console.log(12313123)
+        const data = await readFile('./public/h5/index.html')
+        ctx.type = 'text/html;charset=utf-8';
+        ctx.body = data
+        return
+
+    }
+    await next()
+});
+
+
+
+
+
 
 app.use(checkLogin)
 // 判断用户token权限
