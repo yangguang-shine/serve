@@ -24,11 +24,9 @@ const toInsertCategoryItem = async ({ querySQL, shopID, categoryItem, manageID }
 }
 async function createFoodShopDir(shopID) {
     const foodImgDir = path.join(__dirname, `../../../public/image/food/${shopID}`)
-    console.log(foodImgDir)
     try {
         await fsPromise.access(foodImgDir)
     } catch (error) {
-        console.log(1111)
         console.log(error)
         await fsPromise.mkdir(foodImgDir)
     }
@@ -52,7 +50,6 @@ const insertFoodList = async ({ foodList, categoryID, querySQL, shopID, manageID
         ]
     })
     const insertFood = `insert into shop_food_info (foodName, categoryID, price, unit, imgUrl, description, categoryName, shopID,manageID,packPrice, specification,reserveCount) values ?`;
-    console.log(insertFoodList)
     await querySQL(insertFood, [insertFoodList])
 }
 const toDownLoadAllImg = async (foodList) => {

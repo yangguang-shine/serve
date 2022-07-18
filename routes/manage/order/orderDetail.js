@@ -20,7 +20,6 @@ module.exports = async function orderDetail() {
         }
     }
     const orderInfo = orderInfoList[0]
-    console.log(orderInfo)
     orderInfo.address = JSON.parse(orderInfo.address)
     this.body = {
         code: '000',

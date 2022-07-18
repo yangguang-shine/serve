@@ -2,8 +2,6 @@
 
 module.exports = async function remove() {
     const { addressID } = this.request.body
-    console.log('this.request.body')
-    console.log(this.request.body)
     if (!addressID) {
         this.body = this.parameterError
         return

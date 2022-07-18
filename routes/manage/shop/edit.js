@@ -2,7 +2,6 @@
 
 module.exports = async function edit() {
     const { shopID, shopName, imgUrl, startTime, endTime, address, description, businessTypes, minus, latitude, longitude, location, mainColor, deliverPrice, startDeliverPrice, mode } = this.request.body
-    console.log(this.request.body)
 
     // shopName: values.shopName,
     // startTime: values.startTime.format("HH:mm"),

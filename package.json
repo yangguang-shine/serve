@@ -4,9 +4,7 @@
   "private": true,
   "scripts": {
     "start": "supervisor bin/www",
-    "dev": "node_modules/.bin/nodemon bin/www",
-    "dev1": "nodemon bin/www",
-    "dev:windows": "./node_modules/.bin/nodemon bin/www",
+    "dev": "nodemon bin/www",
     "prd": "pm2 start bin/www",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

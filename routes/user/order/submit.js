@@ -80,9 +80,7 @@ async function checkoutOrderReserveCount({
     querySQL,
 }) {
     const length = orderFoodIDList.length
-    console.log(length)
     const sqlReserveCountListSQL = orderFoodIDList.reduce((sql, foodIDItem, index) => {
-        console.log(index)
         if (index === 0) {
             sql = `select foodID, reserveCount from shop_food_info where foodID = ?`;
         } else {
@@ -90,7 +88,6 @@ async function checkoutOrderReserveCount({
         }
         return sql
     }, '')
-    console.log(sqlReserveCountListSQL)
     const foodInfoList = await querySQL(sqlReserveCountListSQL, orderFoodIDList)
     // const tlist1 = [
     //     { foodID: 11176, reserveCount: 9 },
@@ -119,21 +116,14 @@ async function updateFoodInfoListReserveCount({
     orderFoodIDMap = {},
     foodInfoList = []
 }) {
-    console.log({
-        orderFoodIDList,
-        orderFoodIDMap,
-        foodInfoList
-    })
     const updateFoodIDMap = {};
     foodInfoList.forEach((foodInfoItem) => {
         updateFoodIDMap[foodInfoItem.foodID] = foodInfoItem.reserveCount - orderFoodIDMap[foodInfoItem.foodID]
     })
-    console.log(updateFoodIDMap)
     const sql = `
     UPDATE shop_food_info SET
     reserveCount = CASE foodID
     ${orderFoodIDList.reduce((str, foodID, index) => {
-        console.log(1111)
         str = str + `WHEN ${foodID} THEN ${updateFoodIDMap[foodID]} `
         return str
     }, '')}

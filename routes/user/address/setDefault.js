@@ -33,8 +33,6 @@ module.exports = async function setDefault() {
 
     await this.SQLtransaction(async (querySQL) => {
         const { addressID } = this.request.body
-        console.log('addressID')
-        console.log(addressID)
         if (!addressID) {
             this.body = this.parameterError
             return

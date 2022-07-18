@@ -7,8 +7,6 @@ module.exports = async function bulkImportFood() {
         this.body = this.parameterError
         return
     }
-    console.log(this.request.body)
-    console.log(this.manageID)
     await toBulkImportFood(this, {
         shopID,
         categoryList

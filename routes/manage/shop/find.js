@@ -6,7 +6,6 @@ module.exports = async function find() {
         this.body = this.parameterError
         return
     }
-    console.log()
     const res = await this.querySQL('select * from shop_list where shopID = ? and manageID = ?;', [Number(query.shopID), this.manageID])
     let data = {}
     if (res.length) {

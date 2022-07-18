@@ -16,7 +16,6 @@ router.post('/login', async (ctx, next) => {
     })
 })
 router.post('/register', async (ctx, next) => {
-    console.log(1212)
     await ctx.simpleRouterTryCatchHandle(register, {
         code: '107',
         msg: '管理员注册失败，请稍后再试',
