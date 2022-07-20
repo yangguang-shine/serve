@@ -1,6 +1,10 @@
 // this 指向 this
 
+const { logger } = require("../../../utils/logger")
+
 module.exports = async function orderDetail() {
+    logger.info(this.path, this.userID)
+
     const { orderKey } = this.request.body
     if (!orderKey) {
         this.body = this.parameterError

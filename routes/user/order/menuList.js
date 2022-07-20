@@ -1,6 +1,10 @@
 // this 指向 this
 
+const { logger } = require("../../../utils/logger")
+
 module.exports = async function menuList() {
+    logger.info(this.path, this.userID)
+
     const { shopID } = this.request.body
     if (!shopID) {
         this.body = this.parameterError

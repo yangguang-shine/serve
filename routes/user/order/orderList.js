@@ -1,6 +1,10 @@
 // this 指向 this
 
+const { logger } = require("../../../utils/logger")
+
 module.exports = async function orderList() {
+    logger.info(this.path, this.userID)
+
     // 10   待接单
     // 20   已接单
     // 30   待自提   已送出

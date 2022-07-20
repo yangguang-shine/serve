@@ -1,11 +1,15 @@
 // this 指向 this
 
+const { logger } = require("../../../utils/logger")
+
 module.exports = async function menu() {
+    logger.info(this.path, this.userID)
     const { shopID } = this.request.body
     if (!shopID) {
         this.body = this.parameterError
         return
     }
+
     const sql = `select categoryID,categoryName,description,foodID,foodName,imgUrl,shopID,packPrice,price,reserveCount,unit,orderCount, specification from shop_food_info where shopID = ?`;
     const sql1 = `select categoryID,categoryName,required from shop_category_list where shopID = ?`;
     const sqlPromise = this.querySQL(sql, [shopID])
