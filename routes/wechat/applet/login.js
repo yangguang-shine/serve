@@ -26,7 +26,6 @@ module.exports = async function login() {
         } else if (!queryUserIDList.length) {
             sql = `insert into pass_info_user (session_key, openid) values (?, ?)`
             const resInsert = await querySQL(sql, [session_key, openid])
-            console.log(res.insertId)
             userID = resInsert.insertId
             const createUserIDOrderFoodListPromise = createUserIDOrShopIDOrderFoodList({ querySQL, userID })
             const createUserIDOrderKeyListPromise = createUserIDOrShopIDOrderKeyList({ querySQL, userID })

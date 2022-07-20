@@ -1,5 +1,7 @@
+const { logger } = require("../../../utils/logger")
 
 module.exports = async function list() {
+    logger.info(this.path, this.userID)
     const { businessType } = this.request.body
     let res = []
     if (businessType) {

@@ -16,7 +16,6 @@ module.exports = async function remove() {
         }
         return str
     }, '')})`
-    console.log(deleteCategoryStr)
     // return
     const foodImgUrlList = await this.querySQL(`select imgUrl from shop_food_info where shopID = ? and ${deleteCategoryStr}`, [shopID, ...categoryIDList])
     await this.SQLtransaction(async (querySQL) => {

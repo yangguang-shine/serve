@@ -129,8 +129,7 @@ async function updateFoodInfoListReserveCount({
     }, '')}
     END
     WHERE foodID IN (${orderFoodIDList.join(',')})`
-    const res = await querySQL(sql)
-    console.log(res)
+    await querySQL(sql)
     //    throw 111
 }
 

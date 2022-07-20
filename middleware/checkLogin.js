@@ -3,8 +3,6 @@ const chalk = require('chalk')
 const { userLoginInfo, manageLoginInfo, ignoreLoginInfo } = require('../constant')
 const getUserID = async (ctx) => {
     const userToken = ctx.cookies.get('userToken')
-    console.log('userToken')
-    console.log(userToken)
     const sql = `select userID from token_store_user where userToken = ?`
     const userIDList = await ctx.querySQL(sql, [userToken])
     let userID = ''
@@ -56,8 +54,7 @@ module.exports = async (ctx, next) => {
         await next()
     } else {
         // await next()
-        console.log(chalk.bgRed('未注册接口'))
-        console.log(chalk.bgRed(ctx.url))
+        console.log(chalk.bgRed('未注册接口'), chalk.bgRed(ctx.url))
         ctx.body = {
          code: '400',
          msg: '接口未注册',

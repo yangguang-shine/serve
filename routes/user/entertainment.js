@@ -117,7 +117,6 @@ router.post("/getAnswer", async (ctx, next) => {
         const url = `appkey=${app_key}&question=${encodeURIComponent(question)}`
         const res = await httpGet(`${answer_list_domain}?${url}`);
         const resData = JSON.parse(await ctx.dataFormat(res))
-        console.log(resData)
         if (resData.status === 0) {
             ctx.body = {
                 code: '000',

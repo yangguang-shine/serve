@@ -5,9 +5,10 @@ const json = require("koa-json");
 const onerror = require("koa-onerror");
 const koaBody = require("koa-body");
 const xmlParser = require("koa-xml-body");
-const logger = require("koa-logger");
+// const logger = require("koa-logger");
 const compress = require('koa-compress')
-const { readFile } = require('fs/promises')
+const { accessLogger, logger } = require('./utils/logger');
+
 
 // 用户登录注册
 const userAccount = require("./routes/user/account");
@@ -77,6 +78,10 @@ const simpleRouterTryCatchHandle = require('./tools/simpleRouterTryCatchHandle')
 // error handler
 onerror(app);
 
+
+app.use(accessLogger)
+
+
 // 设置图片、css、js缓存
 app.use(async (ctx, next) => {
     const reg = /\S*\.(jpe?g|png|js|svg|css|ico)$/;
@@ -111,7 +116,7 @@ app.use(
 app.use(json());
 
 // logger 日志中间件
-app.use(logger());
+// app.use(logger());
 
 // 静态资源中间件
 app.use(require("koa-static")(__dirname + "/public"));
@@ -136,13 +141,13 @@ app.use(compress({
 }))
 
 // logger
-app.use(async (ctx, next) => {
-    ctx.compress = true
-    const start = new Date();
-    await next();
-    const ms = new Date() - start;
-    console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-});
+// app.use(async (ctx, next) => {
+//     ctx.compress = true
+//     const start = new Date();
+//     await next();
+//     const ms = new Date() - start;
+//     console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+// });
 
 app.use(webH5HTML)
 app.use(checkLogin)

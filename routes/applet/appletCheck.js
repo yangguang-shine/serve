@@ -8,7 +8,6 @@ router.post("/check", async (ctx, next) => {
 });
 
 router.post("/check", async (ctx, next) => {
-    console.log('收到用户信息')
     messageDelivery(ctx)
 });
 

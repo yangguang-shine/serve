@@ -7,9 +7,6 @@ const { readPipe } = require('../../../tools/readPipe')
 
 module.exports = async function shop() {
     const { name, path: imagePath } = this.request.files.shopImg
-    console.log(this.request.files.image)
-    console.log(name)
-    console.log(imagePath)
     const { shopID } = this.request.body
     const imageName = getImageName(name)
     const imageReader = fs.createReadStream(imagePath)
