@@ -52,7 +52,7 @@ module.exports = async function login() {
     } else {
         this.body = {
             code: '109',
-            msg: '改手机号不存在',
+            msg: '该手机号不存在',
             data: {}
         }
     }

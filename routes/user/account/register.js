@@ -42,7 +42,7 @@ module.exports = async function register() {
         } else {
             this.body = {
                 code: '103',
-                msg: '用户改手机号已被注册',
+                msg: '用户该手机号已被注册',
                 data: {}
             }
         }

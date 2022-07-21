@@ -62,7 +62,8 @@ const { querySQL, SQLtransaction } = require('./model/mysql')
 // 流数据的获取
 const dataFormat = require('./tools/dataFormat')
 // 简单路由 try catch 处理的方法
-const simpleRouterTryCatchHandle = require('./tools/simpleRouterTryCatchHandle')
+const simpleRouterTryCatchHandle = require('./tools/simpleRouterTryCatchHandle');
+const managePcHTML = require("./middleware/managePcHTML");
 // const auth = require('./model/wechats/auth')
 // const checkManageLoginInterface = require('./utils/checkManageLoginInterface')
 // const checkUserLoginInterface = require('./utils/checkUserLoginInterface')
@@ -150,6 +151,7 @@ app.use(compress({
 // });
 
 app.use(webH5HTML)
+app.use(managePcHTML)
 app.use(checkLogin)
 // 判断用户token权限
 // app.use(checkUserLoginInterface())
