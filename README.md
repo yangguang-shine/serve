@@ -197,6 +197,7 @@ price
 /usr/local/MYSQ/bin/mysqldump -u root -p [DATABASE] > ./data.sql
 /usr/local/MYSQ/bin/mysqldump -u root -p [DATABASE] > [TABLE] ./data.sql
 /usr/local/MYSQ/bin/mysqldump -u root -p [DATABASE] [TABLE]>  ./data.sql
+mysql -u root -p my_data_base < G:\github\my.sql
 
 #### 创建数据库
 
